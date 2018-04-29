@@ -1,0 +1,9 @@
+*.stackdump
+
+.idea/
+*.iml
+*.iws
+*.ipr
+
+log/
+target/
