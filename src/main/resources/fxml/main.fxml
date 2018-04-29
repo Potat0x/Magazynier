@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
+            prefWidth="790.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="magazynier.MainController">
+    <children>
+        <TabPane fx:id="mainTabPane" layoutX="66.0" layoutY="50.0" prefHeight="400.0" prefWidth="600.0"
+                 tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                 AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <tabs>
+                <!--
+                <Tab text="Podsumowanie">
+                    <fx:include fx:id="tp1" source="summary.fxml"/>
+                </Tab>
+                -->
+                <Tab text="Dokumenty">
+                    <fx:include fx:id="tp2" source="documents.fxml"/>
+                </Tab>
+
+                <Tab fx:id="assortmentTab" text="Asortyment">
+                    <fx:include fx:id="tp3" source="assortment.fxml"/>
+                </Tab>
+
+                <Tab fx:id="counterpartiesTab" text="Kontrahenci">
+                    <fx:include fx:id="tp4" source="contractors.fxml"/>
+                </Tab>
+
+                <Tab fx:id="storageTab" text="Magazyny">
+                    <fx:include fx:id="tp5" source="warehouses.fxml"/>
+                </Tab>
+                <Tab fx:id="workersTab" text="Pracownicy">
+                    <fx:include fx:id="tp6" source="workers.fxml"/>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </children>
+</AnchorPane>

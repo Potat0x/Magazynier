@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<TableView tableMenuButtonVisible="true" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111"
+           xmlns:fx="http://javafx.com/fxml/1" fx:controller="magazynier.WarehousesController">
+    <columns>
+        <TableColumn prefWidth="75.0" text="Nazwa"/>
+        <TableColumn prefWidth="45.0" text="Nr"/>
+        <TableColumn prefWidth="113.0" text="Pojemność"/>
+        <TableColumn prefWidth="65.0" text="Jednostka"/>
+        <TableColumn minWidth="120.0" prefWidth="120.0" text="Aktualne zapełnienie"/>
+        <TableColumn minWidth="120.0" prefWidth="120.0" text="Prognozowane zapełnienie"/>
+        <TableColumn prefWidth="50.0" text="Towary"/>
+        <TableColumn prefWidth="100.0" text="Wartość netto"/>
+        <TableColumn prefWidth="100.0" text="Wartość brutto"/>
+    </columns>
+    <columnResizePolicy>
+        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+    </columnResizePolicy>
+</TableView>
+
