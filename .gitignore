@@ -4,6 +4,9 @@
 *.iml
 *.iws
 *.ipr
+.ideaDataSources/
+dataSources/
+
 
 log/
 target/
