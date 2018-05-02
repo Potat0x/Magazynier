@@ -1,10 +1,10 @@
-package magazynier;
+package magazynier.entities;
 
 public class Warehouse {
     private String name;
     private Integer id;
 
-    Warehouse(String name) {
+    public Warehouse(String name) {
         this.name = name;
     }
 

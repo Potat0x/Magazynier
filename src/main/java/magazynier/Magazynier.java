@@ -22,4 +22,9 @@ public class Magazynier extends Application {
         MainController mc = fxmlLoader.getController();
         //mc.s();
     }
+
+    @Override
+    public void stop() {
+        HibernateSessionFactory.close();
+    }
 }

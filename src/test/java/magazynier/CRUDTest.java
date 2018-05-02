@@ -1,5 +1,6 @@
 package magazynier;
 
+import magazynier.entities.Warehouse;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.junit.BeforeClass;
