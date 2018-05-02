@@ -31,6 +31,9 @@ public class WorkersController {
     private WorkersModel model;
     private boolean userAdding;
 
+    private final int MAX_TEXT_FIELD_LENGTH = 25;
+    private final int MAX_TEXT_FIELD_LENGTH_PESEL = 11;
+
     public WorkersController() {
         model = new WorkersModel();
         userAdding = false;
@@ -45,6 +48,15 @@ public class WorkersController {
 
         ArrayList workers = model.getWorkersList();
         workersTable.getItems().addAll(workers);
+
+        TextFieldOverflowIndicator.set(firstName, MAX_TEXT_FIELD_LENGTH);
+        TextFieldOverflowIndicator.set(lastName, MAX_TEXT_FIELD_LENGTH);
+        TextFieldOverflowIndicator.set(phone, MAX_TEXT_FIELD_LENGTH);
+        TextFieldOverflowIndicator.set(email, MAX_TEXT_FIELD_LENGTH);
+        TextFieldOverflowIndicator.set(pesel, MAX_TEXT_FIELD_LENGTH);
+        TextFieldOverflowIndicator.set(street, MAX_TEXT_FIELD_LENGTH);
+        TextFieldOverflowIndicator.set(city, MAX_TEXT_FIELD_LENGTH);
+        TextFieldOverflowIndicator.set(pesel, MAX_TEXT_FIELD_LENGTH_PESEL);
     }
 
     @FXML
@@ -79,23 +91,31 @@ public class WorkersController {
     @SuppressWarnings("unchecked")
     public void saveUser() {
 
-        if (userAdding) {
-            Worker newWorker = new Worker();
-            updateWorkerFromForm(newWorker);
+        if (validFormMaxLength()) {
+            if (userAdding) {
+                Worker newWorker = new Worker();
+                updateWorkerFromForm(newWorker);
 
-            model.addWorker(newWorker);
-            workersTable.getItems().add(newWorker);
-            workersTable.getSelectionModel().select(newWorker);
-            userAdding = false;
+                model.addWorker(newWorker);
+                workersTable.getItems().add(newWorker);
+                workersTable.getSelectionModel().select(newWorker);
+                userAdding = false;
+            } else {
+                updateSelectedWorker();
+            }
+
+            workersTable.setDisable(false);
+            addButton.setDisable(false);
+            cancelButton.setDisable(true);
+            saveButton.setDisable(true);
+            deleteButton.setDisable(false);
         } else {
-            updateSelectedWorker();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Błąd");
+            alert.setHeaderText("Wprowadzono nieprawidłowe dane.");
+            alert.setContentText("Maksymalna dlugosc pola: 25.");
+            alert.showAndWait();
         }
-
-        workersTable.setDisable(false);
-        addButton.setDisable(false);
-        cancelButton.setDisable(true);
-        saveButton.setDisable(true);
-        deleteButton.setDisable(false);
     }
 
     @FXML
@@ -145,6 +165,22 @@ public class WorkersController {
             saveButton.setDisable(false);
             cancelButton.setDisable(false);
         }
+    }
+
+    private boolean validFormMaxLength() {
+
+        if (firstName.getText().length() <= MAX_TEXT_FIELD_LENGTH &&
+                lastName.getText().length() <= MAX_TEXT_FIELD_LENGTH &&
+                city.getText().length() <= MAX_TEXT_FIELD_LENGTH &&
+                street.getText().length() <= MAX_TEXT_FIELD_LENGTH &&
+                email.getText().length() <= MAX_TEXT_FIELD_LENGTH &&
+                phone.getText().length() <= MAX_TEXT_FIELD_LENGTH &&
+                pesel.getText().length() <= MAX_TEXT_FIELD_LENGTH_PESEL
+                ) {
+            return true;
+        }
+
+        return false;
     }
 
     private void updateWorkerFromForm(Worker worker) {
