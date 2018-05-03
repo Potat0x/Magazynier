@@ -12,10 +12,8 @@ class WarehousesModel {
     }
 
     void updateWarehouse(Warehouse warehouse) throws NotFoundException {
-        if (DAO.checkIfExistsById(Warehouse.class, warehouse.getId())) {
-            DAO.update(warehouse);
-        } else {
-            throw new NotFoundException("Warehouse " + warehouse.getId() + "does not exist in database.");
-        }
+        DAO.update(warehouse);
     }
+    //todo: add warehouse deleting
+    //todo: add warehouse name validating
 }

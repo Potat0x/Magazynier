@@ -1,6 +1,8 @@
 package magazynier.entities;
 
-public class Worker {
+import magazynier.Indexed;
+
+public class Worker implements Indexed {
 
     private String firstName;
     private String lastName;

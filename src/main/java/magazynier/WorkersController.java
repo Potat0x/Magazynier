@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javassist.NotFoundException;
 import magazynier.entities.Worker;
 
 import javax.persistence.PersistenceException;
@@ -46,8 +47,7 @@ public class WorkersController {
         lastNameCol.setCellValueFactory(new PropertyValueFactory<Worker, String>("lastName"));
         warehouseCol.setCellValueFactory(new PropertyValueFactory<Worker, Integer>("warehouseId"));
 
-        ArrayList workers = model.getWorkersList();
-        workersTable.getItems().addAll(workers);
+        refreshTable();
 
         TextFieldOverflowIndicator.set(firstName, MAX_TEXT_FIELD_LENGTH);
         TextFieldOverflowIndicator.set(lastName, MAX_TEXT_FIELD_LENGTH);
@@ -67,6 +67,12 @@ public class WorkersController {
                 pesel.setStyle(null);
             }
         });
+    }
+
+    private void refreshTable() {
+        ArrayList workers = model.getWorkersList();
+        workersTable.getItems().clear();
+        workersTable.getItems().addAll(workers);
     }
 
     @FXML
@@ -96,8 +102,27 @@ public class WorkersController {
 
         if (selectedWorker != null) {
             updateWorkerFromForm(selectedWorker);
-            model.updateWorker(selectedWorker);
-            workersTable.refresh();
+            try {
+                model.updateWorker(selectedWorker);
+            } catch (Exception e) {
+
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Błąd");
+                alert.setHeaderText("Nie zaktualizować pracownika");
+
+                if (e instanceof NotFoundException) {
+                    alert.setContentText("Możeliwe przyczyny problemu:\npracownik został usunięty z bazy.");
+                } else {
+                    alert.setContentText("Nieznany błąd:\n" + e.getMessage());
+                    e.printStackTrace();
+                    System.out.println(e.getClass().getSimpleName());//todo: add alert function
+                }
+
+                alert.showAndWait();
+                refreshTable();
+                clearForm();
+                clearFormStyles();
+            }//todo: remove duplicated code
         }
     }
 
@@ -180,6 +205,8 @@ public class WorkersController {
             try {
                 model.deleteWorker(selectedWorker);
                 workersTable.getItems().remove(selectedWorker);
+                clearForm();
+                clearFormStyles();
             } catch (Exception e) {
 
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -187,13 +214,16 @@ public class WorkersController {
                 alert.setHeaderText("Nie można usunąć pracownika");
 
                 if (e instanceof PersistenceException) {
-                    alert.setContentText("Możeliwe przyczyny problemu:\npracownik nie istnieje lub występuje na dokumentach.");
+                    alert.setContentText("Możeliwe przyczyny problemu:\npracownik występuje na dokumentach.");
+                } else if (e instanceof NotFoundException) {
+                    alert.setContentText("Możeliwe przyczyny problemu:\npracownik został usunięty z bazy.");
                 } else {
                     alert.setContentText("Nieznany błąd:\n" + e.getMessage());
                     e.printStackTrace();
                     System.out.println(e.getClass().getSimpleName());
                 }
                 alert.showAndWait();
+                refreshTable();
             }
         }
     }

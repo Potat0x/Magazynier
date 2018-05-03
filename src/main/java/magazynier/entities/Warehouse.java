@@ -1,6 +1,8 @@
 package magazynier.entities;
 
-public class Warehouse {
+import magazynier.Indexed;
+
+public class Warehouse implements Indexed {
     private String name;
     private Integer id;
 

@@ -30,7 +30,6 @@ public class WarehousesController {
         ArrayList wl = model.getWarehousesList();
         warehousesTable.getItems().clear();
         warehousesTable.getItems().addAll(wl);
-        //warehousesTable.getItems().add(new Warehouse("NEW WAREHOUSE"));
     }
 
     @FXML
@@ -53,6 +52,7 @@ public class WarehousesController {
                     alert.setContentText("Nie znaleziono magazynu \"" + warehouse.getName() + "\".\nMógł zostać usunięty przez innego użytkownika.");
                     alert.showAndWait();
                     refreshTable();
+                    e.printStackTrace();
                 }
             }
         });
