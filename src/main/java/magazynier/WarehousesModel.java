@@ -15,5 +15,4 @@ class WarehousesModel {
         DAO.update(warehouse);
     }
     //todo: add warehouse deleting
-    //todo: add warehouse name validating
 }
