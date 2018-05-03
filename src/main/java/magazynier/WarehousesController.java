@@ -2,10 +2,12 @@ package magazynier;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javassist.NotFoundException;
 import magazynier.entities.Warehouse;
 
 import java.util.ArrayList;
@@ -24,6 +26,13 @@ public class WarehousesController {
         model = new WarehousesModel();
     }
 
+    void refreshTable() {
+        ArrayList wl = model.getWarehousesList();
+        warehousesTable.getItems().clear();
+        warehousesTable.getItems().addAll(wl);
+        //warehousesTable.getItems().add(new Warehouse("NEW WAREHOUSE"));
+    }
+
     @FXML
     public void initialize() {
 
@@ -35,14 +44,19 @@ public class WarehousesController {
             public void handle(TableColumn.CellEditEvent event) {
                 Warehouse warehouse = (Warehouse) event.getTableView().getItems().get(event.getTablePosition().getRow());
                 warehouse.setName((String) event.getNewValue());
-                model.updateWarehouse(warehouse);
-                System.out.println(warehouse);
+                try {
+                    model.updateWarehouse(warehouse);
+                } catch (NotFoundException e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Błąd");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Nie znaleziono magazynu \"" + warehouse.getName() + "\".\nMógł zostać usunięty przez innego użytkownika.");
+                    alert.showAndWait();
+                    refreshTable();
+                }
             }
         });
 
-        ArrayList wl = model.getWarehousesList();
-        warehousesTable.getItems().addAll(wl);
-
-        //warehousesTable.getItems().add(new Warehouse("NEW WAREHOUSE"));
+        refreshTable();
     }
 }
