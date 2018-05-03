@@ -32,7 +32,6 @@ public class WorkersController {
     private boolean userAdding;
 
     private final int MAX_TEXT_FIELD_LENGTH = 25;
-    private final int MAX_TEXT_FIELD_LENGTH_PESEL = 11;
 
     public WorkersController() {
         model = new WorkersModel();
@@ -56,7 +55,17 @@ public class WorkersController {
         TextFieldOverflowIndicator.set(pesel, MAX_TEXT_FIELD_LENGTH);
         TextFieldOverflowIndicator.set(street, MAX_TEXT_FIELD_LENGTH);
         TextFieldOverflowIndicator.set(city, MAX_TEXT_FIELD_LENGTH);
-        TextFieldOverflowIndicator.set(pesel, MAX_TEXT_FIELD_LENGTH_PESEL);
+        //TextFieldOverflowIndicator.set(pesel, MAX_TEXT_FIELD_LENGTH_PESEL);
+
+        pesel.textProperty().addListener((observable, oldValue, newValue) -> {
+            String textFieldErrorStyle = "-fx-text-box-border: rgb(255,117,0); -fx-focus-color: rgb(255,117,0);";
+            if (!PeselValidator.check(pesel.getText())) {
+                pesel.setStyle(textFieldErrorStyle);
+
+            } else {
+                pesel.setStyle(null);
+            }
+        });
     }
 
     @FXML
@@ -74,6 +83,8 @@ public class WorkersController {
             street.setText(selectedWorker.getStreet());
             city.setText(selectedWorker.getCity());
         }
+
+        clearFormStyles();//todo: delete this line before release
     }
 
     @FXML
@@ -91,7 +102,10 @@ public class WorkersController {
     @SuppressWarnings("unchecked")
     public void saveUser() {
 
-        if (validFormMaxLength()) {
+        boolean formLengthValid = validFormMaxLength();
+        boolean peselValid = PeselValidator.check(pesel.getText());
+
+        if (formLengthValid && peselValid) {
             if (userAdding) {
                 Worker newWorker = new Worker();
                 updateWorkerFromForm(newWorker);
@@ -113,7 +127,11 @@ public class WorkersController {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Błąd");
             alert.setHeaderText("Wprowadzono nieprawidłowe dane.");
-            alert.setContentText("Maksymalna dlugosc pola: 25.");
+            if (!formLengthValid) {
+                alert.setContentText("Maksymalna dlugosc pola: 25.");
+            } else {
+                alert.setContentText("PESEL jest niepoprawny.");
+            }
             alert.showAndWait();
         }
     }
@@ -146,6 +164,8 @@ public class WorkersController {
         saveButton.setDisable(true);
         addButton.setDisable(false);
         deleteButton.setDisable(false);
+
+        clearFormStyles();
     }
 
     @FXML
@@ -169,17 +189,15 @@ public class WorkersController {
 
     private boolean validFormMaxLength() {
 
-        if (firstName.getText().length() <= MAX_TEXT_FIELD_LENGTH &&
-                lastName.getText().length() <= MAX_TEXT_FIELD_LENGTH &&
-                city.getText().length() <= MAX_TEXT_FIELD_LENGTH &&
-                street.getText().length() <= MAX_TEXT_FIELD_LENGTH &&
-                email.getText().length() <= MAX_TEXT_FIELD_LENGTH &&
-                phone.getText().length() <= MAX_TEXT_FIELD_LENGTH &&
-                pesel.getText().length() <= MAX_TEXT_FIELD_LENGTH_PESEL
+        if ((firstName.getText() == null || firstName.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
+                (lastName.getText() == null || lastName.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
+                (city.getText() == null || city.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
+                (street.getText() == null || street.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
+                (email.getText() == null || email.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
+                (phone.getText() == null || phone.getText().length() <= MAX_TEXT_FIELD_LENGTH)
                 ) {
             return true;
         }
-
         return false;
     }
 
@@ -197,6 +215,14 @@ public class WorkersController {
         for (Node n : form.getChildren()) {
             if (n instanceof TextField) {
                 ((TextField) n).clear();
+            }
+        }
+    }
+
+    private void clearFormStyles() {
+        for (Node n : form.getChildren()) {
+            if (n instanceof TextField) {
+                n.setStyle(null);
             }
         }
     }
