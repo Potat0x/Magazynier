@@ -1,4 +1,4 @@
-package magazynier;
+package magazynier.utils;
 
 public class PeselValidator {
 

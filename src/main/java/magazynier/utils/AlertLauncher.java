@@ -1,4 +1,4 @@
-package magazynier;
+package magazynier.utils;
 
 import javafx.scene.control.Alert;
 

@@ -1,6 +1,6 @@
 package magazynier.entities;
 
-import magazynier.Indexed;
+import magazynier.utils.Indexed;
 
 public class Warehouse implements Indexed {
     private String name;

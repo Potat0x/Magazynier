@@ -1,6 +1,6 @@
 package magazynier.entities;
 
-import magazynier.Indexed;
+import magazynier.utils.Indexed;
 
 public class Worker implements Indexed {
 

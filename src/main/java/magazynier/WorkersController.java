@@ -7,6 +7,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javassist.NotFoundException;
 import magazynier.entities.Worker;
+import magazynier.utils.AlertLauncher;
+import magazynier.utils.PeselValidator;
+import magazynier.utils.TextFieldOverflowIndicator;
 
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;

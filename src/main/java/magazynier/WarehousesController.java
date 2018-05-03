@@ -9,6 +9,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
 import javassist.NotFoundException;
 import magazynier.entities.Warehouse;
+import magazynier.utils.AlertLauncher;
 
 import java.util.ArrayList;
 

@@ -1,6 +1,7 @@
 package magazynier;
 
 import javassist.NotFoundException;
+import magazynier.utils.Indexed;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
