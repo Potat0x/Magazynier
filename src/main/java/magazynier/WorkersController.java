@@ -7,6 +7,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import magazynier.entities.Worker;
 
+import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 
 public class WorkersController {
@@ -84,6 +85,8 @@ public class WorkersController {
             city.setText(selectedWorker.getCity());
         }
 
+        saveButton.setDisable(true);
+        cancelButton.setDisable(true);
         clearFormStyles();//todo: delete this line before release
     }
 
@@ -146,6 +149,7 @@ public class WorkersController {
         //noinspection unchecked
         workersTable.getSelectionModel().select(null);
         clearForm();
+        clearFormStyles();
     }
 
     @FXML
@@ -173,8 +177,24 @@ public class WorkersController {
 
         Worker selectedWorker = (Worker) workersTable.getSelectionModel().getSelectedItem();
         if (selectedWorker != null) {
-            workersTable.getItems().remove(selectedWorker);
-            model.deleteWorker(selectedWorker);
+            try {
+                model.deleteWorker(selectedWorker);
+                workersTable.getItems().remove(selectedWorker);
+            } catch (Exception e) {
+
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Błąd");
+                alert.setHeaderText("Nie można usunąć pracownika");
+
+                if (e instanceof PersistenceException) {
+                    alert.setContentText("Możeliwe przyczyny problemu:\npracownik nie istnieje lub występuje na dokumentach.");
+                } else {
+                    alert.setContentText("Nieznany błąd:\n" + e.getMessage());
+                    e.printStackTrace();
+                    System.out.println(e.getClass().getSimpleName());
+                }
+                alert.showAndWait();
+            }
         }
     }
 

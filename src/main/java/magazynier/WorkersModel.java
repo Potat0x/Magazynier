@@ -47,16 +47,12 @@ public class WorkersModel {
         }
     }
 
-    public void deleteWorker(Worker worker) {
-        try (Session session = HibernateSessionFactory.openSession()) {
-            Transaction tr = session.beginTransaction();
-            session.delete(worker);
-            tr.commit();
-            session.close();
-        } catch (HibernateException e) {
-            System.out.println("delete failed");
-            e.printStackTrace();
-        }
+    public void deleteWorker(Worker worker) throws HibernateException {
+        Session session = HibernateSessionFactory.openSession();
+        Transaction tr = session.beginTransaction();
+        session.delete(worker);
+        tr.commit();
+        session.close();
     }
 }
 
