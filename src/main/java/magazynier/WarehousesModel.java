@@ -15,6 +15,10 @@ class WarehousesModel {
         DAO.update(warehouse);
     }
 
+    public void addWarehouse(Warehouse newWarehouse) {
+        DAO.add(newWarehouse);
+    }
+
     void deleteWarehouse(Warehouse warehouse) throws NotFoundException {
         DAO.delete(warehouse);
     }
