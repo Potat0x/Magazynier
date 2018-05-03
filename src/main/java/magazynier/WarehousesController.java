@@ -1,13 +1,14 @@
 package magazynier;
 
+import javafx.beans.binding.Bindings;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.ContextMenuEvent;
+import javafx.util.Callback;
 import javassist.NotFoundException;
 import magazynier.entities.Warehouse;
 
@@ -36,6 +37,35 @@ public class WarehousesController {
 
     @FXML
     public void initialize() {
+
+        warehousesTable.setRowFactory(
+                new Callback<TableView<Warehouse>, TableRow<Warehouse>>() {
+                    @Override
+                    public TableRow<Warehouse> call(TableView<Warehouse> tableView) {
+                        final TableRow<Warehouse> row = new TableRow<>();
+                        final ContextMenu cm = new ContextMenu();
+
+                        MenuItem del = new MenuItem("Delete");
+                        del.setOnAction(event -> {
+                            try {
+                                model.deleteWarehouse(row.getItem());
+                                warehousesTable.getItems().remove(row.getItem());
+                            } catch (NotFoundException e) {
+                                Alert alert = new Alert(Alert.AlertType.ERROR);
+                                alert.setTitle("Błąd");
+                                alert.setHeaderText(null);
+                                alert.setContentText("Nie można usunąć magazynu \"" + row.getItem().getName() + "\".\nMógł zostać usunięty przez innego użytkownika.");
+                                alert.showAndWait();
+                                refreshTable();
+                                e.printStackTrace();
+                            }
+                        });
+                        cm.getItems().add(del);
+
+                        row.contextMenuProperty().bind(Bindings.when(Bindings.isNotNull(row.itemProperty())).then(cm).otherwise((ContextMenu) null));
+                        return row;
+                    }
+                });
 
         nameCol.setCellValueFactory(new PropertyValueFactory<Warehouse, String>("name"));
         nameCol.setCellFactory(TextFieldTableCell.forTableColumn());

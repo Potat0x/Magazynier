@@ -14,5 +14,8 @@ class WarehousesModel {
     void updateWarehouse(Warehouse warehouse) throws NotFoundException {
         DAO.update(warehouse);
     }
-    //todo: add warehouse deleting
+
+    void deleteWarehouse(Warehouse warehouse) throws NotFoundException {
+        DAO.delete(warehouse);
+    }
 }
