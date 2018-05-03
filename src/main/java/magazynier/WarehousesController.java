@@ -11,6 +11,7 @@ import javassist.NotFoundException;
 import magazynier.entities.Warehouse;
 import magazynier.utils.AlertLauncher;
 
+import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 
 public class WarehousesController {
@@ -41,9 +42,8 @@ public class WarehousesController {
                 new Callback<TableView<Warehouse>, TableRow<Warehouse>>() {
                     @Override
                     public TableRow<Warehouse> call(TableView<Warehouse> tableView) {
-                        final TableRow<Warehouse> row = new TableRow<>();
-                        final ContextMenu cm = new ContextMenu();
-
+                        TableRow<Warehouse> row = new TableRow<>();
+                        ContextMenu delCmenu = new ContextMenu();
                         MenuItem del = new MenuItem("Delete");
                         del.setOnAction(event -> {
                             try {
@@ -53,11 +53,13 @@ public class WarehousesController {
                                 AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Nie można usunąć magazynu \"" + row.getItem().getName() + "\".\nMógł zostać wcześniej usunięty przez innego użytkownika.");
                                 refreshTable();
                                 //e.printStackTrace();
+                            } catch (PersistenceException e) {
+                                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Nie można usunąć magazynu \"" + row.getItem().getName() + "\".\nJest w nim asortyment.");
                             }
                         });
-                        cm.getItems().add(del);
+                        delCmenu.getItems().add(del);
 
-                        row.contextMenuProperty().bind(Bindings.when(Bindings.isNotNull(row.itemProperty())).then(cm).otherwise((ContextMenu) null));
+                        row.contextMenuProperty().bind(Bindings.when(Bindings.isNotNull(row.itemProperty())).then(delCmenu).otherwise((ContextMenu) null));
                         return row;
                     }
                 });
