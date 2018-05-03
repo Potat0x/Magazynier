@@ -1,13 +1,11 @@
 package magazynier;
 
 import javafx.beans.binding.Bindings;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.ContextMenuEvent;
 import javafx.util.Callback;
 import javassist.NotFoundException;
 import magazynier.entities.Warehouse;
@@ -51,13 +49,9 @@ public class WarehousesController {
                                 model.deleteWarehouse(row.getItem());
                                 warehousesTable.getItems().remove(row.getItem());
                             } catch (NotFoundException e) {
-                                Alert alert = new Alert(Alert.AlertType.ERROR);
-                                alert.setTitle("Błąd");
-                                alert.setHeaderText(null);
-                                alert.setContentText("Nie można usunąć magazynu \"" + row.getItem().getName() + "\".\nMógł zostać usunięty przez innego użytkownika.");
-                                alert.showAndWait();
+                                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Nie można usunąć magazynu \"" + row.getItem().getName() + "\".\nMógł zostać wcześniej usunięty przez innego użytkownika.");
                                 refreshTable();
-                                e.printStackTrace();
+                                //e.printStackTrace();
                             }
                         });
                         cm.getItems().add(del);
@@ -80,20 +74,12 @@ public class WarehousesController {
                     try {
                         model.updateWarehouse(warehouse);
                     } catch (NotFoundException e) {
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Błąd");
-                        alert.setHeaderText(null);
-                        alert.setContentText("Nie znaleziono magazynu \"" + warehouse.getName() + "\".\nMógł zostać usunięty przez innego użytkownika.");
-                        alert.showAndWait();
+                        AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Nie można usunąć magazynu \"" + warehouse.getName() + "\".\nMógł zostać usunięty przez innego użytkownika.");
                         refreshTable();
-                        e.printStackTrace();
+                        //e.printStackTrace();
                     }
                 } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Błąd");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Wprowadzona nazwa magazynu jest za długa (max 30 znaków).");
-                    alert.showAndWait();
+                    AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzona nazwa magazynu jest za długa.\n(maksymalna długość: 30 znaków");
                     warehousesTable.refresh();
                 }
             }

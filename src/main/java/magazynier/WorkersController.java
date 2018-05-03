@@ -106,23 +106,19 @@ public class WorkersController {
                 model.updateWorker(selectedWorker);
             } catch (Exception e) {
 
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Błąd");
-                alert.setHeaderText("Nie zaktualizować pracownika");
 
                 if (e instanceof NotFoundException) {
-                    alert.setContentText("Możeliwe przyczyny problemu:\npracownik został usunięty z bazy.");
+                    AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować pracownika.", "Nie znalaziono pracownika. Mógł zostać usunięty z bazy.");
                 } else {
-                    alert.setContentText("Nieznany błąd:\n" + e.getMessage());
+                    AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Nieznany błąd.");
                     e.printStackTrace();
-                    System.out.println(e.getClass().getSimpleName());//todo: add alert function
+                    System.out.println(e.getClass().getSimpleName());
                 }
 
-                alert.showAndWait();
                 refreshTable();
                 clearForm();
                 clearFormStyles();
-            }//todo: remove duplicated code
+            }
         }
     }
 
@@ -151,16 +147,13 @@ public class WorkersController {
             cancelButton.setDisable(true);
             saveButton.setDisable(true);
             deleteButton.setDisable(false);
+            workersTable.refresh();
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Błąd");
-            alert.setHeaderText("Wprowadzono nieprawidłowe dane.");
             if (!formLengthValid) {
-                alert.setContentText("Maksymalna dlugosc pola: 25.");
+                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Maksymalna dlugosc pola: 25.");
             } else {
-                alert.setContentText("PESEL jest niepoprawny.");
+                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzony numer PESEL jest niepoprawny.");
             }
-            alert.showAndWait();
         }
     }
 
@@ -209,20 +202,18 @@ public class WorkersController {
                 clearFormStyles();
             } catch (Exception e) {
 
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Błąd");
-                alert.setHeaderText("Nie można usunąć pracownika");
+                String failInfo;
 
                 if (e instanceof PersistenceException) {
-                    alert.setContentText("Możeliwe przyczyny problemu:\npracownik występuje na dokumentach.");
+                    failInfo = "Pracownik występuje na dokumentach.";
                 } else if (e instanceof NotFoundException) {
-                    alert.setContentText("Możeliwe przyczyny problemu:\npracownik został usunięty z bazy.");
+                    failInfo = "Nie znaleziono pracownika. Mógł zostać wcześniej usunięty z bazy.";
                 } else {
-                    alert.setContentText("Nieznany błąd:\n" + e.getMessage());
+                    failInfo = "Nieznany błąd";
                     e.printStackTrace();
                     System.out.println(e.getClass().getSimpleName());
                 }
-                alert.showAndWait();
+                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można usunąć pracownika.", failInfo);
                 refreshTable();
             }
         }
