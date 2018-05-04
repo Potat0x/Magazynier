@@ -66,6 +66,7 @@ public class WorkersController {
             form.setDisable(newValue == null);
         });
         deleteButton.setDisable(true);
+        form.setDisable(true);
         formTitle.setText("Informacje o pracowniku:");
     }
 
@@ -188,7 +189,7 @@ public class WorkersController {
         cancelButton.setDisable(true);
         saveButton.setDisable(true);
         addButton.setDisable(false);
-        form.setDisable(true);
+        //form.setDisable(true);
         //deleteButton.setDisable(false);
         FormCleaner.clearStyles(form);
     }
