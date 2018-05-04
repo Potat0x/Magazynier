@@ -12,11 +12,13 @@ import javafx.util.Callback;
 import javassist.NotFoundException;
 import magazynier.entities.Contractor;
 import magazynier.utils.AlertLauncher;
+import magazynier.utils.NipValidator;
 import magazynier.utils.PeselValidator;
 import magazynier.utils.TextFieldOverflowIndicator;
 
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @SuppressWarnings("unchecked")
 public class ContractorsController {
@@ -83,7 +85,7 @@ public class ContractorsController {
                 contractorName.setDisable(!isCompany);
                 nip.setDisable(!isCompany);
                 pesel.setDisable(isCompany);
-                setEditMode(false);
+                //setEditMode(false);
             }
         });
 
@@ -95,7 +97,7 @@ public class ContractorsController {
         nameCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Contractor, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Contractor, String> p) {
                 if (p.getValue().getEntityType() != null && p.getValue().getEntityType().equals(naturalPerson))
-                    return new ReadOnlyObjectWrapper(p.getValue().getFirstName() + " " + p.getValue().getLastName());
+                    return new ReadOnlyObjectWrapper(Optional.ofNullable(p.getValue().getFirstName()).orElse("") + " " + Optional.ofNullable(p.getValue().getLastName()).orElse(""));
                 else {
                     return new ReadOnlyObjectWrapper(p.getValue().getContractorName());
                 }
@@ -110,6 +112,26 @@ public class ContractorsController {
             deleteButton.setDisable(rowNotSelected);
 //            saveButton.setDisable(rowNotSelected);
 //            cancelButton.setDisable(rowNotSelected);
+        });
+
+        pesel.textProperty().addListener((observable, oldValue, newValue) -> {
+            String textFieldErrorStyle = "-fx-text-box-border: rgb(255,117,0); -fx-focus-color: rgb(255,117,0);";
+            if (!PeselValidator.check(pesel.getText())) {
+                pesel.setStyle(textFieldErrorStyle);
+
+            } else {
+                pesel.setStyle(null);
+            }
+        });//todo: remove duplicated code
+
+        nip.textProperty().addListener((observable, oldValue, newValue) -> {
+            String textFieldErrorStyle = "-fx-text-box-border: rgb(255,117,0); -fx-focus-color: rgb(255,117,0);";
+            if (!NipValidator.check(nip.getText())) {
+                nip.setStyle(textFieldErrorStyle);
+            } else {
+                nip.setStyle(null);
+                nip.setText(newValue.replaceAll("[- ]", ""));
+            }
         });
 
         TextFieldOverflowIndicator.set(contractorName, MAX_COMPANY_NAME_LENGTH);
@@ -143,7 +165,7 @@ public class ContractorsController {
         }
 /*        saveButton.setDisable(true);
         cancelButton.setDisable(true);*/
-        //clearFormStyles();//--todo: delete this line before release
+        clearFormStyles();
     }
 
     public void updateSelectedContractor() {
@@ -203,8 +225,10 @@ public class ContractorsController {
                 contractorsTable.getSelectionModel().select(c);
                 clearForm();
                 updateForm();
+
             }
         }
+        clearFormStyles();
     }
 
     public void openEmailClient() {
@@ -215,8 +239,18 @@ public class ContractorsController {
 
     public void saveContractor() {
         boolean formLengthValid = validFormMaxLength();
-        boolean peselValid = true;//PeselValidator.check(pesel.getText());
-        boolean nipValid = true;
+        boolean peselValid = PeselValidator.check(pesel.getText()) || pesel.isDisabled();
+        boolean nipValid = NipValidator.check(nip.getText()) || nip.isDisabled();
+
+        if (pesel.isDisabled()) {
+            pesel.clear();
+        }
+        if (nip.isDisabled()) {
+            nip.clear();
+        }
+
+       /* peselValid = true;
+        nipValid = true;*/
 
         if (formLengthValid && nipValid && peselValid) {
 
@@ -235,7 +269,7 @@ public class ContractorsController {
 
             setEditMode(false);
             setFormActive(false);
-
+            clearFormStyles();
         } else {
             if (!formLengthValid) {
                 AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzony tekst jest za długi.\n" +
@@ -255,6 +289,7 @@ public class ContractorsController {
         form.setDisable(false);
         //contractorsTable.getSelectionModel().select(contractorsTable.getSelectionModel().getSelectedItem());
         clearForm();
+        clearFormStyles();
     }
 
     public void beginContractorEditing() {
@@ -333,4 +368,13 @@ public class ContractorsController {
             }
         }
     }//todo: add formCleaner
+
+    private void clearFormStyles() {
+        for (Node n : form.getChildren()) {
+            if (n instanceof TextField) {
+                n.setStyle(null);
+            }
+        }
+    }
+
 }
