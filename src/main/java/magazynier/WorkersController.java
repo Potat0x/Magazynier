@@ -32,6 +32,7 @@ public class WorkersController {
     public Button addButton;
     public Button deleteButton;
     public Button saveButton;
+    public Label formTitle;
 
     private WorkersModel model;
     private boolean userAdding;
@@ -70,6 +71,13 @@ public class WorkersController {
                 pesel.setStyle(null);
             }
         });
+
+        workersTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            deleteButton.setDisable(newValue == null);
+            form.setDisable(newValue == null);
+        });
+        deleteButton.setDisable(true);
+        formTitle.setText("Informacje o pracowniku:");
     }
 
     private void refreshTable() {
@@ -96,7 +104,7 @@ public class WorkersController {
 
         saveButton.setDisable(true);
         cancelButton.setDisable(true);
-        clearFormStyles();//todo: delete this line before release
+        clearFormStyles();//--todo: delete this line before release
     }
 
     @FXML
@@ -149,8 +157,9 @@ public class WorkersController {
             addButton.setDisable(false);
             cancelButton.setDisable(true);
             saveButton.setDisable(true);
-            deleteButton.setDisable(false);
+            //deleteButton.setDisable(false);
             workersTable.refresh();
+            formTitle.setText("Informacje o pracowniku:");
         } else {
             if (!formLengthValid) {
                 AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Maksymalna dlugosc pola: 25.");
@@ -166,15 +175,18 @@ public class WorkersController {
         workersTable.setDisable(true);
         cancelButton.setDisable(false);
         addButton.setDisable(true);
-        deleteButton.setDisable(true);
         //noinspection unchecked
         workersTable.getSelectionModel().select(null);
         clearForm();
         clearFormStyles();
+        form.setDisable(false);
+        formTitle.setText("Nowy pracownik:");
     }
 
     @FXML
     public void cancelUserAddOrEdit() {
+
+        formTitle.setText("Informacje o pracowniku:");
 
         if (userAdding) {
             clearForm();
@@ -183,13 +195,12 @@ public class WorkersController {
         }
 
         userAdding = false;
-
         workersTable.setDisable(false);
         cancelButton.setDisable(true);
         saveButton.setDisable(true);
         addButton.setDisable(false);
-        deleteButton.setDisable(false);
-
+        form.setDisable(true);
+        //deleteButton.setDisable(false);
         clearFormStyles();
     }
 
@@ -203,14 +214,19 @@ public class WorkersController {
                 workersTable.getItems().remove(selectedWorker);
                 clearForm();
                 clearFormStyles();
+                workersTable.getSelectionModel().select(null);
             } catch (Exception e) {
 
                 String failInfo;
+                Worker w = null;
 
                 if (e instanceof PersistenceException) {
                     failInfo = "Pracownik występuje na dokumentach.";
+                    w = (Worker) workersTable.getSelectionModel().getSelectedItem();
                 } else if (e instanceof NotFoundException) {
                     failInfo = "Nie znaleziono pracownika. Mógł zostać wcześniej usunięty z bazy.";
+                    clearForm();
+                    clearFormStyles();
                 } else {
                     failInfo = "Nieznany błąd";
                     e.printStackTrace();
@@ -218,6 +234,7 @@ public class WorkersController {
                 }
                 AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można usunąć pracownika.", failInfo);
                 refreshTable();
+                workersTable.getSelectionModel().select(w);
             }
         }
     }

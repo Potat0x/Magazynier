@@ -68,7 +68,7 @@
                             </Button>
                         </children>
                     </HBox>
-                    <Label prefHeight="17.0" prefWidth="280.0" text="Szczegóły pracownika/Nowy pracownik">
+                    <Label fx:id="formTitle" prefHeight="17.0" prefWidth="280.0" text="Szczegóły pracownika/Nowy pracownik">
                         <padding>
                             <Insets top="5.0" />
                         </padding>
