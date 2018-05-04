@@ -1,13 +1,13 @@
 package magazynier;
 
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javassist.NotFoundException;
 import magazynier.entities.Worker;
 import magazynier.utils.AlertLauncher;
+import magazynier.utils.FormCleaner;
 import magazynier.utils.PeselValidator;
 import magazynier.utils.TextFieldOverflowIndicator;
 
@@ -104,7 +104,7 @@ public class WorkersController {
 
         saveButton.setDisable(true);
         cancelButton.setDisable(true);
-        clearFormStyles();//--todo: delete this line before release
+        FormCleaner.clearStyles(form);//--todo: delete this line before release
     }
 
     @FXML
@@ -127,8 +127,8 @@ public class WorkersController {
                 }
 
                 refreshTable();
-                clearForm();
-                clearFormStyles();
+                FormCleaner.clearForm(form);
+                FormCleaner.clearStyles(form);
             }
         }
     }
@@ -177,8 +177,8 @@ public class WorkersController {
         addButton.setDisable(true);
         //noinspection unchecked
         workersTable.getSelectionModel().select(null);
-        clearForm();
-        clearFormStyles();
+        FormCleaner.clearForm(form);
+        FormCleaner.clearStyles(form);
         form.setDisable(false);
         formTitle.setText("Nowy pracownik:");
     }
@@ -189,7 +189,7 @@ public class WorkersController {
         formTitle.setText("Informacje o pracowniku:");
 
         if (userAdding) {
-            clearForm();
+            FormCleaner.clearForm(form);
         } else {
             updateForm();
         }
@@ -201,7 +201,7 @@ public class WorkersController {
         addButton.setDisable(false);
         form.setDisable(true);
         //deleteButton.setDisable(false);
-        clearFormStyles();
+        FormCleaner.clearStyles(form);
     }
 
     @FXML
@@ -212,8 +212,8 @@ public class WorkersController {
             try {
                 model.deleteWorker(selectedWorker);
                 workersTable.getItems().remove(selectedWorker);
-                clearForm();
-                clearFormStyles();
+                FormCleaner.clearForm(form);
+                FormCleaner.clearStyles(form);
                 workersTable.getSelectionModel().select(null);
             } catch (Exception e) {
 
@@ -225,8 +225,8 @@ public class WorkersController {
                     w = (Worker) workersTable.getSelectionModel().getSelectedItem();
                 } else if (e instanceof NotFoundException) {
                     failInfo = "Nie znaleziono pracownika. Mógł zostać wcześniej usunięty z bazy.";
-                    clearForm();
-                    clearFormStyles();
+                    FormCleaner.clearForm(form);
+                    FormCleaner.clearStyles(form);
                 } else {
                     failInfo = "Nieznany błąd";
                     e.printStackTrace();
@@ -270,21 +270,5 @@ public class WorkersController {
         worker.setPesel(pesel.getText());
         worker.setStreet(street.getText());
         worker.setCity(city.getText());
-    }
-
-    private void clearForm() {
-        for (Node n : form.getChildren()) {
-            if (n instanceof TextField) {
-                ((TextField) n).clear();
-            }
-        }
-    }
-
-    private void clearFormStyles() {
-        for (Node n : form.getChildren()) {
-            if (n instanceof TextField) {
-                n.setStyle(null);
-            }
-        }
     }
 }

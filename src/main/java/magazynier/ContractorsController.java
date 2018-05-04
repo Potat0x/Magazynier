@@ -11,10 +11,7 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import javassist.NotFoundException;
 import magazynier.entities.Contractor;
-import magazynier.utils.AlertLauncher;
-import magazynier.utils.NipValidator;
-import magazynier.utils.PeselValidator;
-import magazynier.utils.TextFieldOverflowIndicator;
+import magazynier.utils.*;
 
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
@@ -165,7 +162,7 @@ public class ContractorsController {
         }
 /*        saveButton.setDisable(true);
         cancelButton.setDisable(true);*/
-        clearFormStyles();
+        FormCleaner.clearStyles(form);
     }
 
     public void updateSelectedContractor() {
@@ -187,7 +184,7 @@ public class ContractorsController {
                     System.out.println(e.getClass().getSimpleName());
                 }
                 refreshTable();
-                clearForm();
+                FormCleaner.clearForm(form);
                 updateForm();
             }
         }
@@ -200,7 +197,7 @@ public class ContractorsController {
             try {
                 model.deleteContractor(selectedContractor);
                 contractorsTable.getItems().remove(selectedContractor);
-                clearForm();
+                FormCleaner.clearForm(form);
                 //clearFormStyles();
                 contractorsTable.getSelectionModel().select(null);
             } catch (Exception e) {
@@ -213,7 +210,7 @@ public class ContractorsController {
                     c = (Contractor) contractorsTable.getSelectionModel().getSelectedItem();
                 } else if (e instanceof NotFoundException) {
                     failInfo = "Nie znaleziono kontrahenta. Mógł zostać wcześniej usunięty z bazy.";
-                    clearForm();
+                    FormCleaner.clearForm(form);
                     //clearFormStyles();
                 } else {
                     failInfo = "Nieznany błąd";
@@ -223,12 +220,12 @@ public class ContractorsController {
                 AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można usunąć kontrahenta.", failInfo);
                 refreshTable();
                 contractorsTable.getSelectionModel().select(c);
-                clearForm();
+                FormCleaner.clearForm(form);
                 updateForm();
 
             }
         }
-        clearFormStyles();
+        FormCleaner.clearStyles(form);
     }
 
     public void openEmailClient() {
@@ -269,7 +266,7 @@ public class ContractorsController {
 
             setEditMode(false);
             setFormActive(false);
-            clearFormStyles();
+            FormCleaner.clearStyles(form);
         } else {
             if (!formLengthValid) {
                 AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzony tekst jest za długi.\n" +
@@ -288,8 +285,8 @@ public class ContractorsController {
         setFormActive(true);
         form.setDisable(false);
         //contractorsTable.getSelectionModel().select(contractorsTable.getSelectionModel().getSelectedItem());
-        clearForm();
-        clearFormStyles();
+        FormCleaner.clearForm(form);
+        FormCleaner.clearStyles(form);
     }
 
     public void beginContractorEditing() {
@@ -304,7 +301,7 @@ public class ContractorsController {
         contractorEditing = false;
         setEditMode(false);
         setFormActive(false);
-        clearForm();
+        FormCleaner.clearForm(form);
         updateForm();
     }
 
@@ -357,24 +354,6 @@ public class ContractorsController {
         }
 
         contractorsTable.setDisable(editMode);
-    }
-
-    private void clearForm() {
-        for (Node n : form.getChildren()) {
-            if (n instanceof TextField) {
-                ((TextField) n).clear();
-            } else if (n instanceof ComboBox) {
-                ((ComboBox) n).getSelectionModel().select(null);
-            }
-        }
-    }//todo: add formCleaner
-
-    private void clearFormStyles() {
-        for (Node n : form.getChildren()) {
-            if (n instanceof TextField) {
-                n.setStyle(null);
-            }
-        }
     }
 
 }
