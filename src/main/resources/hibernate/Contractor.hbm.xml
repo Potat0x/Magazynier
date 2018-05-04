@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="magazynier">
+
+    <class name="magazynier.entities.Contractor" table="contractors">
+
+        <id name="id" column="contractor_id" type="int">
+            <generator class="increment"/>
+        </id>
+
+        <property name="contractorName" column="C_NAME" type="string"/>
+        <property name="firstName" column="first_name" type="string"/>
+        <property name="lastName" column="last_name" type="string"/>
+        <property name="city" column="city" type="string"/>
+        <property name="street" column="street" type="string"/>
+        <property name="email" column="email" type="string"/>
+        <property name="phone" column="phone" type="string"/>
+        <property name="contractorType" column="contractor_type" type="string"/>
+        <property name="entityType" column="entity_type" type="string"/>
+        <property name="nip" column="nip" type="string"/>
+        <property name="pesel" column="pesel" type="string"/>
+
+    </class>
+
+</hibernate-mapping>

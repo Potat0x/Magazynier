@@ -30,7 +30,8 @@
 
         <mapping resource="/hibernate/Warehouse.hbm.xml"/>
         <mapping resource="/hibernate/Worker.hbm.xml"/>
-        
+        <mapping resource="/hibernate/Contractor.hbm.xml"/>
+
     </session-factory>
 
 </hibernate-configuration>
