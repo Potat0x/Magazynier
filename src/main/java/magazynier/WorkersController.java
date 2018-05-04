@@ -6,10 +6,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javassist.NotFoundException;
 import magazynier.entities.Worker;
-import magazynier.utils.AlertLauncher;
-import magazynier.utils.FormCleaner;
-import magazynier.utils.PeselValidator;
-import magazynier.utils.TextFieldOverflowIndicator;
+import magazynier.utils.*;
 
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
@@ -62,15 +59,7 @@ public class WorkersController {
         TextFieldOverflowIndicator.set(city, MAX_TEXT_FIELD_LENGTH);
         //TextFieldOverflowIndicator.set(pesel, MAX_TEXT_FIELD_LENGTH_PESEL);
 
-        pesel.textProperty().addListener((observable, oldValue, newValue) -> {
-            String textFieldErrorStyle = "-fx-text-box-border: rgb(255,117,0); -fx-focus-color: rgb(255,117,0);";
-            if (!PeselValidator.check(pesel.getText())) {
-                pesel.setStyle(textFieldErrorStyle);
-
-            } else {
-                pesel.setStyle(null);
-            }
-        });
+        pesel.textProperty().addListener(new PeselTextFieldCorrectnessIndicator());
 
         workersTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             deleteButton.setDisable(newValue == null);

@@ -111,15 +111,8 @@ public class ContractorsController {
 //            cancelButton.setDisable(rowNotSelected);
         });
 
-        pesel.textProperty().addListener((observable, oldValue, newValue) -> {
-            String textFieldErrorStyle = "-fx-text-box-border: rgb(255,117,0); -fx-focus-color: rgb(255,117,0);";
-            if (!PeselValidator.check(pesel.getText())) {
-                pesel.setStyle(textFieldErrorStyle);
 
-            } else {
-                pesel.setStyle(null);
-            }
-        });//todo: remove duplicated code
+        pesel.textProperty().addListener(new PeselTextFieldCorrectnessIndicator());
 
         nip.textProperty().addListener((observable, oldValue, newValue) -> {
             String textFieldErrorStyle = "-fx-text-box-border: rgb(255,117,0); -fx-focus-color: rgb(255,117,0);";
