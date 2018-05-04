@@ -15,6 +15,7 @@ import magazynier.utils.AlertLauncher;
 import magazynier.utils.PeselValidator;
 import magazynier.utils.TextFieldOverflowIndicator;
 
+import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 
 @SuppressWarnings("unchecked")
@@ -82,6 +83,7 @@ public class ContractorsController {
                 contractorName.setDisable(!isCompany);
                 nip.setDisable(!isCompany);
                 pesel.setDisable(isCompany);
+                setEditMode(false);
             }
         });
 
@@ -163,8 +165,112 @@ public class ContractorsController {
                     System.out.println(e.getClass().getSimpleName());
                 }
                 refreshTable();
+                clearForm();
+                updateForm();
             }
         }
+    }
+
+    public void deleteContractor() {
+
+        Contractor selectedContractor = (Contractor) contractorsTable.getSelectionModel().getSelectedItem();
+        if (selectedContractor != null) {
+            try {
+                model.deleteContractor(selectedContractor);
+                contractorsTable.getItems().remove(selectedContractor);
+                clearForm();
+                //clearFormStyles();
+                contractorsTable.getSelectionModel().select(null);
+            } catch (Exception e) {
+
+                String failInfo;
+                Contractor c = null;
+
+                if (e instanceof PersistenceException) {
+                    failInfo = "Kontrahent występuje na dokumentach.";
+                    c = (Contractor) contractorsTable.getSelectionModel().getSelectedItem();
+                } else if (e instanceof NotFoundException) {
+                    failInfo = "Nie znaleziono kontrahenta. Mógł zostać wcześniej usunięty z bazy.";
+                    clearForm();
+                    //clearFormStyles();
+                } else {
+                    failInfo = "Nieznany błąd";
+                    e.printStackTrace();
+                    System.out.println(e.getClass().getSimpleName());
+                }
+                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można usunąć kontrahenta.", failInfo);
+                refreshTable();
+                contractorsTable.getSelectionModel().select(c);
+                clearForm();
+                updateForm();
+            }
+        }
+    }
+
+    public void openEmailClient() {
+    }
+
+    public void showDocs() {
+    }
+
+    public void saveContractor() {
+        boolean formLengthValid = validFormMaxLength();
+        boolean peselValid = true;//PeselValidator.check(pesel.getText());
+        boolean nipValid = true;
+
+        if (formLengthValid && nipValid && peselValid) {
+
+            if (contractorAdding) {
+                Contractor newContractor = new Contractor();
+                updateContractorFromForm(newContractor);
+
+                model.addContractor(newContractor);
+                contractorsTable.getItems().add(newContractor);
+                contractorsTable.getSelectionModel().select(newContractor);
+                contractorAdding = false;
+            } else if (contractorEditing) {
+                updateSelectedContractor();
+                contractorEditing = false;
+            }
+
+            setEditMode(false);
+            setFormActive(false);
+
+        } else {
+            if (!formLengthValid) {
+                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzony tekst jest za długi.\n" +
+                        "Maksymalna długość nazwy firmy: 50 znaków.\nPozostałe pola: 25 znaków");
+            } else if (!peselValid) {
+                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzony numer PESEL jest niepoprawny.");
+            } else {
+                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzony numer NIP jest niepoprawny.");
+            }//todo: enum with alert messages
+        }
+    }
+
+    public void beginContractorAdding() {
+        contractorAdding = true;
+        setEditMode(true);
+        setFormActive(true);
+        form.setDisable(false);
+        //contractorsTable.getSelectionModel().select(contractorsTable.getSelectionModel().getSelectedItem());
+        clearForm();
+    }
+
+    public void beginContractorEditing() {
+        contractorEditing = true;
+        setEditMode(true);
+        setFormActive(true);
+        contractorsTable.getSelectionModel().select(contractorsTable.getSelectionModel().getSelectedItem());
+    }
+
+    public void cancelContractorAddOrEdit() {
+        contractorAdding = false;
+        contractorEditing = false;
+        setEditMode(false);
+        setFormActive(false);
+        clearForm();
+        updateForm();
     }
 
     private void updateContractorFromForm(Contractor contractor) {
@@ -195,77 +301,6 @@ public class ContractorsController {
         return false;
     }
 
-    public void deleteContractor() {
-    }
-
-    public void openEmailClient() {
-    }
-
-    public void showDocs() {
-    }
-
-
-    public void saveContractor() {
-        boolean formLengthValid = validFormMaxLength();
-        boolean peselValid = true;//PeselValidator.check(pesel.getText());
-        boolean nipValid = true;
-        if (formLengthValid && peselValid && nipValid) {
-
-            if (formLengthValid && nipValid && peselValid) {
-
-                if (contractorAdding) {
-                    Contractor newContractor = new Contractor();
-                    updateContractorFromForm(newContractor);
-
-                    model.addContractor(newContractor);
-                    contractorsTable.getItems().add(newContractor);
-                    contractorsTable.getSelectionModel().select(newContractor);
-                    contractorEditing = false;
-                } else if (contractorEditing) {
-                    updateSelectedContractor();
-                    contractorEditing = false;
-                }
-
-                setEditMode(false);
-                setFormActive(false);
-
-            } else {
-                if (!formLengthValid) {
-                    AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzony tekst jest za długi.\n" +
-                            "Maksymalna długość nazwy firmy: 50 znaków.\nPozostałe pola: 25 znaków");
-                }
-                if (!peselValid) {
-                    AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzony numer PESEL jest niepoprawny.");
-                } else {
-                    AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzony numer NIP jest niepoprawny.");
-                }//todo: enum with alert messages
-            }
-        }
-    }
-
-    public void beginContractorAdding() {
-        contractorAdding = true;
-        setEditMode(true);
-        setFormActive(true);
-        form.setDisable(false);
-        contractorsTable.getSelectionModel().select(contractorsTable.getSelectionModel().getSelectedItem());
-    }
-
-    public void beginContractorEditing() {
-        contractorEditing = true;
-        setEditMode(true);
-        setFormActive(true);
-        contractorsTable.getSelectionModel().select(contractorsTable.getSelectionModel().getSelectedItem());
-    }
-
-    public void cancelContractorAddOrEdit() {
-        contractorAdding = false;
-        contractorEditing = false;
-        setEditMode(false);
-        setFormActive(false);
-        updateForm();
-    }
-
     private void setFormActive(boolean active) {
         for (Node n : form.getChildren()) {
             if (n instanceof ComboBox) {
@@ -280,16 +315,22 @@ public class ContractorsController {
         addButton.setDisable(editMode);
         saveButton.setDisable(!editMode);
         cancelButton.setDisable(!editMode);
-/*
-        if(editMode)
-        {
-            editButton.setDisable(editMode);
-            deleteButton.setDisable(editMode);
-        }*/
 
         if (contractorsTable.getSelectionModel().getSelectedItem() != null) {
             editButton.setDisable(editMode);
             deleteButton.setDisable(editMode);
         }
+
+        contractorsTable.setDisable(editMode);
     }
+
+    private void clearForm() {
+        for (Node n : form.getChildren()) {
+            if (n instanceof TextField) {
+                ((TextField) n).clear();
+            } else if (n instanceof ComboBox) {
+                ((ComboBox) n).getSelectionModel().select(null);
+            }
+        }
+    }//todo: add formCleaner
 }
