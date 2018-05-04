@@ -75,7 +75,10 @@ public class ContractorsController {
         type.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                boolean isCompany = newValue.equals(company);
+                boolean isCompany = false;
+                if (newValue != null) {
+                    isCompany = newValue.equals(company);
+                }
                 contractorName.setDisable(!isCompany);
                 nip.setDisable(!isCompany);
                 pesel.setDisable(isCompany);
@@ -89,10 +92,9 @@ public class ContractorsController {
 
         nameCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Contractor, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Contractor, String> p) {
-                if (p.getValue().getEntityType().equals(naturalPerson))
+                if (p.getValue().getEntityType() != null && p.getValue().getEntityType().equals(naturalPerson))
                     return new ReadOnlyObjectWrapper(p.getValue().getFirstName() + " " + p.getValue().getLastName());
                 else {
-                    //System.out.println("ELSE: " + p.getValue().getContractorType());
                     return new ReadOnlyObjectWrapper(p.getValue().getContractorName());
                 }
             }
@@ -143,7 +145,6 @@ public class ContractorsController {
     }
 
     public void updateSelectedContractor() {
-        System.out.println("update");
 
         Contractor selectedContractor = (Contractor) contractorsTable.getSelectionModel().getSelectedItem();
         if (selectedContractor != null) {
@@ -176,6 +177,7 @@ public class ContractorsController {
         contractor.setNip(nip.getText());
         contractor.setStreet(street.getText());
         contractor.setCity(city.getText());
+        contractor.setEntityType((String) type.getSelectionModel().getSelectedItem());
     }
 
     private boolean validFormMaxLength() {
@@ -211,7 +213,15 @@ public class ContractorsController {
 
             if (formLengthValid && nipValid && peselValid) {
 
-                if (contractorEditing) {
+                if (contractorAdding) {
+                    Contractor newContractor = new Contractor();
+                    updateContractorFromForm(newContractor);
+
+                    model.addContractor(newContractor);
+                    contractorsTable.getItems().add(newContractor);
+                    contractorsTable.getSelectionModel().select(newContractor);
+                    contractorEditing = false;
+                } else if (contractorEditing) {
                     updateSelectedContractor();
                     contractorEditing = false;
                 }
@@ -237,6 +247,7 @@ public class ContractorsController {
         contractorAdding = true;
         setEditMode(true);
         setFormActive(true);
+        form.setDisable(false);
         contractorsTable.getSelectionModel().select(contractorsTable.getSelectionModel().getSelectedItem());
     }
 
@@ -265,11 +276,20 @@ public class ContractorsController {
         }
     }
 
-    void setEditMode(boolean editMode) {
+    private void setEditMode(boolean editMode) {
         addButton.setDisable(editMode);
-        editButton.setDisable(editMode);
         saveButton.setDisable(!editMode);
         cancelButton.setDisable(!editMode);
-        deleteButton.setDisable(editMode);
+/*
+        if(editMode)
+        {
+            editButton.setDisable(editMode);
+            deleteButton.setDisable(editMode);
+        }*/
+
+        if (contractorsTable.getSelectionModel().getSelectedItem() != null) {
+            editButton.setDisable(editMode);
+            deleteButton.setDisable(editMode);
+        }
     }
 }
