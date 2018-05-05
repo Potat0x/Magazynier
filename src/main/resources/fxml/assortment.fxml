@@ -5,108 +5,89 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
-<VBox prefHeight="427.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="magazynier.AssortmentController">
-    <children>
-        <HBox prefHeight="35.0" prefWidth="790.0">
+
+<VBox prefHeight="471.0" prefWidth="558.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="magazynier.AssortmentController">
+   <children>
+        <HBox prefHeight="2.0" prefWidth="666.0">
             <children>
-                <Button contentDisplay="TOP" mnemonicParsing="false" prefWidth="110.0" text="Nowy">
+                <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#addItem" prefWidth="105.0" text="Nowy towar">
                     <graphic>
                         <ImageView>
                             <image>
-                                <Image url="@../img/document-new.png"/>
+                                <Image url="@../img/document-new.png" />
                             </image>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button contentDisplay="TOP" mnemonicParsing="false" prefWidth="110.0" text="Edytuj">
+            <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#editItem" prefWidth="105.0" text="Edytuj">
+               <graphic>
+                  <ImageView>
+                     <image>
+                        <Image url="@../img/format-justify-fill.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+                <Button fx:id="delete" contentDisplay="TOP" mnemonicParsing="false" onAction="#deleteItem" prefWidth="105.0" text="Usuń">
                     <graphic>
                         <ImageView>
                             <image>
-                                <Image url="@../img/format-justify-fill.png"/>
+                                <Image url="@../img/edit-delete.png" />
                             </image>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button contentDisplay="TOP" mnemonicParsing="false" prefWidth="110.0" text="Na zamówieniach"
-                        textOverrun="CLIP">
-                    <tooltip>
-                        <Tooltip text="Wyświetla zamówienia, na których występuje wybrany towar">
-                            <font>
-                                <Font size="13.0"/>
-                            </font>
-                        </Tooltip>
-                    </tooltip>
-                    <graphic>
-                        <ImageView>
-                            <image>
-                                <Image url="@../img/edit-paste.png"/>
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <Button contentDisplay="TOP" mnemonicParsing="false" prefWidth="110.0" text="Usuń">
-                    <graphic>
-                        <ImageView>
-                            <image>
-                                <Image url="@../img/edit-delete.png"/>
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <GridPane prefHeight="61.0" prefWidth="175.0">
+                <GridPane prefHeight="61.0" prefWidth="237.0">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="135.0" minWidth="10.0" prefWidth="97.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="140.0" minWidth="10.0" prefWidth="99.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="217.0" minWidth="10.0" prefWidth="137.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="142.0" minWidth="10.0" prefWidth="133.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <Label text="Wartość netto"/>
-                        <Label text="Wartość brutto" GridPane.rowIndex="1"/>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="17.0" prefWidth="105.0"
-                               text="12334,tttt43 zł" GridPane.columnIndex="1" GridPane.halignment="RIGHT"
-                               GridPane.hgrow="ALWAYS"/>
-                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="17.0" prefWidth="110.0"
-                               text="12 zł" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.hgrow="ALWAYS"
-                               GridPane.rowIndex="1"/>
+                        <Label text="Wartość netto" />
+                        <Label text="Wartość brutto" GridPane.rowIndex="1" />
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="17.0" prefWidth="107.0" text="12334,tttt43 zł" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.hgrow="ALWAYS" />
+                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="17.0" prefWidth="110.0" text="12 zł" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
                     </children>
-                    <HBox.margin>
-                        <Insets left="5.0"/>
-                    </HBox.margin>
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
                 </GridPane>
             </children>
         </HBox>
-        <TableView prefHeight="380.0" prefWidth="790.0" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
-            <columns>
-                <TableColumn prefWidth="75.0" text="Nazwa"/>
-                <TableColumn prefWidth="75.0" text="Partia(ukryte)"/>
-                <TableColumn prefWidth="66.0" text="ID(ukryte)"/>
-                <TableColumn prefWidth="76.0" text="EAN"/>
-                <TableColumn prefWidth="97.0" text="Kod producenta(ukryte)"/>
-                <TableColumn prefWidth="52.0" text="Ilość"/>
-                <TableColumn prefWidth="67.0" text="Cena"/>
-                <TableColumn prefWidth="75.0" text="Podatek"/>
-                <TableColumn prefWidth="77.0" text="Dostawca(ukr)"/>
-                <TableColumn prefWidth="67.9752197265625" text="Typ marży(ukr)"/>
-                <TableColumn prefWidth="80.727294921875" text="Marża(ukr)"/>
-                <TableColumn prefWidth="75.0" text="Magazyny"/>
-            </columns>
-            <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-            </columnResizePolicy>
-        </TableView>
-    </children>
+      <HBox prefHeight="601.0" prefWidth="760.0">
+         <children>
+              <TableView prefHeight="601.0" prefWidth="124.0" tableMenuButtonVisible="true" HBox.hgrow="ALWAYS">
+                  <columns>
+                      <TableColumn prefWidth="75.0" text="Nazwa" />
+                      <TableColumn prefWidth="75.0" text="Partia(ukryte)" visible="false" />
+                      <TableColumn prefWidth="66.0" text="ID(ukryte)" visible="false" />
+                      <TableColumn prefWidth="76.0" text="EAN" />
+                      <TableColumn prefWidth="97.0" text="Kod producenta" />
+                      <TableColumn prefWidth="52.0" text="Stan" />
+                      <TableColumn prefWidth="67.0" text="Cena" />
+                      <TableColumn prefWidth="75.0" text="Podatek" />
+                      <TableColumn prefWidth="77.0" text="Dostawca(ukr)" visible="false" />
+                      <TableColumn prefWidth="67.9752197265625" text="Typ marży(ukr)" visible="false" />
+                      <TableColumn prefWidth="80.727294921875" text="Marża(ukr)" visible="false" />
+                      <TableColumn prefWidth="75.0" text="Magazyny" />
+                  </columns>
+                  <columnResizePolicy>
+                      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                  </columnResizePolicy>
+              </TableView>
+         </children>
+      </HBox>
+   </children>
 </VBox>
