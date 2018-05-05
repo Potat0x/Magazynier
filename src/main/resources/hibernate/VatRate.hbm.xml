@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="magazynier">
+
+    <class name="magazynier.entities.VatRate" table="vat_rates">
+
+        <id name="id" column="vat_rate_id" type="int">
+            <generator class="increment"/>
+        </id>
+
+        <property name="tax" column="tax" type="double"/>
+        <property name="name" column="R_NAME" type="string"/>
+
+    </class>
+
+</hibernate-mapping>

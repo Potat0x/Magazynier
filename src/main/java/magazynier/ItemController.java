@@ -5,6 +5,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 public class ItemController {
+
     public TextField name;
     public TextField ean;
     public TextField itemModelNumber;
@@ -37,4 +38,6 @@ public class ItemController {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
     }
+
+
 }

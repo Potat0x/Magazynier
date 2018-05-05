@@ -32,6 +32,7 @@
         <mapping resource="/hibernate/Worker.hbm.xml"/>
         <mapping resource="/hibernate/Contractor.hbm.xml"/>
         <mapping resource="/hibernate/Item.hbm.xml"/>
+        <mapping resource="/hibernate/VatRate.hbm.xml"/>
 
     </session-factory>
 

@@ -1,5 +1,7 @@
 package magazynier;
 
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,12 +12,18 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javassist.NotFoundException;
 import magazynier.entities.Item;
+import magazynier.entities.VatRate;
 import magazynier.utils.AlertLauncher;
 
 import javax.persistence.PersistenceException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class AssortmentController {
 
@@ -30,16 +38,31 @@ public class AssortmentController {
     public TableView itemsTable;
     private ItemModel model;
 
+    private static final Map<Integer, String> VAT_RATES = readVatRates();
+
+    private static Map<Integer, String> readVatRates() {
+        Map<Integer, String> vmap = new HashMap<>();
+        ArrayList<VatRate> vatRates = DAO.readTable("VatRate");
+        for (VatRate vr : vatRates) {
+            vmap.put(vr.getId(), vr.getName());
+            System.out.println("put" + vr);
+        }
+        return vmap;
+    }
+
     @FXML
     @SuppressWarnings("unchecked")
     public void initialize() {
-        System.out.println("AssortmentController initialize");
+
         eanCol.setCellValueFactory(new PropertyValueFactory<String, Item>("ean"));
         nameCol.setCellValueFactory(new PropertyValueFactory<String, Item>("name"));
         itemModelNumberCol.setCellValueFactory(new PropertyValueFactory<String, Item>("itemModelNumber"));
         priceCol.setCellValueFactory(new PropertyValueFactory<String, Item>("price"));
-        taxCol.setCellValueFactory(new PropertyValueFactory<String, Item>("vatRateId"));
-
+        taxCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Item, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Item, String> p) {
+                return new ReadOnlyObjectWrapper(Optional.ofNullable(VAT_RATES.get(p.getValue().getId())).orElse("nie określono"));
+            }
+        });
         refreshTable();
     }
 
@@ -82,8 +105,6 @@ public class AssortmentController {
                 refreshTable();
             }
         }
-
-
     }
 
     private void showItemWindow(String title) {
