@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="magazynier">
+
+    <class name="magazynier.entities.Item" table="items">
+
+        <id name="id" column="item_id" type="int">
+            <generator class="increment"/>
+        </id>
+
+        <property name="ean" column="ean" type="string"/>
+        <property name="itemModelNumber" column="item_model_number" type="string"/>
+        <property name="name" column="I_NAME" type="string"/>
+        <property name="measurementUnit" column="measurement_unit" type="string"/>
+        <property name="currentPrice" column="current_price" type="double"/>
+        <property name="desiredQuantity" column="desired_quantity" type="double"/>
+        <property name="description" column="description" type="string"/>
+        <property name="vatRateId" column="vat_rate_id" type="int"/>
+
+    </class>
+
+</hibernate-mapping>
