@@ -9,9 +9,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
-import magazynier.RowNotFoundException;
 import magazynier.entities.Contractor;
-import magazynier.utils.*;
+import magazynier.utils.AlertLauncher;
+import magazynier.utils.FormCleaner;
+import magazynier.utils.TextFieldCorrectnessIndicator;
+import magazynier.utils.TextFieldOverflowIndicator;
 import magazynier.utils.validators.NipValidator;
 import magazynier.utils.validators.PeselValidator;
 

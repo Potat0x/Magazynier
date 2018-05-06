@@ -1,6 +1,5 @@
 package magazynier;
 
-import magazynier.RowNotFoundException;
 import magazynier.entities.Worker;
 
 import java.util.ArrayList;
