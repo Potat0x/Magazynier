@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class PeselTest {
+public class PeselValidatorTest {
 
     private static PeselValidator peselValidator = new PeselValidator();
 

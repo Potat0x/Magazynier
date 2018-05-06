@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class EanTest {
+public class EanValidatorTest {
 
     private EanValidator eanValidator = new EanValidator();
 

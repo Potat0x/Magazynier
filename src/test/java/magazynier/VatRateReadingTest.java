@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-public class VatRateTest {
+public class VatRateReadingTest {
     @Test
     public void test() {
         ArrayList<VatRate> ar = DAO.readTable("VatRate");

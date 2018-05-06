@@ -39,7 +39,7 @@ public class CRUDTest {
 
     private void read() {
         Session session = HibernateSessionFactory.openSession();
-        
+
         //noinspection unchecked
         List<Warehouse> wh = session.createQuery("from Warehouse where id = " + warehouse.getId()).list();
         if (wh.isEmpty()) {
