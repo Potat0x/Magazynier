@@ -1,8 +1,8 @@
 package magazynier.utils;
 
-public class PeselValidator {
+public class PeselValidator implements Validator {
 
-    public static boolean check(String pesel) {
+    public boolean check(String pesel) {
 
         final int PESEL_LEN = 11;
 

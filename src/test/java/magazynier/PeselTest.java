@@ -7,14 +7,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class PeselTest {
+
+    private static PeselValidator peselValidator = new PeselValidator();
+
     @Test
     public void testCorrectPesels() {
         String[] correctPesels = {"90090515836", "92071314764", "81100216357", "80072909146", "90080517455", "90060804786",
                 "65071209862", "67040500538", "05250577108", "44051401458", "00210136412", "00810157509", "22722459609",
                 "05250578710", "44051401458", "49040501580", "49040501580"};
 
+
         for (String pesel : correctPesels) {
-            assertTrue(PeselValidator.check(pesel));
+            assertTrue(peselValidator.check(pesel));
         }
     }
 
@@ -25,7 +29,7 @@ public class PeselTest {
                 "44051451458", "49030501580", "49020501580", "00210136410", "00810157504", "22722459601"};
 
         for (String pesel : invalidPesels) {
-            assertFalse(PeselValidator.check(pesel));
+            assertFalse(peselValidator.check(pesel));
         }
     }
 }

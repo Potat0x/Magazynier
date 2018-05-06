@@ -1,7 +1,7 @@
 package magazynier.utils;
 
-public class EanValidator {
-    public static boolean check(String pesel) {
+public class EanValidator implements Validator {
+    public boolean check(String pesel) {
 
         final int EAN_LEN = 13;
 

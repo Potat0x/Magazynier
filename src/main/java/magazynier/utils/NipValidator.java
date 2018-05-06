@@ -1,8 +1,8 @@
 package magazynier.utils;
 
-public class NipValidator {
+public class NipValidator implements Validator {
 
-    public static boolean check(String nip) {
+    public boolean check(String nip) {
 
         if (nip != null) {
             final int NIP_LEN = 10;

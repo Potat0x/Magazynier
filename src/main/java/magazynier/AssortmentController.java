@@ -15,15 +15,10 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javassist.NotFoundException;
 import magazynier.entities.Item;
-import magazynier.entities.VatRate;
 import magazynier.utils.AlertLauncher;
 
 import javax.persistence.PersistenceException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 public class AssortmentController {
 
@@ -36,33 +31,34 @@ public class AssortmentController {
     public TableColumn taxCol;
     public TableColumn warehousesCol;
     public TableView itemsTable;
+    public Button editButton;
+    public Button deleteButton;
     private ItemModel model;
 
-    private static final Map<Integer, String> VAT_RATES = readVatRates();
-
-    private static Map<Integer, String> readVatRates() {
-        Map<Integer, String> vmap = new HashMap<>();
-        ArrayList<VatRate> vatRates = DAO.readTable("VatRate");
-        for (VatRate vr : vatRates) {
-            vmap.put(vr.getId(), vr.getName());
-            System.out.println("put" + vr);
-        }
-        return vmap;
+    public AssortmentController() {
+        model = new ItemModel();
     }
 
     @FXML
     @SuppressWarnings("unchecked")
     public void initialize() {
-
+        //todo:quantityCol as progressbar
         eanCol.setCellValueFactory(new PropertyValueFactory<String, Item>("ean"));
         nameCol.setCellValueFactory(new PropertyValueFactory<String, Item>("name"));
         itemModelNumberCol.setCellValueFactory(new PropertyValueFactory<String, Item>("itemModelNumber"));
-        priceCol.setCellValueFactory(new PropertyValueFactory<String, Item>("price"));
+        priceCol.setCellValueFactory(new PropertyValueFactory<String, Item>("currentPrice"));
         taxCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Item, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Item, String> p) {
-                return new ReadOnlyObjectWrapper(Optional.ofNullable(VAT_RATES.get(p.getValue().getId())).orElse("nie określono"));
+                return new ReadOnlyObjectWrapper(p.getValue().getVatRate().getName());
             }
         });
+
+        itemsTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            boolean rowNotSelected = newValue == null;
+            editButton.setDisable(rowNotSelected);
+            deleteButton.setDisable(rowNotSelected);
+        });
+
         refreshTable();
     }
 
@@ -71,17 +67,39 @@ public class AssortmentController {
         itemsTable.getItems().addAll(model.getItemsList());
     }
 
-    public AssortmentController() {
-        System.out.println("AssortmentController constr");
-        model = new ItemModel();
-    }
-
     public void addItem() {
-        showItemWindow("Dodawanie towaru");
+        Item item = new Item();
+        ItemController.Action userAction = showItemWindow(item, ItemController.Mode.ADD_ITEM);
+        if (userAction == ItemController.Action.SAVE) {
+            try {
+                model.addItem(item);
+                itemsTable.getItems().add(item);
+                itemsTable.refresh();
+            } catch (Exception e) {
+                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie udało się dodać przedmiotu.", "Nieznany błąd.");
+                e.printStackTrace();
+                refreshTable();
+            }
+        }
     }
 
     public void editItem() {
-        showItemWindow("Edytowanie towaru");
+        Item item = (Item) itemsTable.getSelectionModel().getSelectedItem();
+        ItemController.Action userAction = showItemWindow(item, ItemController.Mode.EDIT_ITEM);
+
+        if (userAction == ItemController.Action.SAVE) {
+            try {
+                model.updateItem(item);
+                itemsTable.refresh();
+            } catch (NotFoundException e) {
+                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować przedmiotu.", "Nie znalaziono przedmiotu. Mógł zostać usunięty z bazy.");
+                refreshTable();
+            } catch (Exception e) {
+                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować przedmiotu.", "Nieznany błąd.");
+                e.printStackTrace();
+                refreshTable();
+            }
+        }
     }
 
     public void deleteItem() {
@@ -102,24 +120,27 @@ public class AssortmentController {
             } catch (Exception e) {
                 AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można usunąć przedmiotu.",
                         "Nieznany błąd.");
+                e.printStackTrace();
                 refreshTable();
             }
         }
     }
 
-    private void showItemWindow(String title) {
+    private ItemController.Action showItemWindow(Item item, ItemController.Mode mode) {
         FXMLLoader itemStageLoader = new FXMLLoader(getClass().getResource("/fxml/item_window.fxml"));
-        ItemController ic = new ItemController(title);
+        ItemController ic = new ItemController(item, mode);
         itemStageLoader.setController(ic);
         Stage itemStage = new Stage();
-        itemStage.setTitle("Dodawanie towaru");
+        itemStage.setTitle("Towar");
         Parent parent = null;
         try {
             parent = itemStageLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         itemStage.setScene(new Scene(parent));
-        itemStage.show();
+        itemStage.showAndWait();
+        return ic.getUserAction();
     }
 }

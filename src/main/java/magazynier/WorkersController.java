@@ -31,6 +31,7 @@ public class WorkersController {
     public Button saveButton;
     public Label formTitle;
 
+    private PeselValidator peselValidator;
     private WorkersModel model;
     private boolean userAdding;
 
@@ -38,6 +39,7 @@ public class WorkersController {
 
     public WorkersController() {
         model = new WorkersModel();
+        peselValidator = new PeselValidator();
         userAdding = false;
     }
 
@@ -59,7 +61,7 @@ public class WorkersController {
         TextFieldOverflowIndicator.set(city, MAX_TEXT_FIELD_LENGTH);
         //TextFieldOverflowIndicator.set(pesel, MAX_TEXT_FIELD_LENGTH_PESEL);
 
-        pesel.textProperty().addListener(new PeselTextFieldCorrectnessIndicator());
+        pesel.textProperty().addListener(new TextFieldCorrectnessIndicator(new PeselValidator()));
 
         workersTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             deleteButton.setDisable(newValue == null);
@@ -128,7 +130,7 @@ public class WorkersController {
     public void saveUser() {
 
         boolean formLengthValid = validFormMaxLength();
-        boolean peselValid = PeselValidator.check(pesel.getText());
+        boolean peselValid = peselValidator.check(pesel.getText());
 
         if (formLengthValid && peselValid) {
             if (userAdding) {
@@ -152,7 +154,7 @@ public class WorkersController {
             formTitle.setText("Informacje o pracowniku:");
         } else {
             if (!formLengthValid) {
-                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Maksymalna dlugosc pola: 25.");
+                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Maksymalna dlugosc pola: " + MAX_TEXT_FIELD_LENGTH + ".");
             } else {
                 AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzony numer PESEL jest niepoprawny.");
             }

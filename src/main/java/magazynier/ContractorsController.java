@@ -50,8 +50,13 @@ public class ContractorsController {
     private boolean contractorAdding;
     private boolean contractorEditing;
 
+    private PeselValidator peselValidator;
+    private NipValidator nipValidator;
+
     public ContractorsController() {
         model = new ContractorsModel();
+        peselValidator = new PeselValidator();
+        nipValidator = new NipValidator();
         contractorAdding = false;
         contractorEditing = false;
     }
@@ -111,18 +116,8 @@ public class ContractorsController {
 //            cancelButton.setDisable(rowNotSelected);
         });
 
-
-        pesel.textProperty().addListener(new PeselTextFieldCorrectnessIndicator());
-
-        nip.textProperty().addListener((observable, oldValue, newValue) -> {
-            String textFieldErrorStyle = "-fx-text-box-border: rgb(255,117,0); -fx-focus-color: rgb(255,117,0);";
-            if (!NipValidator.check(nip.getText())) {
-                nip.setStyle(textFieldErrorStyle);
-            } else {
-                nip.setStyle(null);
-                nip.setText(newValue.replaceAll("[- ]", ""));
-            }
-        });
+        pesel.textProperty().addListener(new TextFieldCorrectnessIndicator(new PeselValidator()));
+        nip.textProperty().addListener(new TextFieldCorrectnessIndicator(new NipValidator()));
 
         TextFieldOverflowIndicator.set(contractorName, MAX_COMPANY_NAME_LENGTH);
         TextFieldOverflowIndicator.set(firstName, MAX_TEXT_FIELD_LENGTH);
@@ -229,8 +224,8 @@ public class ContractorsController {
 
     public void saveContractor() {
         boolean formLengthValid = validFormMaxLength();
-        boolean peselValid = PeselValidator.check(pesel.getText()) || pesel.isDisabled();
-        boolean nipValid = NipValidator.check(nip.getText()) || nip.isDisabled();
+        boolean peselValid = peselValidator.check(pesel.getText()) || pesel.isDisabled();
+        boolean nipValid = nipValidator.check(nip.getText()) || nip.isDisabled();
 
         if (pesel.isDisabled()) {
             pesel.clear();
@@ -263,12 +258,12 @@ public class ContractorsController {
         } else {
             if (!formLengthValid) {
                 AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzony tekst jest za długi.\n" +
-                        "Maksymalna długość nazwy firmy: 50 znaków.\nPozostałe pola: 25 znaków");
+                        "Maksymalna długość nazwy firmy: " + MAX_COMPANY_NAME_LENGTH + " znaków.\nPozostałe pola: " + MAX_TEXT_FIELD_LENGTH + " znaków");
             } else if (!peselValid) {
                 AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzony numer PESEL jest niepoprawny.");
             } else {
                 AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzony numer NIP jest niepoprawny.");
-            }//todo: enum with alert messages
+            }//todo: enum with alert messages(?)
         }
     }
 

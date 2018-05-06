@@ -52,10 +52,6 @@ public class VatRate {
 
     @Override
     public String toString() {
-        return "VatRate{" +
-                "tax=" + tax +
-                ", name='" + name + '\'' +
-                ", id=" + id +
-                '}';
+        return name + " (" + tax + "%)";
     }
 }

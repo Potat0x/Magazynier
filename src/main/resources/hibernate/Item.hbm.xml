@@ -18,8 +18,12 @@
         <property name="currentPrice" column="current_price" type="double"/>
         <property name="desiredQuantity" column="desired_quantity" type="double"/>
         <property name="description" column="description" type="string"/>
-        <property name="vatRateId" column="vat_rate_id" type="int"/>
+        <!--<property name="vatRateId" column="vat_rate_id" type="int"/>-->
 
+        <many-to-one name="vatRate" class="magazynier.entities.VatRate"
+                     column="VAT_RATE_ID" unique="false" not-null="true"
+        />
+        <!--cascade="all"-->
     </class>
 
 </hibernate-mapping>

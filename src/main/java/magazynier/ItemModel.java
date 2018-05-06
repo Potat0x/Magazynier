@@ -7,6 +7,12 @@ import java.util.ArrayList;
 
 public class ItemModel {
 
+    private static ArrayList VatList = DAO.readTable("VatRate");
+
+    public static ArrayList getVatList() {
+        return VatList;
+    }
+
     ArrayList getItemsList() {
         return DAO.readTable("Item");
     }

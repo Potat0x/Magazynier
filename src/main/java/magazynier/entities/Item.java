@@ -12,7 +12,17 @@ public class Item implements Indexed {
     private Double desiredQuantity;
     private String description;
     private Integer id;
-    private Integer vatRateId;
+    //    private Integer vatRateId;
+    private VatRate vatRate;
+
+    public VatRate getVatRate() {
+        return vatRate;
+    }
+
+    public void setVatRate(VatRate vatRate) {
+        this.vatRate = vatRate;
+    }
+
 
     public String getEan() {
         return ean;
@@ -79,14 +89,6 @@ public class Item implements Indexed {
         this.id = id;
     }
 
-    public Integer getVatRateId() {
-        return vatRateId;
-    }
-
-    public void setVatRateId(Integer vatRateId) {
-        this.vatRateId = vatRateId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -105,7 +107,7 @@ public class Item implements Indexed {
             return false;
         if (description != null ? !description.equals(item.description) : item.description != null) return false;
         if (id != null ? !id.equals(item.id) : item.id != null) return false;
-        return vatRateId != null ? vatRateId.equals(item.vatRateId) : item.vatRateId == null;
+        return vatRate != null ? vatRate.equals(item.vatRate) : item.vatRate == null;
     }
 
     @Override
@@ -118,7 +120,7 @@ public class Item implements Indexed {
         result = 31 * result + (desiredQuantity != null ? desiredQuantity.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (id != null ? id.hashCode() : 0);
-        result = 31 * result + (vatRateId != null ? vatRateId.hashCode() : 0);
+        result = 31 * result + (vatRate != null ? vatRate.hashCode() : 0);
         return result;
     }
 }
