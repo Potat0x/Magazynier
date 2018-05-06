@@ -1,4 +1,4 @@
-package magazynier.utils;
+package magazynier.utils.validators;
 
 public class EanValidator implements Validator {
     public boolean check(String pesel) {

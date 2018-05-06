@@ -12,6 +12,8 @@ import javafx.util.Callback;
 import javassist.NotFoundException;
 import magazynier.entities.Contractor;
 import magazynier.utils.*;
+import magazynier.utils.validators.NipValidator;
+import magazynier.utils.validators.PeselValidator;
 
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;

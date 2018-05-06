@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 import magazynier.entities.Item;
 import magazynier.entities.VatRate;
 import magazynier.utils.AlertLauncher;
-import magazynier.utils.EanValidator;
+import magazynier.utils.validators.EanValidator;
 import magazynier.utils.TextFieldCorrectnessIndicator;
 import magazynier.utils.TextFieldOverflowIndicator;
 

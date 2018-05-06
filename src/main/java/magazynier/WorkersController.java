@@ -7,6 +7,7 @@ import javafx.scene.layout.GridPane;
 import javassist.NotFoundException;
 import magazynier.entities.Worker;
 import magazynier.utils.*;
+import magazynier.utils.validators.PeselValidator;
 
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;

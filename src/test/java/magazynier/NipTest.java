@@ -1,6 +1,6 @@
 package magazynier;
 
-import magazynier.utils.NipValidator;
+import magazynier.utils.validators.NipValidator;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;

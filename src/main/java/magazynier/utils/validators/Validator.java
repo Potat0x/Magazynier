@@ -1,4 +1,4 @@
-package magazynier.utils;
+package magazynier.utils.validators;
 
 public interface Validator {
     boolean check(String value);

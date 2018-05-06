@@ -1,6 +1,6 @@
 package magazynier;
 
-import magazynier.utils.EanValidator;
+import magazynier.utils.validators.EanValidator;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
