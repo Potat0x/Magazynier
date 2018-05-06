@@ -1,13 +1,11 @@
 package magazynier;
 
-import javafx.beans.binding.Bindings;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
-import javassist.NotFoundException;
 import magazynier.entities.Warehouse;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.TextFieldOverflowIndicator;
@@ -15,7 +13,6 @@ import magazynier.utils.TextFieldOverflowIndicator;
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 public class WarehousesController {
 
@@ -56,12 +53,14 @@ public class WarehousesController {
                                 try {
                                     model.deleteWarehouse(row.getItem());
                                     warehousesTable.getItems().remove(row.getItem());
-                                } catch (NotFoundException e) {
+                                } catch (RowNotFoundException e) {
                                     AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Nie można usunąć magazynu \"" + row.getItem().getName() + "\".\nMógł zostać wcześniej usunięty przez innego użytkownika.");
                                     refreshTable();
-                                    //e.printStackTrace();
                                 } catch (PersistenceException e) {
                                     AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Nie można usunąć magazynu \"" + row.getItem().getName() + "\".\nJest do niego przypisany asortyment.");
+                                } catch (Exception e) {
+                                    AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Nie można usunąć magazynu \"" + row.getItem().getName() + "\".\nNieznany błąd.");
+                                    refreshTable();
                                 }
                             }
                         });
@@ -107,7 +106,7 @@ public class WarehousesController {
                     warehouse.setName((String) event.getNewValue());
                     try {
                         model.updateWarehouse(warehouse);
-                    } catch (NotFoundException e) {
+                    } catch (RowNotFoundException e) {
                         AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Nie można usunąć magazynu \"" + warehouse.getName() + "\".\nMógł zostać usunięty przez innego użytkownika.");
                         refreshTable();
                         //e.printStackTrace();

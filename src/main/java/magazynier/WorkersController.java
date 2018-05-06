@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
-import javassist.NotFoundException;
+import magazynier.RowNotFoundException;
 import magazynier.entities.Worker;
 import magazynier.utils.*;
 import magazynier.utils.validators.PeselValidator;
@@ -111,7 +111,7 @@ public class WorkersController {
             } catch (Exception e) {
 
 
-                if (e instanceof NotFoundException) {
+                if (e instanceof RowNotFoundException) {
                     AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować pracownika.", "Nie znalaziono pracownika. Mógł zostać usunięty z bazy.");
                 } else {
                     AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Nieznany błąd.");
@@ -216,7 +216,7 @@ public class WorkersController {
                 if (e instanceof PersistenceException) {
                     failInfo = "Pracownik występuje na dokumentach.";
                     w = (Worker) workersTable.getSelectionModel().getSelectedItem();
-                } else if (e instanceof NotFoundException) {
+                } else if (e instanceof RowNotFoundException) {
                     failInfo = "Nie znaleziono pracownika. Mógł zostać wcześniej usunięty z bazy.";
                     FormCleaner.clearForm(form);
                     FormCleaner.clearStyles(form);

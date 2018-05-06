@@ -1,6 +1,6 @@
 package magazynier;
 
-import javassist.NotFoundException;
+import magazynier.RowNotFoundException;
 import magazynier.entities.Warehouse;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ class WarehousesModel {
         return DAO.readTable("Warehouse");
     }
 
-    void updateWarehouse(Warehouse warehouse) throws NotFoundException {
+    void updateWarehouse(Warehouse warehouse) throws RowNotFoundException {
         DAO.update(warehouse);
     }
 
@@ -19,7 +19,7 @@ class WarehousesModel {
         DAO.add(newWarehouse);
     }
 
-    void deleteWarehouse(Warehouse warehouse) throws NotFoundException {
+    void deleteWarehouse(Warehouse warehouse) throws RowNotFoundException {
         DAO.delete(warehouse);
     }
 }

@@ -9,7 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
-import javassist.NotFoundException;
+import magazynier.RowNotFoundException;
 import magazynier.entities.Contractor;
 import magazynier.utils.*;
 import magazynier.utils.validators.NipValidator;
@@ -166,7 +166,7 @@ public class ContractorsController {
                 refreshTable();
                 contractorsTable.getSelectionModel().select(selectedContractor);
             } catch (Exception e) {
-                if (e instanceof NotFoundException) {
+                if (e instanceof RowNotFoundException) {
                     AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować kontrahenta.", "Nie znalaziono kontrahenta. Mógł zostać usunięty z bazy.");
                 } else {
                     AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować kontrahenta.", "Nieznany błąd.");
@@ -198,7 +198,7 @@ public class ContractorsController {
                 if (e instanceof PersistenceException) {
                     failInfo = "Kontrahent występuje na dokumentach.";
                     c = (Contractor) contractorsTable.getSelectionModel().getSelectedItem();
-                } else if (e instanceof NotFoundException) {
+                } else if (e instanceof RowNotFoundException) {
                     failInfo = "Nie znaleziono kontrahenta. Mógł zostać wcześniej usunięty z bazy.";
                     FormCleaner.clearForm(form);
                     //clearFormStyles();

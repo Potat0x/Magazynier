@@ -13,7 +13,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import javassist.NotFoundException;
 import magazynier.entities.Item;
 import magazynier.utils.AlertLauncher;
 
@@ -91,7 +90,7 @@ public class AssortmentController {
             try {
                 model.updateItem(item);
                 itemsTable.refresh();
-            } catch (NotFoundException e) {
+            } catch (RowNotFoundException e) {
                 AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować przedmiotu.", "Nie znalaziono przedmiotu. Mógł zostać usunięty z bazy.");
                 refreshTable();
             } catch (Exception e) {
@@ -110,7 +109,7 @@ public class AssortmentController {
                 model.deleteItem(selectedItem);
                 itemsTable.getItems().remove(selectedItem);
                 itemsTable.getSelectionModel().select(null);
-            } catch (NotFoundException e) {
+            } catch (RowNotFoundException e) {
                 AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można usunąć przedmiotu.",
                         "Nie znaleziono przedmiotu. Mógł zostać wcześniej usunięty przez innego użytkownika.");
                 refreshTable();

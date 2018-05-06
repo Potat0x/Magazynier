@@ -1,6 +1,5 @@
 package magazynier;
 
-import javassist.NotFoundException;
 import magazynier.utils.Indexed;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -18,7 +17,6 @@ public class DAO {
             whl = (ArrayList) session.createQuery("from " + tableName).list();
             session.close();
         } catch (HibernateException e) {
-            System.out.println("update failed");
             e.printStackTrace();
         }
         return whl;
@@ -32,12 +30,11 @@ public class DAO {
             tr.commit();
             session.close();
         } catch (HibernateException e) {
-            System.out.println("add failed");
             e.printStackTrace();
         }
     }
 
-    public static void update(Indexed object) throws NotFoundException {
+    public static void update(Indexed object) throws RowNotFoundException {
 
         if (checkIfExistsById(object.getClass(), object.getId())) {
             try (Session session = HibernateSessionFactory.openSession()) {
@@ -46,15 +43,14 @@ public class DAO {
                 tr.commit();
                 session.close();
             } catch (HibernateException e) {
-                System.out.println("update failed");
                 e.printStackTrace();
             }
         } else {
-            throw new NotFoundException(object.getClass() + " object:" + object + " does not exist in database.");
+            throw new RowNotFoundException(object.getClass() + " object:" + object + " does not exist in database.");
         }
     }
 
-    public static void delete(Indexed object) throws NotFoundException {
+    public static void delete(Indexed object) throws RowNotFoundException {
 
         if (checkIfExistsById(object.getClass(), object.getId())) {
             Session session = HibernateSessionFactory.openSession();
@@ -63,7 +59,7 @@ public class DAO {
             tr.commit();
             session.close();
         } else {
-            throw new NotFoundException(object.getClass() + " object:" + object + " does not exist in database.");
+            throw new RowNotFoundException(object.getClass() + " object:" + object + " does not exist in database.");
         }
     }
 
