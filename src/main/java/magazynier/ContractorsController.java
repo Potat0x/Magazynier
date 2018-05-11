@@ -24,9 +24,6 @@ import java.util.Optional;
 @SuppressWarnings("unchecked")
 public class ContractorsController {
 
-    private final int MAX_COMPANY_NAME_LENGTH = 50;
-    private final int MAX_TEXT_FIELD_LENGTH = 25;
-
     public TextField firstName;
     public TextField lastName;
     public TextField contractorName;
@@ -57,6 +54,12 @@ public class ContractorsController {
     private PeselValidator peselValidator;
     private NipValidator nipValidator;
 
+    private final int MAX_COMPANY_NAME_LENGTH = 50;
+    private final int MAX_TEXT_FIELD_LENGTH = 25;
+
+    private final String COMPANY = "Firma";
+    private final String NATURAL_PERSON = "Osoba fizyczna";
+
     public ContractorsController() {
         model = new ContractorsModel();
         peselValidator = new PeselValidator();
@@ -73,9 +76,8 @@ public class ContractorsController {
 
     @FXML
     public void initialize() {
-        final String company = "Firma";
-        final String naturalPerson = "Osoba fizyczna";
-        type.getItems().addAll(company, naturalPerson);
+
+        type.getItems().addAll(COMPANY, NATURAL_PERSON);
 
         contractorName.setDisable(true);
         nip.setDisable(true);
@@ -86,7 +88,7 @@ public class ContractorsController {
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 boolean isCompany = false;
                 if (newValue != null) {
-                    isCompany = newValue.equals(company);
+                    isCompany = newValue.equals(COMPANY);
                 }
                 contractorName.setDisable(!isCompany);
                 nip.setDisable(!isCompany);
@@ -102,7 +104,7 @@ public class ContractorsController {
 
         nameCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Contractor, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Contractor, String> p) {
-                if (p.getValue().getEntityType() != null && p.getValue().getEntityType().equals(naturalPerson))
+                if (p.getValue().getEntityType() != null && p.getValue().getEntityType().equals(NATURAL_PERSON))
                     return new ReadOnlyObjectWrapper(Optional.ofNullable(p.getValue().getFirstName()).orElse("") + " " + Optional.ofNullable(p.getValue().getLastName()).orElse(""));
                 else {
                     return new ReadOnlyObjectWrapper(p.getValue().getContractorName());
@@ -279,6 +281,7 @@ public class ContractorsController {
         //contractorsTable.getSelectionModel().select(contractorsTable.getSelectionModel().getSelectedItem());
         FormCleaner.clearForm(form);
         FormCleaner.clearStyles(form);
+        type.getSelectionModel().select(COMPANY);
     }
 
     public void beginContractorEditing() {
