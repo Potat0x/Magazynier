@@ -1,6 +1,6 @@
 package magazynier;
 
-import magazynier.entities.VatRate;
+import magazynier.item.VatRate;
 import org.junit.Test;
 
 import java.util.ArrayList;

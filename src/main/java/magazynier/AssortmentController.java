@@ -13,7 +13,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import magazynier.entities.Item;
+import magazynier.item.Item;
+import magazynier.item.ItemController;
+import magazynier.item.ItemModel;
 import magazynier.utils.AlertLauncher;
 
 import javax.persistence.PersistenceException;

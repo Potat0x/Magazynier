@@ -5,7 +5,7 @@
 
 <hibernate-mapping package="magazynier">
 
-    <class name="magazynier.entities.VatRate" table="vat_rates">
+    <class name="magazynier.item.VatRate" table="vat_rates">
 
         <id name="id" column="vat_rate_id" type="int">
             <generator class="increment"/>

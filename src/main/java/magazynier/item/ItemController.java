@@ -1,10 +1,9 @@
-package magazynier;
+package magazynier.item;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import magazynier.entities.Item;
-import magazynier.entities.VatRate;
+import magazynier.RowNotFoundException;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.TextFieldCorrectnessIndicator;
 import magazynier.utils.TextFieldOverflowIndicator;
@@ -12,7 +11,7 @@ import magazynier.utils.validators.EanValidator;
 
 public class ItemController {
 
-    enum Mode {
+    public enum Mode {
         ADD_ITEM,
         EDIT_ITEM
     }

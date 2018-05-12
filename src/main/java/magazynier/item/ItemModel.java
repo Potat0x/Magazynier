@@ -1,6 +1,8 @@
-package magazynier;
+package magazynier.item;
 
-import magazynier.entities.Item;
+import magazynier.DAO;
+import magazynier.RowNotFoundException;
+import magazynier.item.Item;
 
 import java.util.ArrayList;
 
@@ -12,7 +14,7 @@ public class ItemModel {
         return VatList;
     }
 
-    ArrayList getItemsList() {
+    public ArrayList getItemsList() {
         return DAO.readTable("Item");
     }
 
