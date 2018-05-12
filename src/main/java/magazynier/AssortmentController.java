@@ -68,36 +68,21 @@ public class AssortmentController {
 
     public void addItem() {
         Item item = new Item();
-        ItemController.Action userAction = showItemWindow(item, ItemController.Mode.ADD_ITEM);
-        if (userAction == ItemController.Action.SAVE) {
-            try {
-                model.addItem(item);
-                itemsTable.getItems().add(item);
-                itemsTable.refresh();
-            } catch (Exception e) {
-                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie udało się dodać przedmiotu.", "Nieznany błąd.");
-                e.printStackTrace();
-                refreshTable();
-            }
+        ItemController.ActionResult actionResult = showItemWindow(item, ItemController.Mode.ADD_ITEM);
+        if (actionResult == ItemController.ActionResult.CONFIRM) {
+            itemsTable.getItems().add(item);
+            itemsTable.refresh();
         }
     }
 
     public void editItem() {
         Item item = (Item) itemsTable.getSelectionModel().getSelectedItem();
-        ItemController.Action userAction = showItemWindow(item, ItemController.Mode.EDIT_ITEM);
+        ItemController.ActionResult actionResult = showItemWindow(item, ItemController.Mode.EDIT_ITEM);
 
-        if (userAction == ItemController.Action.SAVE) {
-            try {
-                model.updateItem(item);
-                itemsTable.refresh();
-            } catch (RowNotFoundException e) {
-                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować przedmiotu.", "Nie znalaziono przedmiotu. Mógł zostać usunięty z bazy.");
-                refreshTable();
-            } catch (Exception e) {
-                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować przedmiotu.", "Nieznany błąd.");
-                e.printStackTrace();
-                refreshTable();
-            }
+        if (actionResult == ItemController.ActionResult.CONFIRM) {
+            itemsTable.refresh();
+        } else if (actionResult == ItemController.ActionResult.FAIL) {
+            refreshTable();
         }
     }
 
@@ -125,7 +110,7 @@ public class AssortmentController {
         }
     }
 
-    private ItemController.Action showItemWindow(Item item, ItemController.Mode mode) {
+    private ItemController.ActionResult showItemWindow(Item item, ItemController.Mode mode) {
         FXMLLoader itemStageLoader = new FXMLLoader(getClass().getResource("/fxml/item_window.fxml"));
         ItemController ic = new ItemController(item, mode);
         itemStageLoader.setController(ic);
@@ -140,6 +125,6 @@ public class AssortmentController {
 
         itemStage.setScene(new Scene(parent));
         itemStage.showAndWait();
-        return ic.getUserAction();
+        return ic.getActionResult();
     }
 }

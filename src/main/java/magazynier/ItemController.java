@@ -17,9 +17,10 @@ public class ItemController {
         EDIT_ITEM
     }
 
-    public enum Action {
-        SAVE,
-        CANCEL
+    public enum ActionResult {
+        CONFIRM,
+        CANCEL,
+        FAIL
     }
 
     private final int MAX_ITEM_MODEL_NUMBER_LENGTH = 30;
@@ -39,14 +40,16 @@ public class ItemController {
     public Label titleLabel;
     private Item item;
     private Mode mode;
-    private Action userAction;
+    private ActionResult actionResult;
     private EanValidator eanValidator;
+    private ItemModel model;
 
     public ItemController(Item item, Mode mode) {
         this.item = item;
         this.mode = mode;
-        userAction = Action.CANCEL;
+        actionResult = ActionResult.CANCEL;
         eanValidator = new EanValidator();
+        model = new ItemModel();
     }
 
     @FXML
@@ -86,7 +89,28 @@ public class ItemController {
 
         if (formLengthValid && nipValid) {
             updateItemFromForm(item);
-            userAction = Action.SAVE;
+            actionResult = ActionResult.CONFIRM;
+            if (mode == Mode.ADD_ITEM) {
+                try {
+                    model.addItem(item);
+                } catch (Exception e) {
+                    actionResult = ActionResult.FAIL;
+                    AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie udało się dodać przedmiotu.", "Nieznany błąd.");
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    model.updateItem(item);
+                } catch (RowNotFoundException e) {
+                    actionResult = ActionResult.FAIL;
+                    AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować przedmiotu.", "Nie znalaziono przedmiotu. Mógł zostać usunięty z bazy.");
+                } catch (Exception e) {
+                    actionResult = ActionResult.FAIL;
+                    AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować przedmiotu.", "Nieznany błąd.");
+                    e.printStackTrace();
+                }
+            }
+
             stage.close();
         } else if (formLengthValid) {
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzony numer EAN jest niepoprawny.");
@@ -100,12 +124,12 @@ public class ItemController {
     }
 
     public void cancelItemAddOrEdit() {
-        userAction = Action.CANCEL;
+        actionResult = ActionResult.CANCEL;
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
     }
 
-    double stringToDouble(String str) {
+    private double stringToDouble(String str) {
         double val = 0;
         try {
             val = Double.parseDouble(str);
@@ -137,11 +161,11 @@ public class ItemController {
         desiredQuantity.setText(String.valueOf(item.getDesiredQuantity()));
     }
 
-    public Action getUserAction() {
-        return userAction;
+    public ActionResult getActionResult() {
+        return actionResult;
     }
 
-    public boolean validFormMaxLength() {
+    private boolean validFormMaxLength() {
         if ((itemModelNumber.getText() == null || itemModelNumber.getText().length() <= MAX_ITEM_MODEL_NUMBER_LENGTH) &&
                 (name.getText() == null || name.getText().length() <= MAX_ITEM_NAME_LENGTH) &&
                 (measurementUnit.getText() == null || measurementUnit.getText().length() <= MAX_MEASUR_UNIT_NAME_LENGTH)) {
