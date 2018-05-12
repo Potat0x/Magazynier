@@ -5,7 +5,7 @@
 
 <hibernate-mapping package="magazynier">
 
-    <class name="magazynier.entities.Worker" table="workers">
+    <class name="magazynier.worker.Worker" table="workers">
 
         <id name="id" column="worker_id" type="int">
             <generator class="increment"/>

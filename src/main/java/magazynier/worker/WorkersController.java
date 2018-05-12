@@ -1,10 +1,10 @@
-package magazynier;
+package magazynier.worker;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
-import magazynier.entities.Worker;
+import magazynier.RowNotFoundException;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.FormCleaner;
 import magazynier.utils.TextFieldCorrectnessIndicator;

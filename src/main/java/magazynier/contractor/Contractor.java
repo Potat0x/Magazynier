@@ -1,4 +1,4 @@
-package magazynier.entities;
+package magazynier.contractor;
 
 import magazynier.utils.Indexed;
 

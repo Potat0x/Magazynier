@@ -1,4 +1,4 @@
-package magazynier;
+package magazynier.contractor;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
@@ -9,7 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
-import magazynier.entities.Contractor;
+import magazynier.RowNotFoundException;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.FormCleaner;
 import magazynier.utils.TextFieldCorrectnessIndicator;

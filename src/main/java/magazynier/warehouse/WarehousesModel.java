@@ -1,6 +1,7 @@
-package magazynier;
+package magazynier.warehouse;
 
-import magazynier.entities.Warehouse;
+import magazynier.DAO;
+import magazynier.RowNotFoundException;
 
 import java.util.ArrayList;
 
