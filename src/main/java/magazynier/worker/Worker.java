@@ -12,8 +12,6 @@ public class Worker implements Indexed {
     private String phone;
     private String pesel;
     private String ipAddress;
-
-
     private String password;
     private Integer id;
     private Integer warehouseId;
@@ -104,6 +102,10 @@ public class Worker implements Indexed {
 
     public void setWarehouseId(Integer warehouseId) {
         this.warehouseId = warehouseId;
+    }
+
+    public String getFullName() {
+        return getFirstName() + " " + getLastName();
     }
 
     @Override

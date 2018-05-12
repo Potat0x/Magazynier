@@ -28,13 +28,14 @@
 
         <property name="hibernate.enable_lazy_load_no_trans">true</property>
 
-        <!--<property name="hbm2ddl.auto">update</property>-->
+        <!--<property nameCol="hbm2ddl.auto">update</property>-->
 
         <mapping resource="/hibernate/Warehouse.hbm.xml"/>
         <mapping resource="/hibernate/Worker.hbm.xml"/>
         <mapping resource="/hibernate/Contractor.hbm.xml"/>
         <mapping resource="/hibernate/Item.hbm.xml"/>
         <mapping resource="/hibernate/VatRate.hbm.xml"/>
+        <mapping resource="/hibernate/Document.hbm.xml"/>
 
     </session-factory>
 

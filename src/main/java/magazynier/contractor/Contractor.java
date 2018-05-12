@@ -114,6 +114,14 @@ public class Contractor implements Indexed {
         this.id = id;
     }
 
+    public String getFullName() {
+        if ("Firma".equals(entityType)) {
+            return getContractorName();
+        } else {
+            return getFirstName() + " " + getLastName();
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

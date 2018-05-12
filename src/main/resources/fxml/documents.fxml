@@ -15,17 +15,16 @@
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                     <children>
-                                        <TableView layoutX="-14.0" layoutY="-21.0" prefHeight="434.0" prefWidth="449.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <TableView fx:id="docTable" layoutX="-14.0" layoutY="-21.0" prefHeight="434.0" prefWidth="449.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn prefWidth="75.0" text="Status" />
                                                 <TableColumn prefWidth="44.3994140625" text="ID" visible="false" />
-                                                <TableColumn minWidth="0.0" prefWidth="87.6796875" text="Data" />
-                                                <TableColumn prefWidth="93.5" text="Dokument" />
-                                                <TableColumn prefWidth="73.2647705078125" text="Klient" />
+                                                <TableColumn fx:id="dateCol" minWidth="0.0" prefWidth="87.6796875" text="Data" />
+                                                <TableColumn fx:id="nameCol" prefWidth="93.5" text="Dokument" />
+                                                <TableColumn fx:id="contractorCol" prefWidth="73.2647705078125" text="Kontrahent" />
                                                 <TableColumn prefWidth="75.0" text="Wartość netto" />
                                                 <TableColumn prefWidth="75.0" text="Wartość brutto" />
                                                 <TableColumn prefWidth="75.0" text="Zysk" />
-                                                <TableColumn prefWidth="90.231689453125" text="Wystawił" />
+                                                <TableColumn fx:id="worker" prefWidth="90.231689453125" text="Wystawił" />
                                             </columns>
                                             <columnResizePolicy>
                                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -37,24 +36,7 @@
                         </Tab>
                         <Tab text="Przyjęcia zewnętrzne">
                             <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                    <children>
-                                        <TableView layoutX="-23.0" layoutY="14.0" prefHeight="434.0" prefWidth="449.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                            <columns>
-                                                <TableColumn prefWidth="44.3994140625" text="ID" visible="false" />
-                                                <TableColumn minWidth="0.0" prefWidth="87.6796875" text="Data" />
-                                                <TableColumn prefWidth="93.5" text="Dokument" />
-                                                <TableColumn prefWidth="73.2647705078125" text="Dostawca" />
-                                                <TableColumn prefWidth="75.0" text="Wartość netto" />
-                                                <TableColumn prefWidth="75.0" text="Wartość Brutto" />
-                                                <TableColumn prefWidth="90.231689453125" text="Wystawił" />
-                                            </columns>
-                                            <columnResizePolicy>
-                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                            </columnResizePolicy>
-                                        </TableView>
-                                    </children>
-                                </AnchorPane>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                             </content>
                         </Tab>
                     </tabs>

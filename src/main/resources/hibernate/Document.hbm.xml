@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="magazynier">
+
+    <class name="magazynier.Document" table="documents">
+
+        <id name="id" column="document_id" type="int">
+            <generator class="increment"/>
+        </id>
+
+        <property name="date" column="issue_date" type="date"/>
+        <property name="name" column="d_name" type="string"/>
+
+        <many-to-one name="contractor" class="magazynier.contractor.Contractor"
+                     column="contractor_id" unique="false" not-null="true"
+        />
+        <many-to-one name="worker" class="magazynier.worker.Worker"
+                     column="worker_id" unique="false" not-null="true"
+        />
+        <!--cascade="all"-->
+    </class>
+
+</hibernate-mapping>
