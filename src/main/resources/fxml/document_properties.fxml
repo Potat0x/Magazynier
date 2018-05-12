@@ -1,24 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="490.0" prefWidth="794.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="magazynier.NewDocumentController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="490.0" prefWidth="794.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <VBox prefHeight="400.0" prefWidth="794.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -44,10 +30,10 @@
                                 <Label text="Data" />
                                 <Label prefHeight="17.0" prefWidth="85.0" text="Numer" GridPane.rowIndex="1" />
                                 <Label text="Kontrahent" GridPane.rowIndex="3" />
-                                <DatePicker prefHeight="25.0" prefWidth="395.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
-                                <TextField prefHeight="25.0" prefWidth="546.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
-                                <ComboBox prefHeight="25.0" prefWidth="406.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
-                                <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                <DatePicker fx:id="date" prefHeight="25.0" prefWidth="395.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                                <TextField fx:id="name" prefHeight="25.0" prefWidth="546.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                                <ComboBox fx:id="contractor" prefHeight="25.0" prefWidth="406.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
+                                <TextField fx:id="worker" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                 <Label text="Osoba wystawiająca" GridPane.rowIndex="2" />
                             </children>
                         </GridPane>
@@ -63,7 +49,7 @@
                         <Font size="15.0" />
                     </font>
                 </Label>
-                <TableView prefHeight="166.0" prefWidth="491.0">
+                <TableView fx:id="documentItems" prefHeight="166.0" prefWidth="491.0">
                     <columns>
                         <TableColumn prefWidth="40.0" text="Lp" />
                         <TableColumn prefWidth="90.0" text="Nazwa" />
@@ -114,7 +100,7 @@
                         <Insets top="2.0" />
                     </VBox.margin>
                 </HBox>
-                <ListView prefHeight="91.0" prefWidth="774.0">
+                <ListView fx:id="allItems" prefHeight="91.0" prefWidth="774.0">
                     <VBox.margin>
                         <Insets top="10.0" />
                     </VBox.margin>
