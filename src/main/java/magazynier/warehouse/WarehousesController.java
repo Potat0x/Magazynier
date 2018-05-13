@@ -8,7 +8,8 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
 import magazynier.RowNotFoundException;
 import magazynier.utils.AlertLauncher;
-import magazynier.utils.TextFieldOverflowIndicator;
+import magazynier.utils.TextFieldCorrectnessIndicator;
+import magazynier.utils.validators.LengthValidator;
 
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class WarehousesController {
                             t.setGraphic(null);
                             t.setTitle("Dodawanie magazynu");
                             t.setHeaderText("Podaj nazwę nowego magazynu");
-                            TextFieldOverflowIndicator.set(t.getEditor(), MAX_NAME_LEN);
+                            t.getEditor().textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_NAME_LEN)));
                             Optional<String> optName = t.showAndWait();
 
                             optName.ifPresent(warehouseName -> {

@@ -8,7 +8,7 @@ import magazynier.RowNotFoundException;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.FormCleaner;
 import magazynier.utils.TextFieldCorrectnessIndicator;
-import magazynier.utils.TextFieldOverflowIndicator;
+import magazynier.utils.validators.LengthValidator;
 import magazynier.utils.validators.PeselValidator;
 
 import javax.persistence.PersistenceException;
@@ -55,14 +55,18 @@ public class WorkersController {
 
         refreshTable();
 
-        TextFieldOverflowIndicator.set(firstName, MAX_TEXT_FIELD_LENGTH);
-        TextFieldOverflowIndicator.set(lastName, MAX_TEXT_FIELD_LENGTH);
-        TextFieldOverflowIndicator.set(phone, MAX_TEXT_FIELD_LENGTH);
-        TextFieldOverflowIndicator.set(email, MAX_TEXT_FIELD_LENGTH);
-        TextFieldOverflowIndicator.set(pesel, MAX_TEXT_FIELD_LENGTH);
-        TextFieldOverflowIndicator.set(street, MAX_TEXT_FIELD_LENGTH);
-        TextFieldOverflowIndicator.set(city, MAX_TEXT_FIELD_LENGTH);
-        //TextFieldOverflowIndicator.set(pesel, MAX_TEXT_FIELD_LENGTH_PESEL);
+        TextField[] fieldsToValidate = {
+                firstName,
+                lastName,
+                phone,
+                email,
+                pesel,
+                street,
+                city
+        };
+        for (TextField textField : fieldsToValidate) {
+            textField.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_TEXT_FIELD_LENGTH)));
+        }
 
         pesel.textProperty().addListener(new TextFieldCorrectnessIndicator(new PeselValidator()));
 

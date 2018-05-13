@@ -6,8 +6,8 @@ import javafx.stage.Stage;
 import magazynier.RowNotFoundException;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.TextFieldCorrectnessIndicator;
-import magazynier.utils.TextFieldOverflowIndicator;
 import magazynier.utils.validators.EanValidator;
+import magazynier.utils.validators.LengthValidator;
 
 public class ItemController {
 
@@ -54,9 +54,9 @@ public class ItemController {
     @FXML
     public void initialize() {
 
-        TextFieldOverflowIndicator.set(itemModelNumber, MAX_ITEM_MODEL_NUMBER_LENGTH);
-        TextFieldOverflowIndicator.set(name, MAX_ITEM_NAME_LENGTH);
-        TextFieldOverflowIndicator.set(measurementUnit, MAX_MEASUR_UNIT_NAME_LENGTH);
+        itemModelNumber.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_ITEM_MODEL_NUMBER_LENGTH)));
+        name.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_ITEM_NAME_LENGTH)));
+        measurementUnit.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_MEASUR_UNIT_NAME_LENGTH)));
 
         if (mode == Mode.EDIT_ITEM) {
             updateFormFromItem(item);

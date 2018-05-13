@@ -8,8 +8,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import magazynier.contractor.Contractor;
 import magazynier.item.Item;
-import magazynier.utils.TextFieldCorrectnessIndicator;
-import magazynier.utils.TextFieldOverflowIndicator;
 import magazynier.worker.Worker;
 
 import java.sql.Date;
@@ -103,7 +101,7 @@ public class DocumentPropertiesController {
             String description = Optional.ofNullable(param.getValue().getDescription()).orElse("<brak opisu>");
             return new ReadOnlyObjectWrapper(description.replaceAll("\n", "|"));
         });
-        
+
         if (mode == Mode.EDIT_ITEM) {
 
             Date docDate = document.getDate();

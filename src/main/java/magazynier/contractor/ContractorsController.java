@@ -13,7 +13,7 @@ import magazynier.RowNotFoundException;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.FormCleaner;
 import magazynier.utils.TextFieldCorrectnessIndicator;
-import magazynier.utils.TextFieldOverflowIndicator;
+import magazynier.utils.validators.LengthValidator;
 import magazynier.utils.validators.NipValidator;
 import magazynier.utils.validators.PeselValidator;
 
@@ -125,14 +125,19 @@ public class ContractorsController {
         pesel.textProperty().addListener(new TextFieldCorrectnessIndicator(new PeselValidator()));
         nip.textProperty().addListener(new TextFieldCorrectnessIndicator(new NipValidator()));
 
-        TextFieldOverflowIndicator.set(contractorName, MAX_COMPANY_NAME_LENGTH);
-        TextFieldOverflowIndicator.set(firstName, MAX_TEXT_FIELD_LENGTH);
-        TextFieldOverflowIndicator.set(lastName, MAX_TEXT_FIELD_LENGTH);
-        TextFieldOverflowIndicator.set(phone, MAX_TEXT_FIELD_LENGTH);
-        TextFieldOverflowIndicator.set(email, MAX_TEXT_FIELD_LENGTH);
-        TextFieldOverflowIndicator.set(street, MAX_TEXT_FIELD_LENGTH);
-        TextFieldOverflowIndicator.set(city, MAX_TEXT_FIELD_LENGTH);
+        TextField[] fieldsToValidate = {
+                contractorName,
+                firstName,
+                lastName,
+                phone,
+                email,
+                street,
+                city
+        };
 
+        for (TextField textField : fieldsToValidate) {
+            textField.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_TEXT_FIELD_LENGTH)));
+        }
         refreshTable();
         form.setDisable(true);
     }
