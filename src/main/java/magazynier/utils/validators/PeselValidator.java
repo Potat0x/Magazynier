@@ -1,7 +1,7 @@
 package magazynier.utils.validators;
 
 public class PeselValidator implements Validator {
-
+    @Override
     public boolean check(String pesel) {
 
         final int PESEL_LEN = 11;

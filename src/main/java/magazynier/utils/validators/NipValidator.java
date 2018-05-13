@@ -1,7 +1,7 @@
 package magazynier.utils.validators;
 
 public class NipValidator implements Validator {
-
+    @Override
     public boolean check(String nip) {
 
         if (nip != null) {
