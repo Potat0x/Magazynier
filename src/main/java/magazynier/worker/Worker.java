@@ -109,6 +109,11 @@ public class Worker implements Indexed {
     }
 
     @Override
+    public String toString() {
+        return getFullName();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Worker)) return false;

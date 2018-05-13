@@ -5,6 +5,7 @@ import magazynier.utils.Indexed;
 import magazynier.worker.Worker;
 
 import java.sql.Date;
+import java.util.Set;
 
 public class Document implements Indexed {
     private Date date;
@@ -12,6 +13,15 @@ public class Document implements Indexed {
     private Contractor contractor;
     private Worker worker;
     private Integer id;
+    private Set<DocumentItem> items;
+
+    public Set<DocumentItem> getItems() {
+        return items;
+    }
+
+    public void setItems(Set<DocumentItem> items) {
+        this.items = items;
+    }
 
     public Date getDate() {
         return date;

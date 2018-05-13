@@ -123,6 +123,11 @@ public class Contractor implements Indexed {
     }
 
     @Override
+    public String toString() {
+        return getFullName();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Contractor)) return false;

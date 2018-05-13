@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="magazynier">
+
+    <class name="magazynier.DocumentItem" table="documents_items">
+
+        <id name="id" column="document_item_id" type="int">
+            <generator class="increment"/>
+        </id>
+
+        <property name="transactionSign" column="transaction_sign" type="int"/>
+        <property name="quantity" column="quantity" type="double"/>
+        <property name="price" column="price" type="double"/>
+
+        <many-to-one name="vatRate" class="magazynier.item.VatRate"
+                     column="vat_rate_id" not-null="true"/>
+
+        <property name="tax" column="tax" type="double"/>
+        <property name="marginType" column="margin_type" type="char"/>
+        <property name="margin" column="margin" type="double"/>
+        <property name="batchNumber" column="batch_number" type="string"/>
+
+        <many-to-one name="item" column="item_id" class="magazynier.item.Item"
+                     not-null="true"/>
+        <many-to-one name="document" column="document_id" class="magazynier.Document"
+                     not-null="true"/>
+
+    </class>
+
+</hibernate-mapping>

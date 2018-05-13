@@ -21,6 +21,10 @@
                      column="worker_id" unique="false" not-null="true"
         />
         <!--cascade="all"-->
+        <set name="items" cascade="all">
+            <key column="document_id"/>
+            <one-to-many class="DocumentItem"/>
+        </set>
     </class>
 
 </hibernate-mapping>

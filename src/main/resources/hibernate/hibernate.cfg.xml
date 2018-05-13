@@ -36,6 +36,7 @@
         <mapping resource="/hibernate/Item.hbm.xml"/>
         <mapping resource="/hibernate/VatRate.hbm.xml"/>
         <mapping resource="/hibernate/Document.hbm.xml"/>
+        <mapping resource="/hibernate/DocumentItem.hbm.xml"/>
 
     </session-factory>
 
