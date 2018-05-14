@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -88,6 +89,7 @@
                         <TableColumn prefWidth="70.0" text="Stan/Magazyn" visible="false" />
                         <TableColumn fx:id="valueGrossCol" minWidth="40.0" prefWidth="95.0" text="Wartość brutto" />
                         <TableColumn fx:id="valueNetCol" minWidth="40.0" prefWidth="95.0" text="Wartość netto" />
+                  <TableColumn prefWidth="75.0" text="Rodzaj marży" />
                   <TableColumn prefWidth="75.0" text="Marża" />
                     </columns>
                     <columnResizePolicy>
@@ -103,13 +105,18 @@
                   <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                </VBox.margin>
                <children>
-                  <TextField maxWidth="1.7976931348623157E308" promptText="Nazwa" HBox.hgrow="ALWAYS" />
-                  <TextField maxWidth="1.7976931348623157E308" promptText="EAN" HBox.hgrow="ALWAYS" />
-                  <TextField maxWidth="1.7976931348623157E308" promptText="Kod procucenta" HBox.hgrow="ALWAYS" />
-                  <TextField maxWidth="1.7976931348623157E308" promptText="Opis" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="nameFilterField" maxWidth="1.7976931348623157E308" promptText="Nazwa" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="eanFilterField" maxWidth="1.7976931348623157E308" promptText="EAN" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="modelFilterField" maxWidth="1.7976931348623157E308" promptText="Kod procucenta" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="descriptionFilterField" maxWidth="1.7976931348623157E308" promptText="Opis" HBox.hgrow="ALWAYS" />
+                  <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clearAllFilters" opacity="0.76" prefHeight="25.0" prefWidth="25.0" text="X" textOverrun="CLIP">
+                     <tooltip>
+                        <Tooltip text="Wyczyść wszystkie filtry" />
+                     </tooltip>
+                  </Button>
                </children>
             </HBox>
-            <TableView fx:id="allItems" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <TableView fx:id="allItemsTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
               <columns>
                 <TableColumn fx:id="allItemsNameCol" text="Nazwa" />
                 <TableColumn fx:id="allItemsEanCol" text="EAN" />

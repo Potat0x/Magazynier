@@ -8,6 +8,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import magazynier.contractor.Contractor;
 import magazynier.item.Item;
+import magazynier.utils.PropertyTableFilter;
 import magazynier.worker.Worker;
 
 import java.sql.Date;
@@ -48,13 +49,18 @@ public class DocumentPropertiesController {
     public Label netDocVal;
     public Label grossDocVal;
 
-    public TableView allItems;
+    public TableView allItemsTable;
     public TableColumn allItemsNameCol;
     public TableColumn allItemsEanCol;
     public TableColumn allItemsModelNumberCol;
     public TableColumn allItemsDescrCol;
     public TableColumn allItemsPriceCol;
     public TableColumn allItemsAvailableQuantityCol;
+
+    public TextField nameFilterField;
+    public TextField eanFilterField;
+    public TextField modelFilterField;
+    public TextField descriptionFilterField;
 
     private Document document;
     private Mode mode;
@@ -71,6 +77,12 @@ public class DocumentPropertiesController {
 
     @FXML
     public void initialize() {
+
+        PropertyTableFilter<Item> allItemsFilter = new PropertyTableFilter<Item>(model.getItemsList(), allItemsTable);
+        allItemsFilter.tie(nameFilterField, Item::getName);
+        allItemsFilter.tie(eanFilterField, Item::getEan);
+        allItemsFilter.tie(modelFilterField, Item::getItemModelNumber);
+        allItemsFilter.tie(descriptionFilterField, Item::getDescription);
 
         quantityCol.setCellValueFactory(new PropertyValueFactory<Double, Document>("quantity"));
         taxCol.setCellValueFactory(new PropertyValueFactory<Double, Document>("tax"));
@@ -95,11 +107,10 @@ public class DocumentPropertiesController {
         allItemsEanCol.setCellValueFactory(new PropertyValueFactory<String, Item>("ean"));
         allItemsPriceCol.setCellValueFactory(new PropertyValueFactory<String, Item>("currentPrice"));
         allItemsModelNumberCol.setCellValueFactory(new PropertyValueFactory<String, Item>("itemModelNumber"));
-        allItems.getItems().addAll(model.getItemsList());
 
         allItemsDescrCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Item, String>, ObservableValue>) param -> {
             String description = Optional.ofNullable(param.getValue().getDescription()).orElse("<brak opisu>");
-            return new ReadOnlyObjectWrapper(description.replaceAll("\n", "|"));
+            return new ReadOnlyObjectWrapper(description.replaceAll("\n", " "));
         });
 
         if (mode == Mode.EDIT_ITEM) {
@@ -127,6 +138,14 @@ public class DocumentPropertiesController {
             double netVal = document.getItems().stream().mapToDouble(di -> netValue(di.getQuantity() * di.getPrice(), di.getTax())).sum();
             netDocVal.setText(Double.toString(netVal) + " zł");
         }
+    }
+
+    @FXML
+    public void clearAllFilters() {
+        nameFilterField.clear();
+        eanFilterField.clear();
+        modelFilterField.clear();
+        descriptionFilterField.clear();
     }
 
     @FXML
