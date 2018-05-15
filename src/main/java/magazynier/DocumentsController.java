@@ -65,8 +65,10 @@ public class DocumentsController {
         itemStage.setScene(new Scene(parent));
         itemStage.showAndWait();
 
-        if (ActionResult.FAIL == ic.getActionResult()) {
+        if (ic.getActionResult() == ActionResult.FAIL) {
             refreshTable();
+        } else {
+            docTable.refresh();
         }
 
     }

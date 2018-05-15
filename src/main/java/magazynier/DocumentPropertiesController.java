@@ -11,7 +11,6 @@ import magazynier.item.Item;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.PropertyTableFilter;
 import magazynier.worker.Worker;
-import org.hibernate.StaleObjectStateException;
 
 import javax.persistence.OptimisticLockException;
 import java.sql.Date;
@@ -124,17 +123,7 @@ public class DocumentPropertiesController {
 
         if (mode == Mode.EDIT_ITEM) {
 
-            Date docDate = document.getDate();
-            date.setValue((date != null) ? docDate.toLocalDate() : null);
-            name.setText(document.getName());
-
-            workerCmbox.getItems().addAll(model.getWorkersList());
-            Worker worker = document.getWorker();
-            workerCmbox.setValue((worker != null) ? worker.getFullName() : null);
-
-            contractorCmbox.getItems().addAll(model.getContractorsList());
-            Contractor contractor = document.getContractor();
-            contractorCmbox.setValue(((contractor != null) ? contractor.getContractorName() : null));
+            updateFormFromDocument();
 
             documentItemsTable.getItems().addAll(document.getItems());
 
@@ -209,29 +198,48 @@ public class DocumentPropertiesController {
 
         ArrayList ar = new ArrayList<>(Arrays.asList(documentItemsTable.getItems().toArray()));
         Set<DocumentItem> newItemsSet = new HashSet<DocumentItem>(ar);//todo: clean it with Java 9
-        //document.setItems(newItemsSet); /*cause bug*/
+        //document.setItems(newItemsSet); /*cause bug!*/
         document.getItems().clear();
         document.getItems().addAll(newItemsSet);
+
+        updateDocumentFromForm();
 
         try {
             model.updateDocument(document);
         } catch (RowNotFoundException e) {
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Nie znalaziono dokumentu. Mógł zostać usunięty z bazy.");
-            //model.refreshDocument(document);
-            //refreshTable();
             closeWindowWithFail();
         } catch (OptimisticLockException e) {
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Dokument został w międzyczasie zaktualizowany przez innego użytkownika.");
-            //model.refreshDocument(document);
-            //refreshTable();
             closeWindowWithFail();
         } catch (Exception e) {
-            AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Nieznany błąd.");
-            //model.refreshDocument(document);
-            //refreshTable();
-            closeWindowWithFail();
             e.printStackTrace();
+            AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Nieznany błąd.");
+            closeWindowWithFail();
         }
+    }
+
+    private void updateDocumentFromForm() {
+        document.setName(name.getText());
+        document.setDate(Date.valueOf(date.getValue()));
+        document.setWorker((Worker) workerCmbox.getSelectionModel().getSelectedItem());
+        document.setContractor((Contractor) contractorCmbox.getSelectionModel().getSelectedItem());
+    }
+
+    private void updateFormFromDocument() {
+        Date docDate = document.getDate();
+        date.setValue((date != null) ? docDate.toLocalDate() : null);
+        name.setText(document.getName());
+
+        workerCmbox.getItems().addAll(model.getWorkersList());
+        Worker worker = document.getWorker();
+        workerCmbox.getSelectionModel().select(worker);
+        //workerCmbox.setValue((worker != null) ? worker.getFullName() : null);
+
+        contractorCmbox.getItems().addAll(model.getContractorsList());
+        Contractor contractor = document.getContractor();
+        contractorCmbox.getSelectionModel().select(contractor);
+        //contractorCmbox.setValue(((contractor != null) ? contractor.getContractorName() : null));
     }
 
     @FXML
