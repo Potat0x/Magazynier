@@ -37,8 +37,8 @@ public class DAO {
     public static void update(Indexed object) throws RowNotFoundException {
 
         try (Session session = HibernateSessionFactory.openSession()) {
+            Transaction tr = session.beginTransaction();
             if (checkIfExists(session, object)) {
-                Transaction tr = session.beginTransaction();
                 session.update(object);
                 tr.commit();
             } else {
@@ -53,10 +53,10 @@ public class DAO {
             Transaction tr = session.beginTransaction();
             if (checkIfExists(session, object)) {
                 session.delete(object);
+                tr.commit();
             } else {
                 throw new RowNotFoundException(object.getClass() + " object:" + object + " does not exist in database.");
             }
-            tr.commit();
         }
     }
 
