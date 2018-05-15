@@ -57,13 +57,13 @@
                                 <TextField fx:id="name" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
                                 <ComboBox fx:id="contractorCmbox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
                                 <Label text="Osoba wystawiająca" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                        <ComboBox fx:id="workerCmbox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
                         <Label text="Wartość netto" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                         <Label text="Wartość brutto" GridPane.columnIndex="4" GridPane.rowIndex="2" />
                         <Label fx:id="netDocVal" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="-" GridPane.columnIndex="5" GridPane.rowIndex="1" />
                         <Label fx:id="grossDocVal" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="-" GridPane.columnIndex="5" GridPane.rowIndex="2" />
                         <Label text="Typ" />
                         <ComboBox fx:id="docType" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                        <ComboBox fx:id="workerCmbox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
                             </children>
                      <HBox.margin>
                         <Insets right="5.0" />
@@ -145,7 +145,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button contentDisplay="TOP" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cancelDocumentAddOrEdit" prefHeight="60.0" prefWidth="100.0" text="Anuluj" HBox.hgrow="ALWAYS">
+            <Button contentDisplay="TOP" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cancelDocumentAddOrEdit" prefHeight="60.0" prefWidth="100.0" text="Zamknij" HBox.hgrow="ALWAYS">
                <graphic>
                   <ImageView>
                      <image>

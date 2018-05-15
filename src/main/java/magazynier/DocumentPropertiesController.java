@@ -10,6 +10,8 @@ import magazynier.contractor.Contractor;
 import magazynier.item.Item;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.PropertyTableFilter;
+import magazynier.utils.TextFieldCorrectnessIndicator;
+import magazynier.utils.validators.LengthValidator;
 import magazynier.worker.Worker;
 import org.hibernate.PropertyValueException;
 
@@ -66,11 +68,11 @@ public class DocumentPropertiesController {
     public TextField modelFilterField;
     public TextField descriptionFilterField;
 
+    final int MAX_DOC_NAME_LEN = 30;
+
     private Document document;
     private Mode mode;
     private DocumentPropertiesModel model;
-
-
     private ActionResult actionResult;
 
     public DocumentPropertiesController(Document document, Mode mode) {
@@ -128,6 +130,8 @@ public class DocumentPropertiesController {
         date.setValue(LocalDate.now());
         workerCmbox.getItems().addAll(model.getWorkersList());
         contractorCmbox.getItems().addAll(model.getContractorsList());
+
+        name.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_DOC_NAME_LEN)));
 
         if (mode == Mode.EDIT_ITEM) {
 
@@ -208,33 +212,41 @@ public class DocumentPropertiesController {
         document.getItems().clear();
         document.getItems().addAll(newItemsSet);
 
-        updateDocumentFromForm();
+        if (isFormValid()) {
+            updateDocumentFromForm();
 
-        try {
-            if (mode == Mode.EDIT_ITEM) {
-                model.updateDocument(document);
-                actionResult = ActionResult.CONFIRM;
-            } else if (mode == Mode.ADD_ITEM) {
-                model.addDocument(document);
-                actionResult = ActionResult.CONFIRM;
-                AlertLauncher.showAndWait(Alert.AlertType.INFORMATION, "Nowy dokument", null, "Dokument został dodany.");
-                mode = Mode.EDIT_ITEM;
+            try {
+                if (mode == Mode.EDIT_ITEM) {
+                    model.updateDocument(document);
+                    actionResult = ActionResult.CONFIRM;
+                } else if (mode == Mode.ADD_ITEM) {
+                    model.addDocument(document);
+                    actionResult = ActionResult.CONFIRM;
+                    AlertLauncher.showAndWait(Alert.AlertType.INFORMATION, "Nowy dokument", null, "Dokument został dodany.");
+                    mode = Mode.EDIT_ITEM;
+                }
+
+            } catch (RowNotFoundException e) {
+                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Nie znalaziono dokumentu. Mógł zostać usunięty z bazy.");
+                closeWindowWithFail();
+            } catch (OptimisticLockException e) {
+                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Dokument został w międzyczasie zaktualizowany przez innego użytkownika.");
+                closeWindowWithFail();
+            } catch (PropertyValueException e) {
+                System.out.println("PVE");//todo
+            } catch (Exception e) {
+                System.out.println();
+                e.printStackTrace();
+                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Nieznany błąd.");
+                closeWindowWithFail();
             }
+        } else {
+            AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wypełnij prawidłowo wszystkie pola formularza.\nJeżeli numer dokumentu będzie pusty, zostanie wygenerowany automatycznie.");
+        }//todo: add doc name generating
+    }
 
-        } catch (RowNotFoundException e) {
-            AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Nie znalaziono dokumentu. Mógł zostać usunięty z bazy.");
-            closeWindowWithFail();
-        } catch (OptimisticLockException e) {
-            AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Dokument został w międzyczasie zaktualizowany przez innego użytkownika.");
-            closeWindowWithFail();
-        } catch (PropertyValueException e) {
-            System.out.println("PVE");//todo
-        } catch (Exception e) {
-            System.out.println();
-            e.printStackTrace();
-            AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Nieznany błąd.");
-            closeWindowWithFail();
-        }
+    private boolean isFormValid() {
+        return date.getValue() != null && workerCmbox.getSelectionModel().getSelectedItem() != null && contractorCmbox.getSelectionModel().getSelectedItem() != null && name.getText().length() <= MAX_DOC_NAME_LEN;
     }
 
     private void updateDocumentFromForm() {
