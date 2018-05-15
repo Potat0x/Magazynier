@@ -47,12 +47,11 @@ public class DocumentsController {
         docTable.getItems().addAll(wl);
     }
 
-    public void showDocumentProperties(ActionEvent actionEvent) {
+    private ActionResult showDocumentWindow(Document document, Mode mode) {
         FXMLLoader itemStageLoader = new FXMLLoader(getClass().getResource("/fxml/document_properties.fxml"));
 
-        Document slectedDoc = (Document) docTable.getSelectionModel().getSelectedItem();
-        DocumentPropertiesController ic = new DocumentPropertiesController(slectedDoc, Mode.EDIT_ITEM);
-        itemStageLoader.setController(ic);
+        DocumentPropertiesController dcp = new DocumentPropertiesController(document, mode);
+        itemStageLoader.setController(dcp);
         Stage itemStage = new Stage();
         itemStage.setTitle("Dokument");
         Parent parent = null;
@@ -65,11 +64,22 @@ public class DocumentsController {
         itemStage.setScene(new Scene(parent));
         itemStage.showAndWait();
 
-        if (ic.getActionResult() == ActionResult.FAIL) {
+        return dcp.getActionResult();
+    }
+
+    public void editDocumentProperties() {
+        Document slectedDoc = (Document) docTable.getSelectionModel().getSelectedItem();
+        ActionResult actionResult = showDocumentWindow(slectedDoc, Mode.EDIT_ITEM);
+        if (actionResult == ActionResult.FAIL) {
             refreshTable();
         } else {
             docTable.refresh();
         }
+    }
 
+    public void addDocument(ActionEvent actionEvent) {
+        Document newDoc = new Document();
+        ActionResult actionResult = showDocumentWindow(newDoc, Mode.ADD_ITEM);
+        refreshTable();
     }
 }

@@ -11,9 +11,11 @@ import magazynier.item.Item;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.PropertyTableFilter;
 import magazynier.worker.Worker;
+import org.hibernate.PropertyValueException;
 
 import javax.persistence.OptimisticLockException;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.*;
 
 @SuppressWarnings("unchecked")
@@ -110,7 +112,6 @@ public class DocumentPropertiesController {
         valueNetCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
                 new ReadOnlyObjectWrapper(netValue(multiplyNullable(c.getValue().getPrice(), c.getValue().getQuantity()), c.getValue().getTax())));
 
-
         allItemsNameCol.setCellValueFactory(new PropertyValueFactory<String, Item>("name"));
         allItemsEanCol.setCellValueFactory(new PropertyValueFactory<String, Item>("ean"));
         allItemsPriceCol.setCellValueFactory(new PropertyValueFactory<String, Item>("currentPrice"));
@@ -121,14 +122,18 @@ public class DocumentPropertiesController {
             return new ReadOnlyObjectWrapper(description.replaceAll("\n", " "));
         });
 
+        for (DocumentType t : DocumentType.values())
+            docType.getItems().add(t.getType());
+
+        date.setValue(LocalDate.now());
+        workerCmbox.getItems().addAll(model.getWorkersList());
+        contractorCmbox.getItems().addAll(model.getContractorsList());
+
         if (mode == Mode.EDIT_ITEM) {
 
             updateFormFromDocument();
 
             documentItemsTable.getItems().addAll(document.getItems());
-
-            for (DocumentType t : DocumentType.values())
-                docType.getItems().add(t.getType());
 
             double grossVal = document.getItems().stream().mapToDouble(di -> multiplyNullable(di.getQuantity(), di.getPrice())).sum();
             grossDocVal.setText(Double.toString(grossVal) + " zł");
@@ -136,6 +141,7 @@ public class DocumentPropertiesController {
             double netVal = document.getItems().stream().mapToDouble(di -> netValue(multiplyNullable(di.getQuantity(), di.getPrice()), di.getTax())).sum();
             netDocVal.setText(Double.toString(netVal) + " zł");
         }
+
 
         documentItemsTable.setRowFactory(
                 new Callback<TableView<DocumentItem>, TableRow<DocumentItem>>() {
@@ -205,14 +211,26 @@ public class DocumentPropertiesController {
         updateDocumentFromForm();
 
         try {
-            model.updateDocument(document);
+            if (mode == Mode.EDIT_ITEM) {
+                model.updateDocument(document);
+                actionResult = ActionResult.CONFIRM;
+            } else if (mode == Mode.ADD_ITEM) {
+                model.addDocument(document);
+                actionResult = ActionResult.CONFIRM;
+                AlertLauncher.showAndWait(Alert.AlertType.INFORMATION, "Nowy dokument", null, "Dokument został dodany.");
+                mode = Mode.EDIT_ITEM;
+            }
+
         } catch (RowNotFoundException e) {
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Nie znalaziono dokumentu. Mógł zostać usunięty z bazy.");
             closeWindowWithFail();
         } catch (OptimisticLockException e) {
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Dokument został w międzyczasie zaktualizowany przez innego użytkownika.");
             closeWindowWithFail();
+        } catch (PropertyValueException e) {
+            System.out.println("PVE");//todo
         } catch (Exception e) {
+            System.out.println();
             e.printStackTrace();
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Nieznany błąd.");
             closeWindowWithFail();
@@ -231,12 +249,10 @@ public class DocumentPropertiesController {
         date.setValue((date != null) ? docDate.toLocalDate() : null);
         name.setText(document.getName());
 
-        workerCmbox.getItems().addAll(model.getWorkersList());
         Worker worker = document.getWorker();
         workerCmbox.getSelectionModel().select(worker);
         //workerCmbox.setValue((worker != null) ? worker.getFullName() : null);
 
-        contractorCmbox.getItems().addAll(model.getContractorsList());
         Contractor contractor = document.getContractor();
         contractorCmbox.getSelectionModel().select(contractor);
         //contractorCmbox.setValue(((contractor != null) ? contractor.getContractorName() : null));

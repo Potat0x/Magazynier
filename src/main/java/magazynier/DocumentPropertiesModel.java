@@ -1,5 +1,7 @@
 package magazynier;
 
+import org.hibernate.PropertyValueException;
+
 import java.util.ArrayList;
 
 public class DocumentPropertiesModel {
@@ -17,5 +19,9 @@ public class DocumentPropertiesModel {
 
     public ArrayList getContractorsList() {
         return DAO.readTable("Contractor");
+    }
+
+    public void addDocument(Document document) throws PropertyValueException {
+        DAO.add(document);
     }
 }

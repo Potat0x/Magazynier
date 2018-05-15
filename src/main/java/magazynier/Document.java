@@ -5,6 +5,7 @@ import magazynier.utils.Indexed;
 import magazynier.worker.Worker;
 
 import java.sql.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Document implements Indexed {
@@ -14,6 +15,10 @@ public class Document implements Indexed {
     private Worker worker;
     private Integer id;
     private Set<DocumentItem> items;
+
+    public Document() {
+        this.items = new HashSet<>();
+    }
 
     public Set<DocumentItem> getItems() {
         return items;

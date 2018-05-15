@@ -76,7 +76,7 @@
                         </Label>
                         <HBox prefHeight="61.0" prefWidth="341.0">
                             <children>
-                                <Button contentDisplay="TOP" mnemonicParsing="false" prefWidth="105.0" text="Dodaj">
+                                <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#addDocument" prefWidth="105.0" text="Dodaj">
                                     <graphic>
                                         <ImageView>
                                             <image>
@@ -94,7 +94,7 @@
                                         </ImageView>
                                     </graphic>
                                 </Button>
-                                <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#showDocumentProperties" prefWidth="105.0" text="Pokaż">
+                                <Button contentDisplay="TOP" mnemonicParsing="false" onAction="#editDocumentProperties" prefWidth="105.0" text="Pokaż">
                                     <graphic>
                                         <ImageView>
                                             <image>
