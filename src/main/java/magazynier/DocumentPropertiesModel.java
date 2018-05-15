@@ -7,6 +7,10 @@ public class DocumentPropertiesModel {
         return DAO.readTable("Item");
     }
 
+    public void updateDocument(Document document) throws RowNotFoundException {
+        DAO.update(document);
+    }
+
     public ArrayList getWorkersList() {
         return DAO.readTable("Worker");
     }

@@ -21,7 +21,7 @@
                      column="worker_id" unique="false" not-null="true"
         />
         <!--cascade="all"-->
-        <set name="items" cascade="all">
+        <set name="items" cascade="all-delete-orphan" inverse="true">
             <key column="document_id"/>
             <one-to-many class="DocumentItem"/>
         </set>

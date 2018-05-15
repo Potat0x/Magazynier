@@ -17,6 +17,16 @@ public class DocumentItem {
     private Item item;
     private Document document;
 
+    public DocumentItem() {
+    }
+
+    public DocumentItem(Item item, Document document) {
+        this.item = item;
+        this.document = document;
+        vatRate = item.getVatRate();
+        price = item.getCurrentPrice();
+    }
+
     public Integer getTransactionSign() {
         return transactionSign;
     }
@@ -138,7 +148,7 @@ public class DocumentItem {
         result = 31 * result + (batchNumber != null ? batchNumber.hashCode() : 0);
         result = 31 * result + (id != null ? id.hashCode() : 0);
         result = 31 * result + (item != null ? item.hashCode() : 0);
-        result = 31 * result + (document != null ? document.hashCode() : 0);
+        //result = 31 * result + (document != null ? document.hashCode() : 0);
         return result;
     }
 }

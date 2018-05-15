@@ -63,4 +63,30 @@ public class Document implements Indexed {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Document)) return false;
+
+        Document document = (Document) o;
+
+        if (date != null ? !date.equals(document.date) : document.date != null) return false;
+        if (name != null ? !name.equals(document.name) : document.name != null) return false;
+        if (contractor != null ? !contractor.equals(document.contractor) : document.contractor != null) return false;
+        if (worker != null ? !worker.equals(document.worker) : document.worker != null) return false;
+        if (id != null ? !id.equals(document.id) : document.id != null) return false;
+        return items != null ? items.equals(document.items) : document.items == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = date != null ? date.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (contractor != null ? contractor.hashCode() : 0);
+        result = 31 * result + (worker != null ? worker.hashCode() : 0);
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (items != null ? items.hashCode() : 0);
+        return result;
+    }
 }

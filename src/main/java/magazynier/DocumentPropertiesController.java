@@ -8,11 +8,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import magazynier.contractor.Contractor;
 import magazynier.item.Item;
+import magazynier.utils.AlertLauncher;
 import magazynier.utils.PropertyTableFilter;
 import magazynier.worker.Worker;
+import org.hibernate.StaleObjectStateException;
 
+import javax.persistence.OptimisticLockException;
 import java.sql.Date;
-import java.util.Optional;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class DocumentPropertiesController {
@@ -65,6 +68,8 @@ public class DocumentPropertiesController {
     private Document document;
     private Mode mode;
     private DocumentPropertiesModel model;
+
+
     private ActionResult actionResult;
 
     public DocumentPropertiesController(Document document, Mode mode) {
@@ -87,20 +92,24 @@ public class DocumentPropertiesController {
         quantityCol.setCellValueFactory(new PropertyValueFactory<Double, Document>("quantity"));
         taxCol.setCellValueFactory(new PropertyValueFactory<Double, Document>("tax"));
         priceGrossCol.setCellValueFactory(new PropertyValueFactory<Double, Document>("price"));
+
         nameCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
-                new ReadOnlyObjectWrapper(c.getValue().getItem().getName())
-        );
+                new ReadOnlyObjectWrapper(c.getValue().getItem().getName()));
+
         eanCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
                 new ReadOnlyObjectWrapper(c.getValue().getItem().getEan()));
+
         measurmntUnitCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
                 new ReadOnlyObjectWrapper(c.getValue().getItem().getMeasurementUnit()));
+
         priceNetCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
                 new ReadOnlyObjectWrapper(netValue(c.getValue().getPrice(), c.getValue().getTax())));
 
         valueGrossCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
-                new ReadOnlyObjectWrapper(c.getValue().getPrice() * c.getValue().getQuantity()));
+                new ReadOnlyObjectWrapper(multiplyNullable(c.getValue().getPrice(), c.getValue().getQuantity())));
+
         valueNetCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
-                new ReadOnlyObjectWrapper(netValue(c.getValue().getPrice() * c.getValue().getQuantity(), c.getValue().getTax())));
+                new ReadOnlyObjectWrapper(netValue(multiplyNullable(c.getValue().getPrice(), c.getValue().getQuantity()), c.getValue().getTax())));
 
 
         allItemsNameCol.setCellValueFactory(new PropertyValueFactory<String, Item>("name"));
@@ -132,12 +141,59 @@ public class DocumentPropertiesController {
             for (DocumentType t : DocumentType.values())
                 docType.getItems().add(t.getType());
 
-            double grossVal = document.getItems().stream().mapToDouble(di -> di.getQuantity() * di.getPrice()).sum();
+            double grossVal = document.getItems().stream().mapToDouble(di -> multiplyNullable(di.getQuantity(), di.getPrice())).sum();
             grossDocVal.setText(Double.toString(grossVal) + " zł");
 
-            double netVal = document.getItems().stream().mapToDouble(di -> netValue(di.getQuantity() * di.getPrice(), di.getTax())).sum();
+            double netVal = document.getItems().stream().mapToDouble(di -> netValue(multiplyNullable(di.getQuantity(), di.getPrice()), di.getTax())).sum();
             netDocVal.setText(Double.toString(netVal) + " zł");
         }
+
+        documentItemsTable.setRowFactory(
+                new Callback<TableView<DocumentItem>, TableRow<DocumentItem>>() {
+                    @Override
+                    public TableRow<DocumentItem> call(TableView<DocumentItem> tableView) {
+                        TableRow<DocumentItem> row = new TableRow<>();
+
+                        ContextMenu cmenu = new ContextMenu();
+                        MenuItem del = new MenuItem("Usuń");
+                        del.setOnAction(event -> {
+
+                            if (row.getItem() != null) {
+                                documentItemsTable.getItems().remove(row.getItem());
+                            }
+                        });
+
+                        cmenu.getItems().add(del);
+                        row.setContextMenu(cmenu);
+                        return row;
+                    }
+                });
+
+
+        /////////
+        allItemsTable.setRowFactory(
+                new Callback<TableView<Item>, TableRow<Item>>() {
+                    @Override
+                    public TableRow<Item> call(TableView<Item> tableView) {
+                        TableRow<Item> row = new TableRow<>();
+                        ContextMenu cmenu = new ContextMenu();
+                        MenuItem add = new MenuItem("Dodaj");
+
+                        add.setOnAction(event -> {
+                            documentItemsTable.getItems().add(new DocumentItem(row.getItem(), document));
+                        });
+                        cmenu.getItems().add(add);
+                        row.setContextMenu(cmenu);
+                        return row;
+                    }
+                });
+
+        refreshTable();
+    }
+
+    private void refreshTable() {
+        documentItemsTable.getItems().clear();
+        documentItemsTable.getItems().addAll(document.getItems());
     }
 
     @FXML
@@ -149,12 +205,62 @@ public class DocumentPropertiesController {
     }
 
     @FXML
+    public void save() {
+
+        ArrayList ar = new ArrayList<>(Arrays.asList(documentItemsTable.getItems().toArray()));
+        Set<DocumentItem> newItemsSet = new HashSet<DocumentItem>(ar);//todo: clean it with Java 9
+        //document.setItems(newItemsSet); /*cause bug*/
+        document.getItems().clear();
+        document.getItems().addAll(newItemsSet);
+
+        try {
+            model.updateDocument(document);
+        } catch (RowNotFoundException e) {
+            AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Nie znalaziono dokumentu. Mógł zostać usunięty z bazy.");
+            //model.refreshDocument(document);
+            //refreshTable();
+            closeWindowWithFail();
+        } catch (OptimisticLockException e) {
+            AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Dokument został w międzyczasie zaktualizowany przez innego użytkownika.");
+            //model.refreshDocument(document);
+            //refreshTable();
+            closeWindowWithFail();
+        } catch (Exception e) {
+            AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Nieznany błąd.");
+            //model.refreshDocument(document);
+            //refreshTable();
+            closeWindowWithFail();
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void closeWindowWithFail() {
+        actionResult = ActionResult.FAIL;
+        documentItemsTable.getScene().getWindow().hide();
+    }
+
+    @FXML
     public void cancelDocumentAddOrEdit() {
         actionResult = ActionResult.CANCEL;
         documentItemsTable.getScene().getWindow().hide();
     }
 
-    private double netValue(double gross, double tax) {
-        return gross * (100.0 - tax) / 100.0;
+    public ActionResult getActionResult() {
+        return actionResult;
+    }
+
+    private Double multiplyNullable(Double a, Double b) {
+        if (a != null && b != null) {
+            return a * b;
+        }
+        return 0.0;
+    }
+
+    private double netValue(Double gross, Double tax) {
+        if (gross != null && tax != null) {
+            return gross * (100.0 - tax) / 100.0;
+        }
+        return 0;
     }
 }

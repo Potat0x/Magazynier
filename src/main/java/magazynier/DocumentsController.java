@@ -16,6 +16,8 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static magazynier.DocumentPropertiesController.*;
+
 @SuppressWarnings("unchecked")
 public class DocumentsController {
     public TableView docTable;
@@ -49,7 +51,7 @@ public class DocumentsController {
         FXMLLoader itemStageLoader = new FXMLLoader(getClass().getResource("/fxml/document_properties.fxml"));
 
         Document slectedDoc = (Document) docTable.getSelectionModel().getSelectedItem();
-        DocumentPropertiesController ic = new DocumentPropertiesController(slectedDoc, DocumentPropertiesController.Mode.EDIT_ITEM);
+        DocumentPropertiesController ic = new DocumentPropertiesController(slectedDoc, Mode.EDIT_ITEM);
         itemStageLoader.setController(ic);
         Stage itemStage = new Stage();
         itemStage.setTitle("Dokument");
@@ -62,5 +64,10 @@ public class DocumentsController {
 
         itemStage.setScene(new Scene(parent));
         itemStage.showAndWait();
+
+        if (ActionResult.FAIL == ic.getActionResult()) {
+            refreshTable();
+        }
+
     }
 }
