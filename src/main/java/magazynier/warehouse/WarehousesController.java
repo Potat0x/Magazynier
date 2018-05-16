@@ -2,6 +2,7 @@ package magazynier.warehouse;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -38,7 +39,6 @@ public class WarehousesController {
 
     @FXML
     public void initialize() {
-
         warehousesTable.setRowFactory(
                 new Callback<TableView<Warehouse>, TableRow<Warehouse>>() {
                     @Override
@@ -66,26 +66,7 @@ public class WarehousesController {
                             }
                         });
 
-                        add.setOnAction(event -> {
-
-                            TextInputDialog t = new TextInputDialog();
-                            t.setGraphic(null);
-                            t.setTitle("Dodawanie magazynu");
-                            t.setHeaderText("Podaj nazwę nowego magazynu");
-                            t.getEditor().textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_NAME_LEN)));
-                            Optional<String> optName = t.showAndWait();
-
-                            optName.ifPresent(warehouseName -> {
-                                if (warehouseName.length() <= MAX_NAME_LEN) {
-                                    Warehouse newWarehouse = new Warehouse();
-                                    newWarehouse.setName(warehouseName);
-                                    model.addWarehouse(newWarehouse);//todo: add error handling
-                                    tableView.getItems().add(newWarehouse);
-                                } else {
-                                    AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzona nazwa magazynu jest za długa.\n(maksymalna długość: 30 znaków");
-                                }
-                            });
-                        });
+                        add.setOnAction(event -> addWarehouse());
 
                         cmenu.getItems().add(add);
                         cmenu.getItems().add(del);
@@ -120,5 +101,27 @@ public class WarehousesController {
         });
 
         refreshTable();
+    }
+
+    @FXML
+    public void addWarehouse() {
+        TextInputDialog t = new TextInputDialog();
+        t.setGraphic(null);
+        t.setTitle("Dodawanie magazynu");
+        t.setHeaderText("Podaj nazwę nowego magazynu");
+        t.getEditor().textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_NAME_LEN)));
+        Optional<String> optName = t.showAndWait();
+
+        optName.ifPresent(warehouseName -> {
+            if (warehouseName.length() <= MAX_NAME_LEN) {
+                Warehouse newWarehouse = new Warehouse();
+                newWarehouse.setName(warehouseName);
+                model.addWarehouse(newWarehouse);//todo: add error handling
+                warehousesTable.getItems().add(newWarehouse);
+            } else {
+                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzona nazwa magazynu jest za długa.\n(maksymalna długość: 30 znaków");
+            }
+        });
+
     }
 }
