@@ -3,6 +3,7 @@ package magazynier.item;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import magazynier.MeasurementUnit;
 import magazynier.RowNotFoundException;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.TextFieldCorrectnessIndicator;
@@ -29,7 +30,7 @@ public class ItemController {
     public TextField name;
     public TextField ean;
     public TextField itemModelNumber;
-    public TextField measurementUnit;
+    public ComboBox measurementUnit;
     public TextField price;
     public TextField desiredQuantity;
     public ComboBox vatRate;
@@ -56,7 +57,9 @@ public class ItemController {
 
         itemModelNumber.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_ITEM_MODEL_NUMBER_LENGTH)));
         name.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_ITEM_NAME_LENGTH)));
-        measurementUnit.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_MEASUR_UNIT_NAME_LENGTH)));
+        //measurementUnit.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_MEASUR_UNIT_NAME_LENGTH)));
+        measurementUnit.getItems().addAll(model.getMeasurementUnitsList());
+
 
         if (mode == Mode.EDIT_ITEM) {
             updateFormFromItem(item);
@@ -142,7 +145,7 @@ public class ItemController {
         item.setEan(ean.getText());
         item.setItemModelNumber(itemModelNumber.getText());
         item.setName(name.getText());
-        item.setMeasurementUnit(measurementUnit.getText());
+        item.setMeasurementUnit((MeasurementUnit) measurementUnit.getSelectionModel().getSelectedItem());
         item.setDescription(description.getText());
         item.setVatRate((VatRate) vatRate.getSelectionModel().getSelectedItem());
         item.setCurrentPrice(stringToDouble(price.getText()));
@@ -153,7 +156,7 @@ public class ItemController {
         ean.setText(item.getEan());
         itemModelNumber.setText(item.getItemModelNumber());
         name.setText(item.getName());
-        measurementUnit.setText(item.getMeasurementUnit());
+        measurementUnit.getSelectionModel().select(item.getMeasurementUnit());
         description.setText(item.getDescription());
         vatRate.getSelectionModel().select(item.getVatRate());
         price.setText(String.valueOf(item.getCurrentPrice()));
@@ -166,8 +169,7 @@ public class ItemController {
 
     private boolean validFormMaxLength() {
         if ((itemModelNumber.getText() == null || itemModelNumber.getText().length() <= MAX_ITEM_MODEL_NUMBER_LENGTH) &&
-                (name.getText() == null || name.getText().length() <= MAX_ITEM_NAME_LENGTH) &&
-                (measurementUnit.getText() == null || measurementUnit.getText().length() <= MAX_MEASUR_UNIT_NAME_LENGTH)) {
+                (name.getText() == null || name.getText().length() <= MAX_ITEM_NAME_LENGTH)) {
             return true;
         }
         return false;

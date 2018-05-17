@@ -18,10 +18,11 @@
         <property name="street" column="street" type="string"/>
         <property name="email" column="email" type="string"/>
         <property name="phone" column="phone" type="string"/>
-        <property name="contractorType" column="contractor_type" type="string"/>
-        <property name="entityType" column="entity_type" type="string"/>
+        <property name="entityType" column="buyer_or_seller" type="string"/>
         <property name="nip" column="nip" type="string"/>
         <property name="pesel" column="pesel" type="string"/>
+
+        <many-to-one name="contractorType" column="contractor_type_id" class="magazynier.ContractorType" not-null="true"/>
 
     </class>
 

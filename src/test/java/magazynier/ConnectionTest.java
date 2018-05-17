@@ -14,7 +14,7 @@ public class ConnectionTest {
     public void connectionTest() {
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "magazynier", "m1234");
+            Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "magazynier2", "mpwd");
 
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("SELECT sysdate FROM dual");

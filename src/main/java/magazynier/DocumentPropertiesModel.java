@@ -8,6 +8,9 @@ public class DocumentPropertiesModel {
     public ArrayList getItemsList() {
         return DAO.readTable("Item");
     }
+    public ArrayList getDocTypesList() {
+        return DAO.readTable("DocumentType");
+    }
 
     public void updateDocument(Document document) throws RowNotFoundException {
         DAO.update(document);
@@ -23,5 +26,9 @@ public class DocumentPropertiesModel {
 
     public void addDocument(Document document) throws PropertyValueException {
         DAO.add(document);
+    }
+
+    public ArrayList getMarginTypesList() {
+        return DAO.readTable("MarginType");
     }
 }

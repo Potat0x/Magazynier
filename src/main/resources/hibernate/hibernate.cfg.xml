@@ -12,8 +12,8 @@
 
         <property name="connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
         <property name="connection.url">jdbc:oracle:thin:@localhost:1521:xe</property>
-        <property name="connection.username">magazynier</property>
-        <property name="connection.password">m1234</property>
+        <property name="connection.username">magazynier2</property>
+        <property name="connection.password">mpwd</property>
 
         <property name="connection.pool_size">1</property>
 
@@ -37,6 +37,11 @@
         <mapping resource="/hibernate/VatRate.hbm.xml"/>
         <mapping resource="/hibernate/Document.hbm.xml"/>
         <mapping resource="/hibernate/DocumentItem.hbm.xml"/>
+
+        <mapping resource="/hibernate/ContractorType.hbm.xml"/>
+        <mapping resource="/hibernate/MeasurementUnit.hbm.xml"/>
+        <mapping resource="/hibernate/DocumentType.hbm.xml"/>
+        <mapping resource="/hibernate/MarginType.hbm.xml"/>
 
     </session-factory>
 

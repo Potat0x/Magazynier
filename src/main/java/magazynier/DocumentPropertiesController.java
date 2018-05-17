@@ -2,9 +2,14 @@ package magazynier;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
 import magazynier.contractor.Contractor;
 import magazynier.item.Item;
@@ -44,13 +49,15 @@ public class DocumentPropertiesController {
 
     public TableColumn nameCol;
     public TableColumn eanCol;
-    public TableColumn quantityCol;
+    public TableColumn<DocumentItem, String> quantityCol;
     public TableColumn measurmntUnitCol;
     public TableColumn taxCol;
     public TableColumn priceGrossCol;
     public TableColumn priceNetCol;
     public TableColumn valueGrossCol;
     public TableColumn valueNetCol;
+    public TableColumn<DocumentItem, String> margin;
+    public TableColumn marginType;
 
     public Label netDocVal;
     public Label grossDocVal;
@@ -92,9 +99,13 @@ public class DocumentPropertiesController {
         allItemsFilter.tie(modelFilterField, Item::getItemModelNumber);
         allItemsFilter.tie(descriptionFilterField, Item::getDescription);
 
-        quantityCol.setCellValueFactory(new PropertyValueFactory<Double, Document>("quantity"));
-        taxCol.setCellValueFactory(new PropertyValueFactory<Double, Document>("tax"));
-        priceGrossCol.setCellValueFactory(new PropertyValueFactory<Double, Document>("price"));
+        measurmntUnitCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
+                new ReadOnlyObjectWrapper(c.getValue().getQuantity()));
+        taxCol.setCellValueFactory(new PropertyValueFactory<Double, DocumentItem>("tax"));
+        priceGrossCol.setCellValueFactory(new PropertyValueFactory<Double, DocumentItem>("price"));
+
+        measurmntUnitCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
+                new ReadOnlyObjectWrapper(c.getValue().getItem().getMeasurementUnit().getUnitName()));
 
         nameCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
                 new ReadOnlyObjectWrapper(c.getValue().getItem().getName()));
@@ -102,30 +113,34 @@ public class DocumentPropertiesController {
         eanCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
                 new ReadOnlyObjectWrapper(c.getValue().getItem().getEan()));
 
-        measurmntUnitCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
-                new ReadOnlyObjectWrapper(c.getValue().getItem().getMeasurementUnit()));
 
-        priceNetCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
+//        measurmntUnitCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
+//                new ReadOnlyObjectWrapper(c.getValue().getItem().getMeasurementUnit()));
+
+        priceNetCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, Double>, ObservableValue<String>>) c ->
                 new ReadOnlyObjectWrapper(netValue(c.getValue().getPrice(), c.getValue().getTax())));
 
-        valueGrossCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
+        valueGrossCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, Double>, ObservableValue<String>>) c ->
                 new ReadOnlyObjectWrapper(multiplyNullable(c.getValue().getPrice(), c.getValue().getQuantity())));
 
-        valueNetCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
+        valueNetCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, Double>, ObservableValue<String>>) c ->
                 new ReadOnlyObjectWrapper(netValue(multiplyNullable(c.getValue().getPrice(), c.getValue().getQuantity()), c.getValue().getTax())));
 
         allItemsNameCol.setCellValueFactory(new PropertyValueFactory<String, Item>("name"));
         allItemsEanCol.setCellValueFactory(new PropertyValueFactory<String, Item>("ean"));
-        allItemsPriceCol.setCellValueFactory(new PropertyValueFactory<String, Item>("currentPrice"));
+        allItemsPriceCol.setCellValueFactory(new PropertyValueFactory<Double, Item>("currentPrice"));
         allItemsModelNumberCol.setCellValueFactory(new PropertyValueFactory<String, Item>("itemModelNumber"));
 
-        allItemsDescrCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Item, String>, ObservableValue>) param -> {
+        allItemsDescrCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Item, String>, ObservableValue>) param ->
+        {
             String description = Optional.ofNullable(param.getValue().getDescription()).orElse("<brak opisu>");
             return new ReadOnlyObjectWrapper(description.replaceAll("\n", " "));
         });
 
-        for (DocumentType t : DocumentType.values())
-            docType.getItems().add(t.getType());
+//        for (DocumentType t : model.getDocTypesList())
+//            docType.getItems().add(t.getType());
+
+        docType.getItems().addAll(model.getDocTypesList());
 
         date.setValue(LocalDate.now());
         workerCmbox.getItems().addAll(model.getWorkersList());
@@ -133,8 +148,8 @@ public class DocumentPropertiesController {
 
         name.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_DOC_NAME_LEN)));
 
-        if (mode == Mode.EDIT_ITEM) {
 
+        if (mode == Mode.EDIT_ITEM) {
             updateFormFromDocument();
 
             documentItemsTable.getItems().addAll(document.getItems());
@@ -147,45 +162,84 @@ public class DocumentPropertiesController {
         }
 
 
-        documentItemsTable.setRowFactory(
-                new Callback<TableView<DocumentItem>, TableRow<DocumentItem>>() {
-                    @Override
-                    public TableRow<DocumentItem> call(TableView<DocumentItem> tableView) {
-                        TableRow<DocumentItem> row = new TableRow<>();
+        documentItemsTable.setRowFactory(new Callback<TableView<DocumentItem>, TableRow<DocumentItem>>() {
+            @Override
+            public TableRow<DocumentItem> call(TableView<DocumentItem> tableView) {
+                TableRow<DocumentItem> row = new TableRow<>();
 
-                        ContextMenu cmenu = new ContextMenu();
-                        MenuItem del = new MenuItem("Usuń");
-                        del.setOnAction(event -> {
+                ContextMenu cmenu = new ContextMenu();
+                MenuItem del = new MenuItem("Usuń");
+                del.setOnAction(event -> {
 
-                            if (row.getItem() != null) {
-                                documentItemsTable.getItems().remove(row.getItem());
-                            }
-                        });
-
-                        cmenu.getItems().add(del);
-                        row.setContextMenu(cmenu);
-                        return row;
+                    if (row.getItem() != null) {
+                        documentItemsTable.getItems().remove(row.getItem());
                     }
                 });
 
+                cmenu.getItems().add(del);
+                row.setContextMenu(cmenu);
+                return row;
+            }
+        });
 
-        /////////
-        allItemsTable.setRowFactory(
-                new Callback<TableView<Item>, TableRow<Item>>() {
+        marginType.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
+                new ReadOnlyObjectWrapper(String.valueOf(c.getValue().getMarginType())));
+        marginType.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(model.getMarginTypesList())));
+        marginType.setOnEditCommit(
+                new EventHandler<CellEditEvent<DocumentItem, MarginType>>() {
                     @Override
-                    public TableRow<Item> call(TableView<Item> tableView) {
-                        TableRow<Item> row = new TableRow<>();
-                        ContextMenu cmenu = new ContextMenu();
-                        MenuItem add = new MenuItem("Dodaj");
-
-                        add.setOnAction(event -> {
-                            documentItemsTable.getItems().add(new DocumentItem(row.getItem(), document));
-                        });
-                        cmenu.getItems().add(add);
-                        row.setContextMenu(cmenu);
-                        return row;
+                    public void handle(CellEditEvent<DocumentItem, MarginType> t) {
+                        DocumentItem di = ((DocumentItem) t.getTableView().getItems().get(t.getTablePosition().getRow()));
+                        di.setMarginType(t.getNewValue());
                     }
+                }
+        );
+
+        quantityCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
+                new ReadOnlyObjectWrapper(String.valueOf(c.getValue().getQuantity())));
+        quantityCol.setCellFactory(TextFieldTableCell.forTableColumn());//todo!!!
+        quantityCol.setOnEditCommit(new EventHandler<CellEditEvent<DocumentItem, String>>() {
+            @Override
+            public void handle(CellEditEvent<DocumentItem, String> event) {
+                DocumentItem di = event.getTableView().getItems().get(event.getTablePosition().getRow());
+                di.setQuantity(Double.parseDouble(event.getNewValue()));
+                documentItemsTable.refresh();
+            }
+        });
+
+        margin.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
+                new ReadOnlyObjectWrapper(String.valueOf(Optional.ofNullable(c.getValue().getMargin()).orElse(0.0))));
+        margin.setCellFactory(TextFieldTableCell.forTableColumn());//todo!!!
+        margin.setOnEditCommit(new EventHandler<CellEditEvent<DocumentItem, String>>() {
+            @Override
+            public void handle(CellEditEvent<DocumentItem, String> event) {
+                DocumentItem di = event.getTableView().getItems().get(event.getTablePosition().getRow());
+                di.setMargin(Double.valueOf(event.getNewValue()));
+                documentItemsTable.refresh();
+            }
+        });
+        //todo: dodać zmiane wartosci sprzedaży (ceny netto)/lub dodatkowej kolumny na własną cene, żeby był podgląd na starą
+
+        documentItemsTable.setStyle("-fx-text-alignment: CENTER-LEFT; -fx-background-color: #afff6d;");
+
+        ///////
+        allItemsTable.setRowFactory(new Callback<TableView<Item>, TableRow<Item>>() {
+            @Override
+            public TableRow<Item> call(TableView<Item> tableView) {
+                TableRow<Item> row = new TableRow<>();
+                ContextMenu cmenu = new ContextMenu();
+                MenuItem add = new MenuItem("Dodaj");
+
+                add.setOnAction(event -> {
+                    DocumentItem newDocItem = new DocumentItem(row.getItem(), document);
+                    newDocItem.setMarginType((MarginType) model.getMarginTypesList().iterator().next());
+                    documentItemsTable.getItems().add(newDocItem);
                 });
+                cmenu.getItems().add(add);
+                row.setContextMenu(cmenu);
+                return row;
+            }
+        });
 
         refreshTable();
     }
@@ -246,7 +300,7 @@ public class DocumentPropertiesController {
     }
 
     private boolean isFormValid() {
-        return date.getValue() != null && workerCmbox.getSelectionModel().getSelectedItem() != null && contractorCmbox.getSelectionModel().getSelectedItem() != null && name.getText().length() <= MAX_DOC_NAME_LEN;
+        return docType.getValue() != null && date.getValue() != null && workerCmbox.getSelectionModel().getSelectedItem() != null && contractorCmbox.getSelectionModel().getSelectedItem() != null && (name.getText() == null || name.getText().length() <= MAX_DOC_NAME_LEN);
     }
 
     private void updateDocumentFromForm() {
@@ -254,20 +308,21 @@ public class DocumentPropertiesController {
         document.setDate(Date.valueOf(date.getValue()));
         document.setWorker((Worker) workerCmbox.getSelectionModel().getSelectedItem());
         document.setContractor((Contractor) contractorCmbox.getSelectionModel().getSelectedItem());
+        document.setDocumentType((DocumentType) docType.getSelectionModel().getSelectedItem());
     }
 
     private void updateFormFromDocument() {
         Date docDate = document.getDate();
         date.setValue((date != null) ? docDate.toLocalDate() : null);
+
         name.setText(document.getName());
+        docType.getSelectionModel().select(document.getDocumentType());
 
         Worker worker = document.getWorker();
         workerCmbox.getSelectionModel().select(worker);
-        //workerCmbox.setValue((worker != null) ? worker.getFullName() : null);
 
         Contractor contractor = document.getContractor();
         contractorCmbox.getSelectionModel().select(contractor);
-        //contractorCmbox.setValue(((contractor != null) ? contractor.getContractorName() : null));
     }
 
     @FXML

@@ -14,7 +14,6 @@
         <property name="ean" column="ean" type="string"/>
         <property name="itemModelNumber" column="item_model_number" type="string"/>
         <property name="name" column="I_NAME" type="string"/>
-        <property name="measurementUnit" column="measurement_unit" type="string"/>
         <property name="currentPrice" column="current_price" type="double"/>
         <property name="desiredQuantity" column="desired_quantity" type="double"/>
         <property name="description" column="description" type="string"/>
@@ -22,6 +21,10 @@
 
         <many-to-one name="vatRate" class="magazynier.item.VatRate"
                      column="VAT_RATE_ID" unique="false" not-null="true"
+        />
+
+        <many-to-one name="measurementUnit" column="measurement_unit_id" not-null="true"
+                     class="magazynier.MeasurementUnit"
         />
         <!--cascade="all"-->
     </class>

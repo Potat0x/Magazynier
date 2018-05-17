@@ -11,6 +11,7 @@ import java.util.Set;
 public class Document implements Indexed {
     private Date date;
     private String name;
+    private DocumentType documentType;
     private Contractor contractor;
     private Worker worker;
     private Integer id;
@@ -42,6 +43,14 @@ public class Document implements Indexed {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public DocumentType getDocumentType() {
+        return documentType;
+    }
+
+    public void setDocumentType(DocumentType documentType) {
+        this.documentType = documentType;
     }
 
     public Contractor getContractor() {
@@ -78,6 +87,8 @@ public class Document implements Indexed {
 
         if (date != null ? !date.equals(document.date) : document.date != null) return false;
         if (name != null ? !name.equals(document.name) : document.name != null) return false;
+        if (documentType != null ? !documentType.equals(document.documentType) : document.documentType != null)
+            return false;
         if (contractor != null ? !contractor.equals(document.contractor) : document.contractor != null) return false;
         if (worker != null ? !worker.equals(document.worker) : document.worker != null) return false;
         if (id != null ? !id.equals(document.id) : document.id != null) return false;
@@ -88,6 +99,7 @@ public class Document implements Indexed {
     public int hashCode() {
         int result = date != null ? date.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (documentType != null ? documentType.hashCode() : 0);
         result = 31 * result + (contractor != null ? contractor.hashCode() : 0);
         result = 31 * result + (worker != null ? worker.hashCode() : 0);
         result = 31 * result + (id != null ? id.hashCode() : 0);

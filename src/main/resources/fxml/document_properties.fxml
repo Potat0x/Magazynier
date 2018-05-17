@@ -76,7 +76,7 @@
                         <Font size="15.0" />
                     </font>
                 </Label>
-                <TableView fx:id="documentItemsTable" prefHeight="166.0" prefWidth="491.0" VBox.vgrow="ALWAYS">
+                <TableView fx:id="documentItemsTable" editable="true" prefHeight="166.0" prefWidth="491.0" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn prefWidth="40.0" text="Lp" visible="false" />
                         <TableColumn fx:id="nameCol" prefWidth="90.0" text="Nazwa" />
@@ -89,8 +89,8 @@
                         <TableColumn prefWidth="70.0" text="Stan/Magazyn" visible="false" />
                         <TableColumn fx:id="valueGrossCol" minWidth="40.0" prefWidth="95.0" text="Wartość brutto" />
                         <TableColumn fx:id="valueNetCol" minWidth="40.0" prefWidth="95.0" text="Wartość netto" />
-                  <TableColumn prefWidth="75.0" text="Rodzaj marży" />
-                  <TableColumn prefWidth="75.0" text="Marża" />
+                  <TableColumn fx:id="marginType" prefWidth="75.0" text="Rodzaj marży" />
+                  <TableColumn fx:id="margin" prefWidth="75.0" text="Marża" />
                     </columns>
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

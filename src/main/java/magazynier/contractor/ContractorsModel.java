@@ -11,6 +11,10 @@ public class ContractorsModel {
         return DAO.readTable("Contractor");
     }
 
+    public ArrayList getContractorTypesList() {
+        return DAO.readTable("ContractorType");
+    }
+
     public void updateContractor(Contractor contractor) throws RowNotFoundException {
         DAO.update(contractor);
     }
@@ -22,4 +26,5 @@ public class ContractorsModel {
     public void deleteContractor(Contractor contractor) throws RowNotFoundException {
         DAO.delete(contractor);
     }
+
 }

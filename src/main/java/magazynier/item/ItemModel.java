@@ -9,9 +9,14 @@ import java.util.ArrayList;
 public class ItemModel {
 
     private static ArrayList VatList = DAO.readTable("VatRate");
+    private static ArrayList MeasurementUnitList = DAO.readTable("MeasurementUnit");
 
     public static ArrayList getVatList() {
         return VatList;
+    }
+
+    public static ArrayList getMeasurementUnitsList() {
+        return MeasurementUnitList;
     }
 
     public ArrayList getItemsList() {

@@ -1,5 +1,6 @@
 package magazynier.contractor;
 
+import magazynier.ContractorType;
 import magazynier.utils.Indexed;
 
 public class Contractor implements Indexed {
@@ -11,7 +12,7 @@ public class Contractor implements Indexed {
     private String street;
     private String email;
     private String phone;
-    private String contractorType;
+    private ContractorType contractorType;
     private String entityType;
     private String nip;
     private String pesel;
@@ -73,11 +74,11 @@ public class Contractor implements Indexed {
         this.phone = phone;
     }
 
-    public String getContractorType() {
+    public ContractorType getContractorType() {
         return contractorType;
     }
 
-    public void setContractorType(String contractorType) {
+    public void setContractorType(ContractorType contractorType) {
         this.contractorType = contractorType;
     }
 
@@ -115,9 +116,10 @@ public class Contractor implements Indexed {
     }
 
     public String getFullName() {
-        if ("Firma".equals(entityType)) {
+        if ("Firma".equals(contractorType.toString())) {
             return getContractorName();
         } else {
+            System.out.println("Firma" + "!=" + contractorType.toString());
             return getFirstName() + " " + getLastName();
         }
     }

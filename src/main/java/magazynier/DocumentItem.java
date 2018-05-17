@@ -3,6 +3,10 @@ package magazynier;
 import magazynier.item.Item;
 import magazynier.item.VatRate;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
+import java.util.function.Function;
+
 public class DocumentItem {
 
     private Integer transactionSign;
@@ -10,7 +14,7 @@ public class DocumentItem {
     private Double price;
     private VatRate vatRate;
     private Double tax;
-    private Character marginType;
+    private MarginType marginType;
     private Double margin;
     private String batchNumber;
     private Integer id;
@@ -25,6 +29,8 @@ public class DocumentItem {
         this.document = document;
         vatRate = item.getVatRate();
         price = item.getCurrentPrice();
+        margin = 0.0;
+        transactionSign = Optional.ofNullable(document.getDocumentType()).map(dt -> dt.getTag()).orElse(0);
     }
 
     public Integer getTransactionSign() {
@@ -67,11 +73,11 @@ public class DocumentItem {
         this.tax = tax;
     }
 
-    public Character getMarginType() {
+    public MarginType getMarginType() {
         return marginType;
     }
 
-    public void setMarginType(Character marginType) {
+    public void setMarginType(MarginType marginType) {
         this.marginType = marginType;
     }
 
@@ -115,6 +121,7 @@ public class DocumentItem {
         this.document = document;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -132,8 +139,7 @@ public class DocumentItem {
         if (margin != null ? !margin.equals(that.margin) : that.margin != null) return false;
         if (batchNumber != null ? !batchNumber.equals(that.batchNumber) : that.batchNumber != null) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (item != null ? !item.equals(that.item) : that.item != null) return false;
-        return document != null ? document.equals(that.document) : that.document == null;
+        return item != null ? item.equals(that.item) : that.item == null;
     }
 
     @Override
@@ -148,7 +154,6 @@ public class DocumentItem {
         result = 31 * result + (batchNumber != null ? batchNumber.hashCode() : 0);
         result = 31 * result + (id != null ? id.hashCode() : 0);
         result = 31 * result + (item != null ? item.hashCode() : 0);
-        //result = 31 * result + (document != null ? document.hashCode() : 0);
         return result;
     }
 }

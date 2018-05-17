@@ -20,6 +20,9 @@
         <many-to-one name="worker" class="magazynier.worker.Worker"
                      column="worker_id" unique="false" not-null="true"
         />
+        <many-to-one name="documentType" class="magazynier.DocumentType"
+                     column="document_type_id" not-null="true"
+        />
         <!--cascade="all"-->
         <set name="items" cascade="all-delete-orphan" inverse="true">
             <key column="document_id"/>

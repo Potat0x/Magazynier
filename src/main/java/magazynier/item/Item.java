@@ -1,5 +1,6 @@
 package magazynier.item;
 
+import magazynier.MeasurementUnit;
 import magazynier.utils.Indexed;
 
 public class Item implements Indexed {
@@ -7,12 +8,11 @@ public class Item implements Indexed {
     private String ean;
     private String itemModelNumber;
     private String name;
-    private String measurementUnit;
+    private MeasurementUnit measurementUnit;
     private Double currentPrice;
     private Double desiredQuantity;
     private String description;
     private Integer id;
-    //    private Integer vatRateId;
     private VatRate vatRate;
 
     public VatRate getVatRate() {
@@ -48,11 +48,11 @@ public class Item implements Indexed {
         this.name = name;
     }
 
-    public String getMeasurementUnit() {
+    public MeasurementUnit getMeasurementUnit() {
         return measurementUnit;
     }
 
-    public void setMeasurementUnit(String measurementUnit) {
+    public void setMeasurementUnit(MeasurementUnit measurementUnit) {
         this.measurementUnit = measurementUnit;
     }
 

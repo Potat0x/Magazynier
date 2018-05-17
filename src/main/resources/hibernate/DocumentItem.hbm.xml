@@ -19,10 +19,11 @@
                      column="vat_rate_id" not-null="true"/>
 
         <property name="tax" column="tax" type="double"/>
-        <property name="marginType" column="margin_type" type="char"/>
         <property name="margin" column="margin" type="double"/>
         <property name="batchNumber" column="batch_number" type="string"/>
 
+        <many-to-one name="marginType" column="margin_types_id" class="magazynier.MarginType"
+                     not-null="true"/>
         <many-to-one name="item" column="item_id" class="magazynier.item.Item"
                      not-null="true"/>
         <many-to-one name="document" column="document_id" class="magazynier.Document"

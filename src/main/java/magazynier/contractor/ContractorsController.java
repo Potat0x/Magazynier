@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
+import magazynier.ContractorType;
 import magazynier.RowNotFoundException;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.FormCleaner;
@@ -77,7 +78,7 @@ public class ContractorsController {
     @FXML
     public void initialize() {
 
-        type.getItems().addAll(COMPANY, NATURAL_PERSON);
+        type.getItems().addAll(model.getContractorTypesList());
 
         contractorName.setDisable(true);
         nip.setDisable(true);
@@ -88,7 +89,7 @@ public class ContractorsController {
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 boolean isCompany = false;
                 if (newValue != null) {
-                    isCompany = newValue.equals(COMPANY);
+                    isCompany = newValue.toString().equals(COMPANY);
                 }
                 contractorName.setDisable(!isCompany);
                 nip.setDisable(!isCompany);
@@ -100,7 +101,7 @@ public class ContractorsController {
         firstNameCol.setCellValueFactory(new PropertyValueFactory<Contractor, String>("firstName"));
         lastNameCol.setCellValueFactory(new PropertyValueFactory<Contractor, String>("lastName"));
 
-        typeCol.setCellValueFactory(new PropertyValueFactory<Contractor, String>("entityType"));
+        typeCol.setCellValueFactory(new PropertyValueFactory<Contractor, ContractorType>("contractorType"));
 
         nameCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Contractor, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Contractor, String> p) {
@@ -148,7 +149,7 @@ public class ContractorsController {
         Contractor sc = (Contractor) contractorsTable.getSelectionModel().getSelectedItem();
 
         if (sc != null) {
-            type.getSelectionModel().select(sc.getEntityType());
+            type.getSelectionModel().select(sc.getContractorType());//todo: sc.contractorname?
             firstName.setText(sc.getFirstName());
             lastName.setText(sc.getLastName());
             contractorName.setText(sc.getContractorName());
@@ -286,7 +287,7 @@ public class ContractorsController {
         //contractorsTable.getSelectionModel().select(contractorsTable.getSelectionModel().getSelectedItem());
         FormCleaner.clearForm(form);
         FormCleaner.clearStyles(form);
-        type.getSelectionModel().select(COMPANY);
+        //type.getSelectionModel().select(COMPANY);
     }
 
     public void beginContractorEditing() {
@@ -312,10 +313,10 @@ public class ContractorsController {
         contractor.setPhone(phone.getText());
         contractor.setEmail(email.getText());
         contractor.setPesel(pesel.getText());
-        contractor.setNip(nip.getText());
+        contractor.setNip(nip.getText().replaceAll("[- ]", ""));
         contractor.setStreet(street.getText());
         contractor.setCity(city.getText());
-        contractor.setEntityType((String) type.getSelectionModel().getSelectedItem());
+        contractor.setContractorType((ContractorType) type.getSelectionModel().getSelectedItem());
     }
 
     private boolean validFormMaxLength() {
