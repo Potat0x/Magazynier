@@ -5,14 +5,20 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import magazynier.contractor.Contractor;
 import magazynier.item.Item;
+import magazynier.item.ItemController;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.PropertyTableFilter;
 import magazynier.utils.TextFieldCorrectnessIndicator;
@@ -21,24 +27,13 @@ import magazynier.worker.Worker;
 import org.hibernate.PropertyValueException;
 
 import javax.persistence.OptimisticLockException;
+import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class DocumentPropertiesController {
-
-
-    public enum Mode {
-        ADD_ITEM,
-        EDIT_ITEM
-    }
-
-    public enum ActionResult {
-        CONFIRM,
-        CANCEL,
-        FAIL
-    }
 
     public DatePicker date;
     public TextField name;
@@ -78,11 +73,11 @@ public class DocumentPropertiesController {
     final int MAX_DOC_NAME_LEN = 30;
 
     private Document document;
-    private Mode mode;
+    private ActionMode mode;
     private DocumentPropertiesModel model;
     private ActionResult actionResult;
 
-    public DocumentPropertiesController(Document document, Mode mode) {
+    public DocumentPropertiesController(Document document, ActionMode mode) {
         System.out.println("DocumentPropertiesController");
         this.document = document;
         this.mode = mode;
@@ -149,7 +144,7 @@ public class DocumentPropertiesController {
         name.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_DOC_NAME_LEN)));
 
 
-        if (mode == Mode.EDIT_ITEM) {
+        if (mode == ActionMode.EDIT) {
             updateFormFromDocument();
 
             documentItemsTable.getItems().addAll(document.getItems());
@@ -220,7 +215,7 @@ public class DocumentPropertiesController {
         });
         //todo: dodać zmiane wartosci sprzedaży (ceny netto)/lub dodatkowej kolumny na własną cene, żeby był podgląd na starą
 
-        documentItemsTable.setStyle("-fx-text-alignment: CENTER-LEFT; -fx-background-color: #afff6d;");
+        //documentItemsTable.setStyle("-fx-text-alignment: CENTER-LEFT; -fx-background-color: #afff6d;");
 
         ///////
         allItemsTable.setRowFactory(new Callback<TableView<Item>, TableRow<Item>>() {
@@ -270,14 +265,14 @@ public class DocumentPropertiesController {
             updateDocumentFromForm();
 
             try {
-                if (mode == Mode.EDIT_ITEM) {
+                if (mode == ActionMode.EDIT) {
                     model.updateDocument(document);
                     actionResult = ActionResult.CONFIRM;
-                } else if (mode == Mode.ADD_ITEM) {
+                } else if (mode == ActionMode.ADD) {
                     model.addDocument(document);
                     actionResult = ActionResult.CONFIRM;
                     AlertLauncher.showAndWait(Alert.AlertType.INFORMATION, "Nowy dokument", null, "Dokument został dodany.");
-                    mode = Mode.EDIT_ITEM;
+                    mode = ActionMode.EDIT;
                 }
 
             } catch (RowNotFoundException e) {

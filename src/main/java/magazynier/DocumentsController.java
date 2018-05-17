@@ -20,9 +20,6 @@ import javax.persistence.PersistenceException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static magazynier.DocumentPropertiesController.ActionResult;
-import static magazynier.DocumentPropertiesController.Mode;
-
 @SuppressWarnings("unchecked")
 public class DocumentsController {
     public TableView docTable;
@@ -64,7 +61,7 @@ public class DocumentsController {
         docTable.getItems().addAll(wl);
     }
 
-    private ActionResult showDocumentWindow(Document document, Mode mode) {
+    private ActionResult showDocumentWindow(Document document, ActionMode mode) {
         FXMLLoader itemStageLoader = new FXMLLoader(getClass().getResource("/fxml/document_properties.fxml"));
 
         DocumentPropertiesController dcp = new DocumentPropertiesController(document, mode);
@@ -86,7 +83,7 @@ public class DocumentsController {
 
     public void editDocumentProperties() {
         Document slectedDoc = (Document) docTable.getSelectionModel().getSelectedItem();
-        ActionResult actionResult = showDocumentWindow(slectedDoc, Mode.EDIT_ITEM);
+        ActionResult actionResult = showDocumentWindow(slectedDoc, ActionMode.EDIT);
         if (actionResult == ActionResult.FAIL) {
             refreshTable();
         } else {
@@ -96,7 +93,7 @@ public class DocumentsController {
 
     public void addDocument() {
         Document newDoc = new Document();
-        ActionResult actionResult = showDocumentWindow(newDoc, Mode.ADD_ITEM);
+        ActionResult actionResult = showDocumentWindow(newDoc, ActionMode.ADD);
         refreshTable();
     }
 

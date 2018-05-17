@@ -70,8 +70,8 @@ public class AssortmentController {
 
     public void addItem() {
         Item item = new Item();
-        ItemController.ActionResult actionResult = showItemWindow(item, ItemController.Mode.ADD_ITEM);
-        if (actionResult == ItemController.ActionResult.CONFIRM) {
+        ActionResult actionResult = showItemWindow(item, ActionMode.ADD);
+        if (actionResult == ActionResult.CONFIRM) {
             itemsTable.getItems().add(item);
             itemsTable.refresh();
         }
@@ -79,11 +79,11 @@ public class AssortmentController {
 
     public void editItem() {
         Item item = (Item) itemsTable.getSelectionModel().getSelectedItem();
-        ItemController.ActionResult actionResult = showItemWindow(item, ItemController.Mode.EDIT_ITEM);
+        ActionResult actionResult = showItemWindow(item, ActionMode.EDIT);
 
-        if (actionResult == ItemController.ActionResult.CONFIRM) {
+        if (actionResult == ActionResult.CONFIRM) {
             itemsTable.refresh();
-        } else if (actionResult == ItemController.ActionResult.FAIL) {
+        } else if (actionResult == ActionResult.FAIL) {
             refreshTable();
         }
     }
@@ -112,7 +112,7 @@ public class AssortmentController {
         }
     }
 
-    private ItemController.ActionResult showItemWindow(Item item, ItemController.Mode mode) {
+    private ActionResult showItemWindow(Item item, ActionMode mode) {
         FXMLLoader itemStageLoader = new FXMLLoader(getClass().getResource("/fxml/item_window.fxml"));
         ItemController ic = new ItemController(item, mode);
         itemStageLoader.setController(ic);

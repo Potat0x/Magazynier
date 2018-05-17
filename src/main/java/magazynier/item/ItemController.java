@@ -3,6 +3,8 @@ package magazynier.item;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import magazynier.ActionMode;
+import magazynier.ActionResult;
 import magazynier.MeasurementUnit;
 import magazynier.RowNotFoundException;
 import magazynier.utils.AlertLauncher;
@@ -11,17 +13,6 @@ import magazynier.utils.validators.EanValidator;
 import magazynier.utils.validators.LengthValidator;
 
 public class ItemController {
-
-    public enum Mode {
-        ADD_ITEM,
-        EDIT_ITEM
-    }
-
-    public enum ActionResult {
-        CONFIRM,
-        CANCEL,
-        FAIL
-    }
 
     private final int MAX_ITEM_MODEL_NUMBER_LENGTH = 30;
     private final int MAX_ITEM_NAME_LENGTH = 50;
@@ -39,12 +30,12 @@ public class ItemController {
     public Button cancelButton;
     public Label titleLabel;
     private Item item;
-    private Mode mode;
+    private ActionMode mode;
     private ActionResult actionResult;
     private EanValidator eanValidator;
     private ItemModel model;
 
-    public ItemController(Item item, Mode mode) {
+    public ItemController(Item item, ActionMode mode) {
         this.item = item;
         this.mode = mode;
         actionResult = ActionResult.CANCEL;
@@ -61,11 +52,11 @@ public class ItemController {
         measurementUnit.getItems().addAll(model.getMeasurementUnitsList());
 
 
-        if (mode == Mode.EDIT_ITEM) {
+        if (mode == ActionMode.EDIT) {
             updateFormFromItem(item);
         }
 
-        if (mode == Mode.ADD_ITEM) {
+        if (mode == ActionMode.ADD) {
             titleLabel.setText("Dodaj");
         } else {
             titleLabel.setText("Edytuj");
@@ -73,7 +64,7 @@ public class ItemController {
 
         vatRate.getItems().addAll(ItemModel.getVatList());
 
-        if (mode == Mode.EDIT_ITEM) {
+        if (mode == ActionMode.EDIT) {
             vatRate.getSelectionModel().select(item.getVatRate());
         } else {
             vatRate.getSelectionModel().select(ItemModel.getVatList().get(0));
@@ -92,7 +83,7 @@ public class ItemController {
         if (formLengthValid && nipValid) {
             updateItemFromForm(item);
             actionResult = ActionResult.CONFIRM;
-            if (mode == Mode.ADD_ITEM) {
+            if (mode == ActionMode.ADD) {
                 try {
                     model.addItem(item);
                 } catch (Exception e) {
