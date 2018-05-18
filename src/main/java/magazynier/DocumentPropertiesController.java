@@ -169,6 +169,20 @@ public class DocumentPropertiesController {
             return row;
         });
 
+        priceGrossCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
+                new ReadOnlyObjectWrapper(String.valueOf(c.getValue().getPrice())));
+        priceGrossCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        priceGrossCol.setOnEditCommit(
+                new EventHandler<CellEditEvent<DocumentItem, String>>() {
+                    @Override
+                    public void handle(CellEditEvent<DocumentItem, String> t) {
+                        DocumentItem di = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                        di.setPrice(Double.parseDouble(t.getNewValue()));
+                        documentItemsTable.refresh();
+                    }
+                }
+        );
+
         marginType.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
                 new ReadOnlyObjectWrapper(String.valueOf(c.getValue().getMarginType())));
         marginType.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(model.getMarginTypesList())));
@@ -184,7 +198,7 @@ public class DocumentPropertiesController {
 
         quantityCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
                 new ReadOnlyObjectWrapper(String.valueOf(c.getValue().getQuantity())));
-        quantityCol.setCellFactory(TextFieldTableCell.forTableColumn());//todo!!!
+        quantityCol.setCellFactory(TextFieldTableCell.forTableColumn());
         quantityCol.setOnEditCommit(new EventHandler<CellEditEvent<DocumentItem, String>>() {
             @Override
             public void handle(CellEditEvent<DocumentItem, String> event) {
@@ -196,7 +210,7 @@ public class DocumentPropertiesController {
 
         margin.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
                 new ReadOnlyObjectWrapper(String.valueOf(Optional.ofNullable(c.getValue().getMargin()).orElse(0.0))));
-        margin.setCellFactory(TextFieldTableCell.forTableColumn());//todo!!!
+        margin.setCellFactory(TextFieldTableCell.forTableColumn());
         margin.setOnEditCommit(new EventHandler<CellEditEvent<DocumentItem, String>>() {
             @Override
             public void handle(CellEditEvent<DocumentItem, String> event) {
@@ -205,9 +219,7 @@ public class DocumentPropertiesController {
                 documentItemsTable.refresh();
             }
         });
-        //todo: dodać zmiane wartosci sprzedaży (ceny netto)/lub dodatkowej kolumny na własną cene, żeby był podgląd na starą
         //documentItemsTable.setStyle("-fx-text-alignment: CENTER-LEFT; -fx-background-color: #afff6d;");
-        ///////
         allItemsTable.setRowFactory(new Callback<TableView<Item>, TableRow<Item>>() {
             @Override
             public TableRow<Item> call(TableView<Item> tableView) {
