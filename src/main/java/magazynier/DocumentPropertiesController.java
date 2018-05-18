@@ -166,12 +166,7 @@ public class DocumentPropertiesController {
         if (mode == EDIT || mode == PREVIEW) {
             updateFormFromDocument();
             documentItemsTable.getItems().addAll(document.getItems());
-
-            double grossVal = document.getItems().stream().mapToDouble(di -> multiplyNullable(di.getQuantity(), di.getPrice())).sum();
-            grossDocVal.setText(Double.toString(grossVal) + " zł");
-
-            double netVal = document.getItems().stream().mapToDouble(di -> netValue(multiplyNullable(di.getQuantity(), di.getPrice()), di.getTax())).sum();
-            netDocVal.setText(Double.toString(netVal) + " zł");
+            refreshDocValLabels();
         }
 
         documentItemsTable.setRowFactory((Callback<TableView<DocumentItem>, TableRow<DocumentItem>>) tableView -> {
@@ -200,6 +195,7 @@ public class DocumentPropertiesController {
                     public void handle(CellEditEvent<DocumentItem, String> t) {
                         DocumentItem di = t.getTableView().getItems().get(t.getTablePosition().getRow());
                         di.setPrice(Double.parseDouble(t.getNewValue()));
+                        refreshDocValLabels();
                         documentItemsTable.refresh();
                     }
                 }
@@ -214,6 +210,7 @@ public class DocumentPropertiesController {
                     public void handle(CellEditEvent<DocumentItem, MarginType> t) {
                         DocumentItem di = t.getTableView().getItems().get(t.getTablePosition().getRow());
                         di.setMarginType(t.getNewValue());
+                        refreshDocValLabels();
                     }
                 }
         );
@@ -226,6 +223,7 @@ public class DocumentPropertiesController {
             public void handle(CellEditEvent<DocumentItem, String> event) {
                 DocumentItem di = event.getTableView().getItems().get(event.getTablePosition().getRow());
                 di.setQuantity(Double.parseDouble(event.getNewValue()));
+                refreshDocValLabels();
                 documentItemsTable.refresh();
             }
         });
@@ -238,6 +236,7 @@ public class DocumentPropertiesController {
             public void handle(CellEditEvent<DocumentItem, String> event) {
                 DocumentItem di = event.getTableView().getItems().get(event.getTablePosition().getRow());
                 di.setMargin(Double.valueOf(event.getNewValue()));
+                refreshDocValLabels();
                 documentItemsTable.refresh();
             }
         });
@@ -265,6 +264,14 @@ public class DocumentPropertiesController {
             disableForm(propertiesForm);
             saveButton.setVisible(false);
         }
+    }
+
+    private void refreshDocValLabels() {
+        double grossVal = document.getItems().stream().mapToDouble(di -> multiplyNullable(di.getQuantity(), di.getPrice())).sum();
+        grossDocVal.setText(Double.toString(grossVal) + " zł");
+
+        double netVal = document.getItems().stream().mapToDouble(di -> netValue(multiplyNullable(di.getQuantity(), di.getPrice()), di.getTax())).sum();
+        netDocVal.setText(Double.toString(netVal) + " zł");
     }
 
     private void disableForm(Pane formPane) {
