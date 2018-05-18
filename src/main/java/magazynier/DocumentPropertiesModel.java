@@ -5,6 +5,9 @@ import org.hibernate.PropertyValueException;
 import java.util.ArrayList;
 
 public class DocumentPropertiesModel {
+
+    private static ArrayList VatRates = DAO.readTable("VatRate");
+
     public ArrayList getItemsList() {
         return DAO.readTable("Item");
     }
@@ -35,5 +38,9 @@ public class DocumentPropertiesModel {
 
     public void refreshDocument(Document document) throws RowNotFoundException {
         DAO.refresh(document);
+    }
+
+    public ArrayList getVatRatesList() {
+        return VatRates;
     }
 }

@@ -26,8 +26,10 @@ public class DocumentItem {
         this.item = item;
         this.document = document;
         vatRate = item.getVatRate();
+        tax = vatRate.getTax();
         price = item.getCurrentPrice();
         margin = 0.0;
+        quantity = 0.0;
         transactionSign = Optional.ofNullable(document.getDocumentType()).map(dt -> dt.getTag()).orElse(0);
     }
 
