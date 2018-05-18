@@ -8,6 +8,8 @@ import org.hibernate.Transaction;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.query.Query;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class DAO {
@@ -86,5 +88,18 @@ public class DAO {
         Query query = session.createQuery("select 'exists' from " + className + " c where c.id = :id");
         query.setProperties(object);
         return query.uniqueResult() != null;
+    }
+
+    public static Integer countDocumentsByDay(LocalDate day) {
+        try (Session session = HibernateSessionFactory.openSession()) {
+            Document wrapper = new Document();
+            wrapper.setDate(Date.valueOf(day));
+            Query query = session.createQuery("select count(*) from Document d where d.date = :date");
+            query.setProperties(wrapper);
+            return ((Long) query.uniqueResult()).intValue();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 }

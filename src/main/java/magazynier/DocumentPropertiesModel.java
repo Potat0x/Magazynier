@@ -2,6 +2,7 @@ package magazynier;
 
 import org.hibernate.PropertyValueException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class DocumentPropertiesModel {
@@ -42,5 +43,9 @@ public class DocumentPropertiesModel {
 
     public ArrayList getVatRatesList() {
         return VatRates;
+    }
+
+    public Integer countDocumentsByDay(LocalDate day) {
+        return DAO.countDocumentsByDay(day);
     }
 }

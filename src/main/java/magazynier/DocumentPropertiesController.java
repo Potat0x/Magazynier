@@ -1,6 +1,7 @@
 package magazynier;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
@@ -30,6 +31,7 @@ import javax.persistence.OptimisticLockException;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static magazynier.ActionResult.CONFIRM;
@@ -134,11 +136,28 @@ public class DocumentPropertiesController {
 
         docType.getItems().addAll(model.getDocTypesList());
 
+        date.valueProperty().addListener((observable, oldValue, newValue) -> {
+            setGeneratedDocumentName();
+        });
+
         date.setValue(LocalDate.now());
         workerCmbox.getItems().addAll(model.getWorkersList());
         contractorCmbox.getItems().addAll(model.getContractorsList());
-
+        
         name.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_DOC_NAME_LEN)));
+        name.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.isEmpty()) {
+                setGeneratedDocumentName();
+                workerCmbox.requestFocus();
+            }
+        });
+
+        name.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+
+            }
+        });
 
         if (mode == ActionMode.EDIT) {
             updateFormFromDocument();
@@ -241,6 +260,10 @@ public class DocumentPropertiesController {
         refreshTable();
     }
 
+    private void setGeneratedDocumentName() {
+        name.setText(1 + model.countDocumentsByDay(date.getValue()) + LocalDate.now().format(DateTimeFormatter.ofPattern("/dd-MM-yyyy")));
+    }
+
     private void refreshTable() {
         documentItemsTable.getItems().clear();
         documentItemsTable.getItems().addAll(document.getItems());
@@ -293,7 +316,7 @@ public class DocumentPropertiesController {
             }
         } else {
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wypełnij prawidłowo wszystkie pola formularza.\nJeżeli numer dokumentu będzie pusty, zostanie wygenerowany automatycznie.");
-        }//todo: add doc name generating
+        }
     }
 
     @FXML
