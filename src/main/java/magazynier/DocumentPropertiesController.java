@@ -168,23 +168,25 @@ public class DocumentPropertiesController {
             documentItemsTable.getItems().addAll(document.getItems());
             refreshDocValLabels();
         }
+        
+        if (mode == EDIT || mode == ADD) {
+            documentItemsTable.setRowFactory((Callback<TableView<DocumentItem>, TableRow<DocumentItem>>) tableView -> {
+                TableRow<DocumentItem> row = new TableRow<>();
 
-        documentItemsTable.setRowFactory((Callback<TableView<DocumentItem>, TableRow<DocumentItem>>) tableView -> {
-            TableRow<DocumentItem> row = new TableRow<>();
+                ContextMenu cmenu = new ContextMenu();
+                MenuItem del = new MenuItem("Usuń");
+                del.setOnAction(event -> {
 
-            ContextMenu cmenu = new ContextMenu();
-            MenuItem del = new MenuItem("Usuń");
-            del.setOnAction(event -> {
+                    if (row.getItem() != null) {
+                        documentItemsTable.getItems().remove(row.getItem());
+                    }
+                });
 
-                if (row.getItem() != null) {
-                    documentItemsTable.getItems().remove(row.getItem());
-                }
+                cmenu.getItems().add(del);
+                row.setContextMenu(cmenu);
+                return row;
             });
-
-            cmenu.getItems().add(del);
-            row.setContextMenu(cmenu);
-            return row;
-        });
+        }
 
         priceGrossCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
                 new ReadOnlyObjectWrapper(moneyFormat.format(c.getValue().getPrice())));
