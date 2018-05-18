@@ -32,9 +32,9 @@
                               <TableColumn fx:id="dateCol" minWidth="0.0" prefWidth="87.6796875" text="Data" />
                               <TableColumn fx:id="nameCol" prefWidth="93.5" text="Dokument" />
                               <TableColumn fx:id="contractorCol" prefWidth="73.2647705078125" text="Kontrahent" />
-                              <TableColumn prefWidth="75.0" text="Wartość netto" />
-                              <TableColumn prefWidth="75.0" text="Wartość brutto" />
-                              <TableColumn prefWidth="75.0" text="Zysk" />
+                              <TableColumn fx:id="netValCol" prefWidth="75.0" text="Wartość netto" />
+                              <TableColumn fx:id="grossValCol" prefWidth="75.0" text="Wartość brutto" />
+                              <TableColumn fx:id="profitCol" prefWidth="75.0" text="Zysk" />
                               <TableColumn fx:id="worker" prefWidth="90.231689453125" text="Wystawił" />
                           </columns>
                           <columnResizePolicy>

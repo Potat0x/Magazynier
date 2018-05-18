@@ -15,6 +15,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import magazynier.utils.AlertLauncher;
+import magazynier.utils.MoneyValueFormat;
 
 import javax.persistence.PersistenceException;
 import java.io.IOException;
@@ -33,6 +34,9 @@ public class DocumentsController {
     public Button showDocumentButton;
     public Button editDocumentButton;
     public Button deleteDocumentButton;
+    public TableColumn netValCol;
+    public TableColumn grossValCol;
+    public TableColumn profitCol;
 
     private DocumentModel model;
 
@@ -42,10 +46,13 @@ public class DocumentsController {
 
     @FXML
     public void initialize() {
+        MoneyValueFormat format = new MoneyValueFormat();
         dateCol.setCellValueFactory(new PropertyValueFactory<String, Document>("date"));
         nameCol.setCellValueFactory(new PropertyValueFactory<String, Document>("name"));
         worker.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Document, String>, ObservableValue<String>>) p -> new ReadOnlyObjectWrapper(p.getValue().getWorker().getFullName()));
         contractorCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Document, String>, ObservableValue<String>>) p -> new ReadOnlyObjectWrapper(p.getValue().getContractor().getFullName()));
+        netValCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Document, String>, ObservableValue<String>>) p -> new ReadOnlyObjectWrapper(format.format(p.getValue().netVal())));
+        grossValCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Document, String>, ObservableValue<String>>) p -> new ReadOnlyObjectWrapper(format.format(p.getValue().grossVal())));
         refreshTable();
 
         docTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {

@@ -2,6 +2,7 @@ package magazynier;
 
 import magazynier.contractor.Contractor;
 import magazynier.utils.Indexed;
+import magazynier.utils.NullableCalc;
 import magazynier.worker.Worker;
 
 import java.sql.Date;
@@ -67,6 +68,14 @@ public class Document implements Indexed {
 
     public void setWorker(Worker worker) {
         this.worker = worker;
+    }
+
+    Double netVal() {
+        return items.stream().mapToDouble(i -> NullableCalc.multiplyNullable(i.getQuantity(), NullableCalc.netValue(i.getPrice(), i.getTax()))).sum();
+    }
+
+    Double grossVal() {
+        return items.stream().mapToDouble(i -> NullableCalc.multiplyNullable(i.getQuantity(), i.getPrice())).sum();
     }
 
     @Override
