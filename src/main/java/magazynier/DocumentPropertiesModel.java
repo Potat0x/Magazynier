@@ -8,6 +8,7 @@ public class DocumentPropertiesModel {
     public ArrayList getItemsList() {
         return DAO.readTable("Item");
     }
+
     public ArrayList getDocTypesList() {
         return DAO.readTable("DocumentType");
     }
@@ -30,5 +31,9 @@ public class DocumentPropertiesModel {
 
     public ArrayList getMarginTypesList() {
         return DAO.readTable("MarginType");
+    }
+
+    public void refreshDocument(Document document) throws RowNotFoundException {
+        DAO.refresh(document);
     }
 }

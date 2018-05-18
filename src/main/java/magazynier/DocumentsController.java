@@ -83,11 +83,23 @@ public class DocumentsController {
 
     public void editDocumentProperties() {
         Document slectedDoc = (Document) docTable.getSelectionModel().getSelectedItem();
-        ActionResult actionResult = showDocumentWindow(slectedDoc, ActionMode.EDIT);
-        if (actionResult == ActionResult.FAIL) {
+
+        try {
+            model.refreshDocument(slectedDoc);
+            ActionResult actionResult = showDocumentWindow(slectedDoc, ActionMode.EDIT);
+            if (actionResult == ActionResult.FAIL) {
+                refreshTable();
+            } else {
+                docTable.refresh();
+            }
+        } catch (RowNotFoundException e) {
+            AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie znaleziono dokumentu.", "Nie znalaziono dokumentu. Mógł zostać usunięty z bazy.");
             refreshTable();
-        } else {
-            docTable.refresh();
+        } catch (Exception e) {
+            System.out.println();
+            e.printStackTrace();
+            AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można znaleźć dokumentu.", "Nieznany błąd.");
+            refreshTable();
         }
     }
 

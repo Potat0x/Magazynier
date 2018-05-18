@@ -60,6 +60,19 @@ public class DAO {
         }
     }
 
+    public static void refresh(Indexed object) throws RowNotFoundException {
+
+        try (Session session = HibernateSessionFactory.openSession()) {
+            Transaction tr = session.beginTransaction();
+            if (checkIfExists(session, object)) {
+                session.refresh(object);
+                tr.commit();
+            } else {
+                throw new RowNotFoundException(object.getClass() + " object:" + object + " does not exist in database.");
+            }
+        }
+    }
+
     private static boolean checkIfExists(Session session, Indexed object) {
         Query query = session.createQuery("select 'exists' from " + object.getClass().getSimpleName() + " c where c.id = :id");
         query.setProperties(object);

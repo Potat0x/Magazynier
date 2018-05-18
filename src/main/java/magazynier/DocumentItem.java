@@ -3,9 +3,7 @@ package magazynier;
 import magazynier.item.Item;
 import magazynier.item.VatRate;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
-import java.util.function.Function;
 
 public class DocumentItem {
 
@@ -121,25 +119,24 @@ public class DocumentItem {
         this.document = document;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof DocumentItem)) return false;
 
-        DocumentItem that = (DocumentItem) o;
+        DocumentItem item1 = (DocumentItem) o;
 
-        if (transactionSign != null ? !transactionSign.equals(that.transactionSign) : that.transactionSign != null)
+        if (transactionSign != null ? !transactionSign.equals(item1.transactionSign) : item1.transactionSign != null)
             return false;
-        if (quantity != null ? !quantity.equals(that.quantity) : that.quantity != null) return false;
-        if (price != null ? !price.equals(that.price) : that.price != null) return false;
-        if (vatRate != null ? !vatRate.equals(that.vatRate) : that.vatRate != null) return false;
-        if (tax != null ? !tax.equals(that.tax) : that.tax != null) return false;
-        if (marginType != null ? !marginType.equals(that.marginType) : that.marginType != null) return false;
-        if (margin != null ? !margin.equals(that.margin) : that.margin != null) return false;
-        if (batchNumber != null ? !batchNumber.equals(that.batchNumber) : that.batchNumber != null) return false;
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        return item != null ? item.equals(that.item) : that.item == null;
+        if (quantity != null ? !quantity.equals(item1.quantity) : item1.quantity != null) return false;
+        if (price != null ? !price.equals(item1.price) : item1.price != null) return false;
+        if (vatRate != null ? !vatRate.equals(item1.vatRate) : item1.vatRate != null) return false;
+        if (tax != null ? !tax.equals(item1.tax) : item1.tax != null) return false;
+        if (marginType != null ? !marginType.equals(item1.marginType) : item1.marginType != null) return false;
+        if (margin != null ? !margin.equals(item1.margin) : item1.margin != null) return false;
+        if (batchNumber != null ? !batchNumber.equals(item1.batchNumber) : item1.batchNumber != null) return false;
+        if (id != null ? !id.equals(item1.id) : item1.id != null) return false;
+        return item != null ? item.equals(item1.item) : item1.item == null;
     }
 
     @Override
@@ -153,6 +150,7 @@ public class DocumentItem {
         result = 31 * result + (margin != null ? margin.hashCode() : 0);
         result = 31 * result + (batchNumber != null ? batchNumber.hashCode() : 0);
         result = 31 * result + (id != null ? id.hashCode() : 0);
+        /*  !!!     result = 31 * result + (document != null ? document.hashCode() : 0);    !!!  todo: remove doc mapping as obj   */
         result = 31 * result + (item != null ? item.hashCode() : 0);
         return result;
     }

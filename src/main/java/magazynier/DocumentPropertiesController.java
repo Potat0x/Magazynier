@@ -32,6 +32,8 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.*;
 
+import static magazynier.ActionResult.CONFIRM;
+
 @SuppressWarnings("unchecked")
 public class DocumentPropertiesController {
 
@@ -94,10 +96,11 @@ public class DocumentPropertiesController {
         allItemsFilter.tie(modelFilterField, Item::getItemModelNumber);
         allItemsFilter.tie(descriptionFilterField, Item::getDescription);
 
-        measurmntUnitCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
-                new ReadOnlyObjectWrapper(c.getValue().getQuantity()));
         taxCol.setCellValueFactory(new PropertyValueFactory<Double, DocumentItem>("tax"));
         priceGrossCol.setCellValueFactory(new PropertyValueFactory<Double, DocumentItem>("price"));
+
+        measurmntUnitCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
+                new ReadOnlyObjectWrapper(c.getValue().getQuantity()));
 
         measurmntUnitCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
                 new ReadOnlyObjectWrapper(c.getValue().getItem().getMeasurementUnit().getUnitName()));
@@ -107,10 +110,6 @@ public class DocumentPropertiesController {
 
         eanCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
                 new ReadOnlyObjectWrapper(c.getValue().getItem().getEan()));
-
-
-//        measurmntUnitCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
-//                new ReadOnlyObjectWrapper(c.getValue().getItem().getMeasurementUnit()));
 
         priceNetCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, Double>, ObservableValue<String>>) c ->
                 new ReadOnlyObjectWrapper(netValue(c.getValue().getPrice(), c.getValue().getTax())));
@@ -132,9 +131,6 @@ public class DocumentPropertiesController {
             return new ReadOnlyObjectWrapper(description.replaceAll("\n", " "));
         });
 
-//        for (DocumentType t : model.getDocTypesList())
-//            docType.getItems().add(t.getType());
-
         docType.getItems().addAll(model.getDocTypesList());
 
         date.setValue(LocalDate.now());
@@ -142,7 +138,6 @@ public class DocumentPropertiesController {
         contractorCmbox.getItems().addAll(model.getContractorsList());
 
         name.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_DOC_NAME_LEN)));
-
 
         if (mode == ActionMode.EDIT) {
             updateFormFromDocument();
@@ -156,25 +151,21 @@ public class DocumentPropertiesController {
             netDocVal.setText(Double.toString(netVal) + " zł");
         }
 
+        documentItemsTable.setRowFactory((Callback<TableView<DocumentItem>, TableRow<DocumentItem>>) tableView -> {
+            TableRow<DocumentItem> row = new TableRow<>();
 
-        documentItemsTable.setRowFactory(new Callback<TableView<DocumentItem>, TableRow<DocumentItem>>() {
-            @Override
-            public TableRow<DocumentItem> call(TableView<DocumentItem> tableView) {
-                TableRow<DocumentItem> row = new TableRow<>();
+            ContextMenu cmenu = new ContextMenu();
+            MenuItem del = new MenuItem("Usuń");
+            del.setOnAction(event -> {
 
-                ContextMenu cmenu = new ContextMenu();
-                MenuItem del = new MenuItem("Usuń");
-                del.setOnAction(event -> {
+                if (row.getItem() != null) {
+                    documentItemsTable.getItems().remove(row.getItem());
+                }
+            });
 
-                    if (row.getItem() != null) {
-                        documentItemsTable.getItems().remove(row.getItem());
-                    }
-                });
-
-                cmenu.getItems().add(del);
-                row.setContextMenu(cmenu);
-                return row;
-            }
+            cmenu.getItems().add(del);
+            row.setContextMenu(cmenu);
+            return row;
         });
 
         marginType.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
@@ -184,7 +175,7 @@ public class DocumentPropertiesController {
                 new EventHandler<CellEditEvent<DocumentItem, MarginType>>() {
                     @Override
                     public void handle(CellEditEvent<DocumentItem, MarginType> t) {
-                        DocumentItem di = ((DocumentItem) t.getTableView().getItems().get(t.getTablePosition().getRow()));
+                        DocumentItem di = t.getTableView().getItems().get(t.getTablePosition().getRow());
                         di.setMarginType(t.getNewValue());
                     }
                 }
@@ -214,9 +205,7 @@ public class DocumentPropertiesController {
             }
         });
         //todo: dodać zmiane wartosci sprzedaży (ceny netto)/lub dodatkowej kolumny na własną cene, żeby był podgląd na starą
-
         //documentItemsTable.setStyle("-fx-text-alignment: CENTER-LEFT; -fx-background-color: #afff6d;");
-
         ///////
         allItemsTable.setRowFactory(new Callback<TableView<Item>, TableRow<Item>>() {
             @Override
@@ -267,10 +256,10 @@ public class DocumentPropertiesController {
             try {
                 if (mode == ActionMode.EDIT) {
                     model.updateDocument(document);
-                    actionResult = ActionResult.CONFIRM;
+                    actionResult = CONFIRM;
                 } else if (mode == ActionMode.ADD) {
                     model.addDocument(document);
-                    actionResult = ActionResult.CONFIRM;
+                    actionResult = CONFIRM;
                     AlertLauncher.showAndWait(Alert.AlertType.INFORMATION, "Nowy dokument", null, "Dokument został dodany.");
                     mode = ActionMode.EDIT;
                 }
@@ -282,7 +271,7 @@ public class DocumentPropertiesController {
                 AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Dokument został w międzyczasie zaktualizowany przez innego użytkownika.");
                 closeWindowWithFail();
             } catch (PropertyValueException e) {
-                System.out.println("PVE");//todo
+                System.out.println("PVE");
             } catch (Exception e) {
                 System.out.println();
                 e.printStackTrace();
@@ -292,6 +281,52 @@ public class DocumentPropertiesController {
         } else {
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wypełnij prawidłowo wszystkie pola formularza.\nJeżeli numer dokumentu będzie pusty, zostanie wygenerowany automatycznie.");
         }//todo: add doc name generating
+    }
+
+    @FXML
+    public void showItem(MouseEvent event) {
+
+        if (event.getClickCount() == 2) {
+            FXMLLoader itemStageLoader = new FXMLLoader(getClass().getResource("/fxml/item_window.fxml"));
+
+            Item item;
+            if (documentItemsTable.isFocused()) {
+                item = ((DocumentItem) documentItemsTable.getSelectionModel().getSelectedItem()).getItem();
+            } else {
+                item = (Item) allItemsTable.getSelectionModel().getSelectedItem();
+            }
+
+            if (item != null) {
+                ItemController ic = new ItemController(item, ActionMode.EDIT);
+                itemStageLoader.setController(ic);
+                Stage itemStage = new Stage();
+                itemStage.setTitle("Towar");
+                Parent parent = null;
+                try {
+                    parent = itemStageLoader.load();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                itemStage.setScene(new Scene(parent));
+                itemStage.showAndWait();
+
+                if (ic.getActionResult() == CONFIRM) {
+                    try {
+                        model.refreshDocument(document);
+                    } catch (RowNotFoundException e) {
+                        AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie znaleziono dokumentu.", "Nie znalaziono dokumentu. Mógł zostać usunięty z bazy.");
+                        closeWindowWithFail();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można znaleźć dokumentu.", "Nieznany błąd.");
+                        closeWindowWithFail();
+                    }
+                    allItemsTable.refresh();
+                    documentItemsTable.refresh();
+                }
+            }
+        }
     }
 
     private boolean isFormValid() {
@@ -308,7 +343,10 @@ public class DocumentPropertiesController {
 
     private void updateFormFromDocument() {
         Date docDate = document.getDate();
-        date.setValue((date != null) ? docDate.toLocalDate() : null);
+
+        if (date != null) {
+            date.setValue(docDate.toLocalDate());
+        }
 
         name.setText(document.getName());
         docType.getSelectionModel().select(document.getDocumentType());

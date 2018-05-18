@@ -129,4 +129,9 @@ public class AssortmentController {
         itemStage.showAndWait();
         return ic.getActionResult();
     }
+
+    @FXML
+    public void refreshItemsList() {
+        refreshTable();
+    }
 }

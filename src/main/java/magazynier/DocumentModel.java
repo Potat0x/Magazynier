@@ -19,4 +19,8 @@ public class DocumentModel {
     public void deleteDocument(Document selectedDocument) throws RowNotFoundException {
         DAO.delete(selectedDocument);
     }
+
+    public void refreshDocument(Document document) throws RowNotFoundException {
+        DAO.refresh(document);
+    }
 }
