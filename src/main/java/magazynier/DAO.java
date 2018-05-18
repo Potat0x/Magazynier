@@ -1,9 +1,11 @@
 package magazynier;
 
 import magazynier.utils.Indexed;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.query.Query;
 
 import java.util.ArrayList;
@@ -74,7 +76,14 @@ public class DAO {
     }
 
     private static boolean checkIfExists(Session session, Indexed object) {
-        Query query = session.createQuery("select 'exists' from " + object.getClass().getSimpleName() + " c where c.id = :id");
+
+        String className = object.getClass().getSimpleName();
+
+        if (object instanceof HibernateProxy) {
+            className = Hibernate.getClass(object).getSimpleName();
+        }
+
+        Query query = session.createQuery("select 'exists' from " + className + " c where c.id = :id");
         query.setProperties(object);
         return query.uniqueResult() != null;
     }
