@@ -78,6 +78,7 @@ public class DocumentPropertiesController {
     private ActionMode mode;
     private DocumentPropertiesModel model;
     private ActionResult actionResult;
+    PropertyTableFilter<Item> allItemsFilter;
 
     public DocumentPropertiesController(Document document, ActionMode mode) {
         System.out.println("DocumentPropertiesController");
@@ -90,7 +91,7 @@ public class DocumentPropertiesController {
     @FXML
     public void initialize() {
 
-        PropertyTableFilter<Item> allItemsFilter = new PropertyTableFilter<Item>(model.getItemsList(), allItemsTable);
+        allItemsFilter = new PropertyTableFilter<Item>(model.getItemsList(), allItemsTable);
         allItemsFilter.tie(nameFilterField, Item::getName);
         allItemsFilter.tie(eanFilterField, Item::getEan);
         allItemsFilter.tie(modelFilterField, Item::getItemModelNumber);
@@ -322,6 +323,7 @@ public class DocumentPropertiesController {
                         AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można znaleźć dokumentu.", "Nieznany błąd.");
                         closeWindowWithFail();
                     }
+                    allItemsFilter.setItems(model.getItemsList());
                     allItemsTable.refresh();
                     documentItemsTable.refresh();
                 }
