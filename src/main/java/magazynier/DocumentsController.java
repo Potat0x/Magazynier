@@ -20,6 +20,9 @@ import javax.persistence.PersistenceException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static magazynier.ActionMode.EDIT;
+import static magazynier.ActionMode.PREVIEW;
+
 @SuppressWarnings("unchecked")
 public class DocumentsController {
     public TableView docTable;
@@ -81,12 +84,13 @@ public class DocumentsController {
         return dcp.getActionResult();
     }
 
-    public void editDocumentProperties() {
+    //todo: remove duplicated code
+    private void showDocumentWindow(ActionMode mode) {
         Document slectedDoc = (Document) docTable.getSelectionModel().getSelectedItem();
 
         try {
             model.refreshDocument(slectedDoc);
-            ActionResult actionResult = showDocumentWindow(slectedDoc, ActionMode.EDIT);
+            ActionResult actionResult = showDocumentWindow(slectedDoc, mode);
             if (actionResult == ActionResult.FAIL) {
                 refreshTable();
             } else {
@@ -101,6 +105,17 @@ public class DocumentsController {
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można znaleźć dokumentu.", "Nieznany błąd.");
             refreshTable();
         }
+    }
+
+
+    @FXML
+    public void editDocumentProperties() {
+        showDocumentWindow(EDIT);
+    }
+
+    @FXML
+    public void showDocumentProperties() {
+        showDocumentWindow(PREVIEW);
     }
 
     public void addDocument() {

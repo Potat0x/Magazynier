@@ -1,177 +1,161 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="560.0"
-            prefWidth="794.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="560.0" prefWidth="794.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <VBox prefHeight="400.0" prefWidth="794.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <VBox prefHeight="400.0" prefWidth="794.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <HBox>
+                <HBox prefHeight="34.0" prefWidth="774.0" VBox.vgrow="NEVER">
                     <children>
-                        <Label prefHeight="21.0" prefWidth="173.0" text="Dokument">
+                        <Label fx:id="docPropertiesHeader" prefHeight="21.0" prefWidth="247.0" text="Dokument">
                             <font>
-                                <Font size="15.0"/>
+                                <Font size="16.0" />
                             </font>
                         </Label>
                     </children>
                 </HBox>
-                <HBox/>
-                <HBox prefHeight="100.0" prefWidth="774.0">
+                <HBox prefHeight="100.0" prefWidth="774.0" VBox.vgrow="NEVER">
                     <children>
-                        <GridPane hgap="10.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="92.0"
-                                  prefWidth="769.0" HBox.hgrow="ALWAYS">
+                        <GridPane fx:id="propertiesForm" hgap="10.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="92.0" prefWidth="769.0" HBox.hgrow="ALWAYS">
                             <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="50.0"
-                                                   prefWidth="50.0"/>
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0"
-                                                   prefWidth="98.0"/>
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="120.0"
-                                                   prefWidth="112.0"/>
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0"
-                                                   prefWidth="147.0"/>
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="100.0"
-                                                   prefWidth="100.0"/>
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="100.0"
-                                                   prefWidth="100.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="50.0" prefWidth="50.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="98.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="120.0" prefWidth="112.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="147.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="100.0" />
                             </columnConstraints>
                             <rowConstraints>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <Label text="Data" GridPane.rowIndex="1"/>
-                                <Label prefHeight="17.0" prefWidth="85.0" text="Numer" GridPane.rowIndex="2"/>
-                                <Label text="Kontrahent" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-                                <DatePicker fx:id="date" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
-                                            GridPane.hgrow="ALWAYS" GridPane.rowIndex="1"/>
-                                <TextField fx:id="name" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
-                                           GridPane.hgrow="ALWAYS" GridPane.rowIndex="2"/>
-                                <ComboBox fx:id="contractorCmbox" maxWidth="1.7976931348623157E308"
-                                          GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2"/>
-                                <Label text="Osoba wystawiająca" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-                                <Label text="Wartość netto" GridPane.columnIndex="4" GridPane.rowIndex="1"/>
-                                <Label text="Wartość brutto" GridPane.columnIndex="4" GridPane.rowIndex="2"/>
-                                <Label fx:id="netDocVal" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308"
-                                       text="-" GridPane.columnIndex="5" GridPane.rowIndex="1"/>
-                                <Label fx:id="grossDocVal" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308"
-                                       text="-" GridPane.columnIndex="5" GridPane.rowIndex="2"/>
-                                <Label text="Typ"/>
-                                <ComboBox fx:id="docType" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
-                                          GridPane.hgrow="ALWAYS"/>
-                                <ComboBox fx:id="workerCmbox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3"
-                                          GridPane.hgrow="ALWAYS" GridPane.rowIndex="1"/>
+                                <Label text="Data" GridPane.rowIndex="1" />
+                                <Label prefHeight="17.0" prefWidth="85.0" text="Numer" GridPane.rowIndex="2" />
+                                <Label text="Kontrahent" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                <DatePicker fx:id="date" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                                <TextField fx:id="name" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                                <ComboBox fx:id="contractorCmbox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                                <Label text="Osoba wystawiająca" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                <Label text="Wartość netto" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                                <Label text="Wartość brutto" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                <Label fx:id="netDocVal" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="-" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                                <Label fx:id="grossDocVal" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="-" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                                <Label text="Typ" />
+                                <ComboBox fx:id="docType" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                                <ComboBox fx:id="workerCmbox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
                             </children>
                             <HBox.margin>
-                                <Insets right="5.0"/>
+                                <Insets right="5.0" />
                             </HBox.margin>
                         </GridPane>
                     </children>
                 </HBox>
-                <Label prefHeight="26.0" prefWidth="415.0" text="Asortyment wydany/przyjęty">
-                    <font>
-                        <Font size="15.0"/>
-                    </font>
-                </Label>
-                <TableView fx:id="documentItemsTable" editable="true" onMouseClicked="#showItem" prefHeight="166.0"
-                           prefWidth="491.0" VBox.vgrow="ALWAYS">
-                    <placeholder>
-                        <Label text="Dodaj pozycje do dokumentu."/>
-                    </placeholder>
+                <SplitPane fx:id="splitPane" dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" VBox.vgrow="ALWAYS">
+                    <items>
+                        <TableView fx:id="documentItemsTable" editable="true" onMouseClicked="#showItem" prefHeight="166.0" prefWidth="491.0">
+                            <placeholder>
+                                <Label text="Dodaj pozycje do dokumentu." />
+                            </placeholder>
 
-                    <columns>
-                        <TableColumn prefWidth="40.0" text="Lp" visible="false"/>
-                        <TableColumn fx:id="nameCol" prefWidth="90.0" text="Nazwa"/>
-                        <TableColumn fx:id="eanCol" prefWidth="75.0" text="EAN"/>
-                        <TableColumn fx:id="quantityCol" minWidth="0.0" prefWidth="74.0" text="Ilość"/>
-                        <TableColumn fx:id="measurmntUnitCol" prefWidth="64.0" text="Jedn."/>
-                        <TableColumn fx:id="taxCol" prefWidth="60.0" text="VAT"/>
-                        <TableColumn fx:id="priceGrossCol" minWidth="40.0" prefWidth="95.0" text="Cena brutto"/>
-                        <TableColumn fx:id="priceNetCol" minWidth="40.0" prefWidth="95.0" text="Cena netto"/>
-                        <TableColumn prefWidth="70.0" text="Stan/Magazyn" visible="false"/>
-                        <TableColumn fx:id="valueGrossCol" minWidth="40.0" prefWidth="95.0" text="Wartość brutto"/>
-                        <TableColumn fx:id="valueNetCol" minWidth="40.0" prefWidth="95.0" text="Wartość netto"/>
-                        <TableColumn fx:id="marginType" prefWidth="75.0" text="Rodzaj marży"/>
-                        <TableColumn fx:id="margin" prefWidth="75.0" text="Marża"/>
-                    </columns>
-                    <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                    </columnResizePolicy>
-                    <VBox.margin>
-                        <Insets bottom="10.0"/>
-                    </VBox.margin>
-                </TableView>
-                <Label prefHeight="17.0" prefWidth="424.0"
-                       text="Dodaj przedmioty/all items - tabela? entry autorozszerzanie z tabelą?"/>
-                <HBox alignment="CENTER_LEFT" prefHeight="27.0" prefWidth="774.0" spacing="5.0" VBox.vgrow="NEVER">
-                    <VBox.margin>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
-                    </VBox.margin>
-                    <children>
-                        <TextField fx:id="nameFilterField" maxWidth="1.7976931348623157E308" promptText="Nazwa"
-                                   HBox.hgrow="ALWAYS"/>
-                        <TextField fx:id="eanFilterField" maxWidth="1.7976931348623157E308" promptText="EAN"
-                                   HBox.hgrow="ALWAYS"/>
-                        <TextField fx:id="modelFilterField" maxWidth="1.7976931348623157E308"
-                                   promptText="Kod procucenta" HBox.hgrow="ALWAYS"/>
-                        <TextField fx:id="descriptionFilterField" maxWidth="1.7976931348623157E308" promptText="Opis"
-                                   HBox.hgrow="ALWAYS"/>
-                        <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-                                mnemonicParsing="false" onAction="#clearAllFilters" opacity="0.76" prefHeight="25.0"
-                                prefWidth="25.0" text="X" textOverrun="CLIP">
-                            <tooltip>
-                                <Tooltip text="Wyczyść wszystkie filtry"/>
-                            </tooltip>
-                        </Button>
-                    </children>
-                </HBox>
-                <TableView fx:id="allItemsTable" onMouseClicked="#showItem" prefHeight="200.0" prefWidth="200.0"
-                           VBox.vgrow="ALWAYS">
-                    <columns>
-                        <TableColumn fx:id="allItemsNameCol" text="Nazwa"/>
-                        <TableColumn fx:id="allItemsEanCol" text="EAN"/>
-                        <TableColumn fx:id="allItemsModelNumberCol" text="Kod producenta"/>
-                        <TableColumn fx:id="allItemsDescrCol" text="Opis"/>
-                        <TableColumn fx:id="allItemsPriceCol" text="Cena(?)"/>
-                        <TableColumn fx:id="allItemsAvailableQuantityCol" text="Dostępna ilosć"/>
-                    </columns>
-                    <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                    </columnResizePolicy>
-                </TableView>
+                            <columns>
+                                <TableColumn prefWidth="40.0" text="Lp" visible="false" />
+                                <TableColumn fx:id="nameCol" maxWidth="10000.0" prefWidth="1000.0" text="Nazwa" />
+                                <TableColumn fx:id="eanCol" prefWidth="75.0" text="EAN" />
+                                <TableColumn fx:id="quantityCol" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="Ilość" />
+                                <TableColumn fx:id="measurmntUnitCol" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="Jedn." />
+                                <TableColumn fx:id="taxCol" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="VAT" />
+                                <TableColumn fx:id="priceGrossCol" minWidth="40.0" prefWidth="95.0" text="Cena brutto" />
+                                <TableColumn fx:id="priceNetCol" minWidth="40.0" prefWidth="95.0" text="Cena netto" />
+                                <TableColumn prefWidth="70.0" text="Stan/Magazyn" visible="false" />
+                                <TableColumn fx:id="valueGrossCol" minWidth="40.0" prefWidth="95.0" text="Wartość brutto" />
+                                <TableColumn fx:id="valueNetCol" minWidth="40.0" prefWidth="95.0" text="Wartość netto" />
+                                <TableColumn fx:id="marginType" prefWidth="75.0" text="Rodzaj marży" />
+                                <TableColumn fx:id="margin" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="Marża" />
+                            </columns>
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                            </columnResizePolicy>
+                        </TableView>
+                        <VBox fx:id="allItemsVbox">
+                            <children>
+                                <HBox alignment="CENTER_LEFT" prefHeight="27.0" prefWidth="774.0" spacing="5.0">
+                                    <children>
+                                        <TextField fx:id="nameFilterField" maxWidth="1.7976931348623157E308" promptText="Nazwa" HBox.hgrow="ALWAYS" />
+                                        <TextField fx:id="eanFilterField" maxWidth="1.7976931348623157E308" promptText="EAN" HBox.hgrow="ALWAYS" />
+                                        <TextField fx:id="modelFilterField" maxWidth="1.7976931348623157E308" promptText="Kod procucenta" HBox.hgrow="ALWAYS" />
+                                        <TextField fx:id="descriptionFilterField" maxWidth="1.7976931348623157E308" promptText="Opis" HBox.hgrow="ALWAYS" />
+                                        <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#clearAllFilters" opacity="0.76" prefHeight="25.0" prefWidth="25.0" text="⨉" textAlignment="CENTER" textOverrun="CLIP">
+                                            <tooltip>
+                                                <Tooltip text="Wyczyść wszystkie filtry" />
+                                            </tooltip>
+                                            <font>
+                                                <Font size="10.0" />
+                                            </font>
+                                        </Button>
+                                    </children>
+                                </HBox>
+                                <TableView fx:id="allItemsTable" onMouseClicked="#showItem" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                    <columns>
+                                        <TableColumn fx:id="allItemsNameCol" text="Nazwa" />
+                                        <TableColumn fx:id="allItemsEanCol" text="EAN" />
+                                        <TableColumn fx:id="allItemsModelNumberCol" text="Kod producenta" />
+                                        <TableColumn fx:id="allItemsDescrCol" text="Opis" />
+                                        <TableColumn fx:id="allItemsPriceCol" text="Cena(?)" />
+                                        <TableColumn fx:id="allItemsAvailableQuantityCol" text="Dostępna ilosć" />
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                    </columnResizePolicy>
+                                </TableView>
+                            </children>
+                        </VBox>
+                    </items>
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                </SplitPane>
             </children>
             <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
         </VBox>
-        <HBox alignment="TOP_RIGHT" layoutX="567.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity"
-              minHeight="-Infinity" minWidth="-Infinity" prefHeight="65.0" prefWidth="227.0"
-              AnchorPane.leftAnchor="567.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <HBox alignment="TOP_RIGHT" layoutX="567.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="65.0" prefWidth="227.0" AnchorPane.leftAnchor="567.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <Button contentDisplay="TOP" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                        minWidth="-Infinity" mnemonicParsing="false" onAction="#save" prefHeight="60.0"
-                        prefWidth="100.0" text="Zapisz" HBox.hgrow="ALWAYS">
+                <Button fx:id="saveButton" contentDisplay="TOP" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#save" prefHeight="60.0" prefWidth="100.0" text="Zapisz" HBox.hgrow="ALWAYS">
                     <graphic>
                         <ImageView>
                             <image>
-                                <Image url="@../img/go-bottom.png"/>
+                                <Image url="@../img/go-bottom.png" />
                             </image>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button contentDisplay="TOP" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-                        minWidth="-Infinity" mnemonicParsing="false" onAction="#cancelDocumentAddOrEdit"
-                        prefHeight="60.0" prefWidth="100.0" text="Zamknij" HBox.hgrow="ALWAYS">
+                <Button contentDisplay="TOP" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cancelDocumentAddOrEdit" prefHeight="60.0" prefWidth="100.0" text="Zamknij" HBox.hgrow="ALWAYS">
                     <graphic>
                         <ImageView>
                             <image>
-                                <Image url="@../img/process-stop.png"/>
+                                <Image url="@../img/process-stop.png" />
                             </image>
                         </ImageView>
                     </graphic>

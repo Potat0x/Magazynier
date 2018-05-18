@@ -1,12 +1,12 @@
 package magazynier;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -15,6 +15,9 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import magazynier.contractor.Contractor;
@@ -34,16 +37,21 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static magazynier.ActionMode.*;
 import static magazynier.ActionResult.CONFIRM;
 
 @SuppressWarnings("unchecked")
 public class DocumentPropertiesController {
 
+    public Label docPropertiesHeader;
+    public Button saveButton;
     public DatePicker date;
     public TextField name;
     public ComboBox docType;
     public ComboBox contractorCmbox;
     public ComboBox workerCmbox;
+    public GridPane propertiesForm;
+    public SplitPane splitPane;
     public TableView documentItemsTable;
 
     public TableColumn nameCol;
@@ -61,6 +69,7 @@ public class DocumentPropertiesController {
     public Label netDocVal;
     public Label grossDocVal;
 
+    public VBox allItemsVbox;
     public TableView allItemsTable;
     public TableColumn allItemsNameCol;
     public TableColumn allItemsEanCol;
@@ -92,6 +101,8 @@ public class DocumentPropertiesController {
 
     @FXML
     public void initialize() {
+
+        setHeaderText();
 
         allItemsFilter = new PropertyTableFilter<Item>(model.getItemsList(), allItemsTable);
         allItemsFilter.tie(nameFilterField, Item::getName);
@@ -143,7 +154,7 @@ public class DocumentPropertiesController {
         date.setValue(LocalDate.now());
         workerCmbox.getItems().addAll(model.getWorkersList());
         contractorCmbox.getItems().addAll(model.getContractorsList());
-        
+
         name.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_DOC_NAME_LEN)));
         name.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.isEmpty()) {
@@ -152,16 +163,8 @@ public class DocumentPropertiesController {
             }
         });
 
-        name.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-            }
-        });
-
-        if (mode == ActionMode.EDIT) {
+        if (mode == EDIT || mode == PREVIEW) {
             updateFormFromDocument();
-
             documentItemsTable.getItems().addAll(document.getItems());
 
             double grossVal = document.getItems().stream().mapToDouble(di -> multiplyNullable(di.getQuantity(), di.getPrice())).sum();
@@ -258,6 +261,40 @@ public class DocumentPropertiesController {
         });
 
         refreshTable();
+        if (mode == PREVIEW) {
+            disableForm(propertiesForm);
+            saveButton.setVisible(false);
+        }
+    }
+
+    private void disableForm(Pane formPane) {
+
+        splitPane.getItems().remove(allItemsVbox);
+        for (Node n : formPane.getChildren()) {
+            if (n instanceof TextInputControl) {
+                ((TextInputControl) n).setEditable(false);
+            } else if (n instanceof ComboBox) {
+                ComboBox cmbox = (ComboBox) n;
+                Object cmval = cmbox.getSelectionModel().getSelectedItem();
+                cmbox.setEditable(true);
+                cmbox.getEditor().setEditable(false);
+                cmbox.getItems().clear();
+                cmbox.getItems().add(cmval);
+                cmbox.setValue(cmval);
+            } else if (n instanceof DatePicker) {
+                ((DatePicker) n).setEditable(false);
+            }
+        }
+    }
+
+    private void setHeaderText() {
+        if (mode == ADD) {
+            docPropertiesHeader.setText("Nowy dokument");
+        } else if (mode == EDIT) {
+            docPropertiesHeader.setText("Edycja dokumentu");
+        } else {
+            docPropertiesHeader.setText("Szczegóły dokumentu dokumentu");
+        }
     }
 
     private void setGeneratedDocumentName() {
@@ -290,14 +327,15 @@ public class DocumentPropertiesController {
             updateDocumentFromForm();
 
             try {
-                if (mode == ActionMode.EDIT) {
+                if (mode == ActionMode.EDIT || mode == ActionMode.PREVIEW) {
                     model.updateDocument(document);
                     actionResult = CONFIRM;
-                } else if (mode == ActionMode.ADD) {
+                } else if (mode == ADD) {
                     model.addDocument(document);
-                    actionResult = CONFIRM;
-                    AlertLauncher.showAndWait(Alert.AlertType.INFORMATION, "Nowy dokument", null, "Dokument został dodany.");
                     mode = ActionMode.EDIT;
+                    actionResult = CONFIRM;
+                    setHeaderText();
+                    AlertLauncher.showAndWait(Alert.AlertType.INFORMATION, "Nowy dokument", null, "Dokument został dodany.");
                 }
 
             } catch (RowNotFoundException e) {

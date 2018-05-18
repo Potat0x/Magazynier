@@ -66,7 +66,7 @@
                                         </ImageView>
                                     </graphic>
                                 </Button>
-                                <Button fx:id="showDocumentButton" contentDisplay="TOP" disable="true" mnemonicParsing="false" prefWidth="105.0" text="Popraw">
+                                <Button fx:id="editDocumentButton" contentDisplay="TOP" disable="true" mnemonicParsing="false" onAction="#editDocumentProperties" prefWidth="105.0" text="Popraw">
                                     <graphic>
                                         <ImageView>
                                             <image>
@@ -75,7 +75,7 @@
                                         </ImageView>
                                     </graphic>
                                 </Button>
-                                <Button fx:id="editDocumentButton" contentDisplay="TOP" disable="true" mnemonicParsing="false" onAction="#editDocumentProperties" prefWidth="105.0" text="Pokaż">
+                                <Button fx:id="showDocumentButton" contentDisplay="TOP" disable="true" mnemonicParsing="false" onAction="#showDocumentProperties" prefWidth="105.0" text="Pokaż">
                                     <graphic>
                                         <ImageView>
                                             <image>
