@@ -23,9 +23,7 @@ import javafx.util.Callback;
 import magazynier.contractor.Contractor;
 import magazynier.item.Item;
 import magazynier.item.ItemController;
-import magazynier.utils.AlertLauncher;
-import magazynier.utils.PropertyTableFilter;
-import magazynier.utils.TextFieldCorrectnessIndicator;
+import magazynier.utils.*;
 import magazynier.utils.validators.LengthValidator;
 import magazynier.worker.Worker;
 import org.hibernate.PropertyValueException;
@@ -89,7 +87,8 @@ public class DocumentPropertiesController {
     private ActionMode mode;
     private DocumentPropertiesModel model;
     private ActionResult actionResult;
-    PropertyTableFilter<Item> allItemsFilter;
+    private PropertyTableFilter<Item> allItemsFilter;
+    private MoneyValueFormat moneyFormat;
 
     public DocumentPropertiesController(Document document, ActionMode mode) {
         System.out.println("DocumentPropertiesController");
@@ -97,6 +96,7 @@ public class DocumentPropertiesController {
         this.mode = mode;
         model = new DocumentPropertiesModel();
         actionResult = ActionResult.CANCEL;
+        moneyFormat = new MoneyValueFormat();
     }
 
     @FXML
@@ -126,13 +126,13 @@ public class DocumentPropertiesController {
                 new ReadOnlyObjectWrapper(c.getValue().getItem().getEan()));
 
         priceNetCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, Double>, ObservableValue<String>>) c ->
-                new ReadOnlyObjectWrapper(netValue(c.getValue().getPrice(), c.getValue().getTax())));
+                new ReadOnlyObjectWrapper(moneyFormat.format(NullableCalc.netValue(c.getValue().getPrice(), c.getValue().getTax()))));
 
         valueGrossCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, Double>, ObservableValue<String>>) c ->
-                new ReadOnlyObjectWrapper(multiplyNullable(c.getValue().getPrice(), c.getValue().getQuantity())));
+                new ReadOnlyObjectWrapper(moneyFormat.format(NullableCalc.multiplyNullable(c.getValue().getPrice(), c.getValue().getQuantity()))));
 
         valueNetCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, Double>, ObservableValue<String>>) c ->
-                new ReadOnlyObjectWrapper(netValue(multiplyNullable(c.getValue().getPrice(), c.getValue().getQuantity()), c.getValue().getTax())));
+                new ReadOnlyObjectWrapper(moneyFormat.format(NullableCalc.netValue(NullableCalc.multiplyNullable(c.getValue().getPrice(), c.getValue().getQuantity()), c.getValue().getTax()))));
 
         allItemsNameCol.setCellValueFactory(new PropertyValueFactory<String, Item>("name"));
         allItemsEanCol.setCellValueFactory(new PropertyValueFactory<String, Item>("ean"));
@@ -187,7 +187,7 @@ public class DocumentPropertiesController {
         });
 
         priceGrossCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c ->
-                new ReadOnlyObjectWrapper(String.valueOf(c.getValue().getPrice())));
+                new ReadOnlyObjectWrapper(moneyFormat.format(c.getValue().getPrice())));
         priceGrossCol.setCellFactory(TextFieldTableCell.forTableColumn());
         priceGrossCol.setOnEditCommit(
                 new EventHandler<CellEditEvent<DocumentItem, String>>() {
@@ -263,15 +263,16 @@ public class DocumentPropertiesController {
         if (mode == PREVIEW) {
             disableForm(propertiesForm);
             saveButton.setVisible(false);
+            documentItemsTable.setEditable(false);//todo: remove context menu
         }
     }
 
     private void refreshDocValLabels() {
-        double grossVal = document.getItems().stream().mapToDouble(di -> multiplyNullable(di.getQuantity(), di.getPrice())).sum();
-        grossDocVal.setText(Double.toString(grossVal) + " zł");
+        double grossVal = document.getItems().stream().mapToDouble(di -> NullableCalc.multiplyNullable(di.getQuantity(), di.getPrice())).sum();
+        grossDocVal.setText(moneyFormat.format(grossVal) + " zł");
 
-        double netVal = document.getItems().stream().mapToDouble(di -> netValue(multiplyNullable(di.getQuantity(), di.getPrice()), di.getTax())).sum();
-        netDocVal.setText(Double.toString(netVal) + " zł");
+        double netVal = document.getItems().stream().mapToDouble(di -> NullableCalc.netValue(NullableCalc.multiplyNullable(di.getQuantity(), di.getPrice()), di.getTax())).sum();
+        netDocVal.setText(moneyFormat.format(netVal) + " zł");
     }
 
     private void disableForm(Pane formPane) {
@@ -456,17 +457,4 @@ public class DocumentPropertiesController {
         return actionResult;
     }
 
-    private Double multiplyNullable(Double a, Double b) {
-        if (a != null && b != null) {
-            return a * b;
-        }
-        return 0.0;
-    }
-
-    private double netValue(Double gross, Double tax) {
-        if (gross != null && tax != null) {
-            return gross * (100.0 - tax) / 100.0;
-        }
-        return 0;
-    }
 }
