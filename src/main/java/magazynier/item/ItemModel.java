@@ -1,6 +1,7 @@
 package magazynier.item;
 
 import magazynier.DAO;
+import magazynier.MeasurementUnit;
 import magazynier.RowNotFoundException;
 import magazynier.item.Item;
 
@@ -9,15 +10,15 @@ import java.util.function.UnaryOperator;
 
 public class ItemModel {
 
-    private static ArrayList VatList = DAO.readTable("VatRate");
-    private static ArrayList MeasurementUnitList = DAO.readTable("MeasurementUnit");
+    private static ArrayList<VatRate> VatList = DAO.readTable("VatRate");
+    private static ArrayList<MeasurementUnit> MeasurementUnitList = DAO.readTable("MeasurementUnit");
     private static ArrayList ItemsList = DAO.readTable("Item");
 
-    public static ArrayList getVatList() {
+    public static ArrayList<VatRate> getVatList() {
         return VatList;
     }
 
-    public static ArrayList getMeasurementUnitsList() {
+    public static ArrayList<MeasurementUnit> getMeasurementUnitsList() {
         return MeasurementUnitList;
     }
 

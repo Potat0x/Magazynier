@@ -12,6 +12,8 @@ import magazynier.utils.TextFieldCorrectnessIndicator;
 import magazynier.utils.validators.EanValidator;
 import magazynier.utils.validators.LengthValidator;
 
+//noinspection unchecked
+@SuppressWarnings("WeakerAccess")
 public class ItemController {
 
     private final int MAX_ITEM_MODEL_NUMBER_LENGTH = 30;
@@ -21,10 +23,10 @@ public class ItemController {
     public TextField name;
     public TextField ean;
     public TextField itemModelNumber;
-    public ComboBox measurementUnit;
+    public ComboBox<MeasurementUnit> measurementUnit;
     public TextField price;
     public TextField desiredQuantity;
-    public ComboBox vatRate;
+    public ComboBox<VatRate> vatRate;
     public TextArea description;
     public Button saveButton;
     public Button cancelButton;
@@ -48,8 +50,7 @@ public class ItemController {
 
         itemModelNumber.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_ITEM_MODEL_NUMBER_LENGTH)));
         name.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_ITEM_NAME_LENGTH)));
-        //measurementUnit.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_MEASUR_UNIT_NAME_LENGTH)));
-        measurementUnit.getItems().addAll(model.getMeasurementUnitsList());
+        measurementUnit.getItems().addAll(ItemModel.getMeasurementUnitsList());
 
 
         if (mode == ActionMode.EDIT) {
@@ -73,6 +74,7 @@ public class ItemController {
         ean.textProperty().addListener(new TextFieldCorrectnessIndicator(new EanValidator()));
     }
 
+    @FXML
     public void saveItem() {
 
         Stage stage = (Stage) cancelButton.getScene().getWindow();
@@ -116,6 +118,7 @@ public class ItemController {
 
     }
 
+    @FXML
     public void cancelItemAddOrEdit() {
         actionResult = ActionResult.CANCEL;
         Stage stage = (Stage) cancelButton.getScene().getWindow();
@@ -123,7 +126,7 @@ public class ItemController {
     }
 
     private double stringToDouble(String str) {
-        double val = 0;
+        double val;
         try {
             val = Double.parseDouble(str);
         } catch (Exception e) {
@@ -136,9 +139,9 @@ public class ItemController {
         item.setEan(ean.getText());
         item.setItemModelNumber(itemModelNumber.getText());
         item.setName(name.getText());
-        item.setMeasurementUnit((MeasurementUnit) measurementUnit.getSelectionModel().getSelectedItem());
+        item.setMeasurementUnit(measurementUnit.getSelectionModel().getSelectedItem());
         item.setDescription(description.getText());
-        item.setVatRate((VatRate) vatRate.getSelectionModel().getSelectedItem());
+        item.setVatRate(vatRate.getSelectionModel().getSelectedItem());
         item.setCurrentPrice(stringToDouble(price.getText()));
         item.setDesiredQuantity(stringToDouble(desiredQuantity.getText()));
     }
@@ -159,11 +162,8 @@ public class ItemController {
     }
 
     private boolean validFormMaxLength() {
-        if ((itemModelNumber.getText() == null || itemModelNumber.getText().length() <= MAX_ITEM_MODEL_NUMBER_LENGTH) &&
-                (name.getText() == null || name.getText().length() <= MAX_ITEM_NAME_LENGTH)) {
-            return true;
-        }
-        return false;
+        return (itemModelNumber.getText() == null || itemModelNumber.getText().length() <= MAX_ITEM_MODEL_NUMBER_LENGTH) &&
+                (name.getText() == null || name.getText().length() <= MAX_ITEM_NAME_LENGTH);
     }
 
 }

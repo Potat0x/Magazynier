@@ -1,19 +1,13 @@
 package magazynier;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.MoneyValueFormat;
 
@@ -23,20 +17,20 @@ import java.util.ArrayList;
 
 import static magazynier.ActionMode.EDIT;
 import static magazynier.ActionMode.PREVIEW;
+import static magazynier.utils.WindowCreator.createWindowFromFxml;
 
-@SuppressWarnings("unchecked")
 public class DocumentsController {
-    public TableView docTable;
-    public TableColumn dateCol;
-    public TableColumn nameCol;
-    public TableColumn contractorCol;
-    public TableColumn worker;
+    public TableView<Document> docTable;
+    public TableColumn<Document, String> dateCol;
+    public TableColumn<Document, String> nameCol;
+    public TableColumn<Document, String> contractorCol;
+    public TableColumn<Document, String> worker;
     public Button showDocumentButton;
     public Button editDocumentButton;
     public Button deleteDocumentButton;
-    public TableColumn netValCol;
-    public TableColumn grossValCol;
-    public TableColumn profitCol;
+    public TableColumn<Document, String> netValCol;
+    public TableColumn<Document, String> grossValCol;
+    public TableColumn<Document, String> profitCol;
 
     private DocumentModel model;
 
@@ -47,53 +41,41 @@ public class DocumentsController {
     @FXML
     public void initialize() {
         MoneyValueFormat format = new MoneyValueFormat();
-        dateCol.setCellValueFactory(new PropertyValueFactory<String, Document>("date"));
-        nameCol.setCellValueFactory(new PropertyValueFactory<String, Document>("name"));
-        worker.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Document, String>, ObservableValue<String>>) p -> new ReadOnlyObjectWrapper(p.getValue().getWorker().getFullName()));
-        contractorCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Document, String>, ObservableValue<String>>) p -> new ReadOnlyObjectWrapper(p.getValue().getContractor().getFullName()));
-        netValCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Document, String>, ObservableValue<String>>) p -> new ReadOnlyObjectWrapper(format.format(p.getValue().netVal())));
-        grossValCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<Document, String>, ObservableValue<String>>) p -> new ReadOnlyObjectWrapper(format.format(p.getValue().grossVal())));
+        dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        worker.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getWorker().getFullName()));
+        contractorCol.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getContractor().getFullName()));
+        netValCol.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(format.format(p.getValue().netVal())));
+        grossValCol.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(format.format(p.getValue().grossVal())));
         refreshTable();
 
-        docTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                showDocumentButton.setDisable(newValue == null);
-                editDocumentButton.setDisable(newValue == null);
-                deleteDocumentButton.setDisable(newValue == null);
-            }
+        docTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            showDocumentButton.setDisable(newValue == null);
+            editDocumentButton.setDisable(newValue == null);
+            deleteDocumentButton.setDisable(newValue == null);
         });
     }
 
-    void refreshTable() {
-        ArrayList wl = model.getDocumentsList();
+    private void refreshTable() {
+        ArrayList<Document> wl = model.getDocumentsList();
         docTable.getItems().clear();
         docTable.getItems().addAll(wl);
     }
 
     private ActionResult showDocumentWindow(Document document, ActionMode mode) {
-        FXMLLoader itemStageLoader = new FXMLLoader(getClass().getResource("/fxml/document_properties.fxml"));
 
         DocumentPropertiesController dcp = new DocumentPropertiesController(document, mode);
-        itemStageLoader.setController(dcp);
-        Stage itemStage = new Stage();
-        itemStage.setTitle("Dokument");
-        Parent parent = null;
         try {
-            parent = itemStageLoader.load();
+            Stage itemStage = createWindowFromFxml("/fxml/document_properties.fxml", dcp, "Dokument");
+            itemStage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        itemStage.setScene(new Scene(parent));
-        itemStage.showAndWait();
-
         return dcp.getActionResult();
     }
 
-    //todo: remove duplicated code
     private void showDocumentWindow(ActionMode mode) {
-        Document slectedDoc = (Document) docTable.getSelectionModel().getSelectedItem();
+        Document slectedDoc = docTable.getSelectionModel().getSelectedItem();
 
         try {
             model.refreshDocument(slectedDoc);
@@ -127,13 +109,13 @@ public class DocumentsController {
 
     public void addDocument() {
         Document newDoc = new Document();
-        ActionResult actionResult = showDocumentWindow(newDoc, ActionMode.ADD);
+        showDocumentWindow(newDoc, ActionMode.ADD);
         refreshTable();
     }
 
     public void deleteDocument() {
         try {
-            model.deleteDocument((Document) docTable.getSelectionModel().getSelectedItem());
+            model.deleteDocument(docTable.getSelectionModel().getSelectedItem());
             refreshTable();
         } catch (RowNotFoundException e) {
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można usunąć dokumentu.",

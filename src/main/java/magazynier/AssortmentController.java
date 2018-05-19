@@ -1,18 +1,13 @@
 package magazynier;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import magazynier.item.Item;
 import magazynier.item.ItemController;
 import magazynier.item.ItemModel;
@@ -21,17 +16,19 @@ import magazynier.utils.AlertLauncher;
 import javax.persistence.PersistenceException;
 import java.io.IOException;
 
+import static magazynier.utils.WindowCreator.createWindowFromFxml;
+
 public class AssortmentController {
 
     public Button delete;
-    public TableColumn nameCol;
-    public TableColumn eanCol;
-    public TableColumn itemModelNumberCol;
-    public TableColumn quantityCol;
-    public TableColumn priceCol;
-    public TableColumn taxCol;
-    public TableColumn warehousesCol;
-    public TableView itemsTable;
+    public TableColumn<Item, String> nameCol;
+    public TableColumn<Item, String> eanCol;
+    public TableColumn<Item, String> itemModelNumberCol;
+    public TableColumn<Item, String> quantityCol;
+    public TableColumn<Item, String> priceCol;
+    public TableColumn<Item, String> taxCol;
+    public TableColumn<Item, String> warehousesCol;
+    public TableView<Item> itemsTable;
     public Button editButton;
     public Button deleteButton;
     private ItemModel model;
@@ -41,18 +38,13 @@ public class AssortmentController {
     }
 
     @FXML
-    @SuppressWarnings("unchecked")
     public void initialize() {
-        //todo:quantityCol as progressbar
-        eanCol.setCellValueFactory(new PropertyValueFactory<String, Item>("ean"));
-        nameCol.setCellValueFactory(new PropertyValueFactory<String, Item>("name"));
-        itemModelNumberCol.setCellValueFactory(new PropertyValueFactory<String, Item>("itemModelNumber"));
-        priceCol.setCellValueFactory(new PropertyValueFactory<String, Item>("currentPrice"));
-        taxCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Item, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Item, String> p) {
-                return new ReadOnlyObjectWrapper(p.getValue().getVatRate().getName());
-            }
-        });
+
+        eanCol.setCellValueFactory(new PropertyValueFactory<>("ean"));
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        itemModelNumberCol.setCellValueFactory(new PropertyValueFactory<>("itemModelNumber"));
+        priceCol.setCellValueFactory(new PropertyValueFactory<>("currentPrice"));
+        taxCol.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getVatRate().getName()));
 
         itemsTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             boolean rowNotSelected = newValue == null;
@@ -78,7 +70,7 @@ public class AssortmentController {
     }
 
     public void editItem() {
-        Item item = (Item) itemsTable.getSelectionModel().getSelectedItem();
+        Item item = itemsTable.getSelectionModel().getSelectedItem();
         ActionResult actionResult = showItemWindow(item, ActionMode.EDIT);
 
         if (actionResult == ActionResult.CONFIRM) {
@@ -89,7 +81,7 @@ public class AssortmentController {
     }
 
     public void deleteItem() {
-        Item selectedItem = (Item) itemsTable.getSelectionModel().getSelectedItem();
+        Item selectedItem = itemsTable.getSelectionModel().getSelectedItem();
 
         if (selectedItem != null) {
             try {
@@ -113,20 +105,14 @@ public class AssortmentController {
     }
 
     private ActionResult showItemWindow(Item item, ActionMode mode) {
-        FXMLLoader itemStageLoader = new FXMLLoader(getClass().getResource("/fxml/item_window.fxml"));
+
         ItemController ic = new ItemController(item, mode);
-        itemStageLoader.setController(ic);
-        Stage itemStage = new Stage();
-        itemStage.setTitle("Towar");
-        Parent parent = null;
         try {
-            parent = itemStageLoader.load();
+            Stage itemStage = createWindowFromFxml("/fxml/item_window.fxml", ic, "Towar");
+            itemStage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        itemStage.setScene(new Scene(parent));
-        itemStage.showAndWait();
         return ic.getActionResult();
     }
 

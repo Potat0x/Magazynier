@@ -13,14 +13,12 @@ public class Magazynier extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("start.fxml"));
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
         Parent root = fxmlLoader.load();
         primaryStage.setTitle("Magazynier");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-        MainController mc = fxmlLoader.getController();
-        //mc.s();
+        //MainController mc = fxmlLoader.getController();
     }
 
     @Override

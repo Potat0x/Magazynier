@@ -4,7 +4,7 @@ package magazynier;
 import java.util.ArrayList;
 
 public class DocumentModel {
-    ArrayList getDocumentsList() {
+    ArrayList<Document> getDocumentsList() {
         return DAO.readTable("Document");
     }
 

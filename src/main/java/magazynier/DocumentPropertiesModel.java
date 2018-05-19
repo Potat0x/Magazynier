@@ -1,19 +1,23 @@
 package magazynier;
 
+import magazynier.contractor.Contractor;
+import magazynier.item.Item;
+import magazynier.worker.Worker;
 import org.hibernate.PropertyValueException;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class DocumentPropertiesModel {
 
     private static ArrayList VatRates = DAO.readTable("VatRate");
 
-    public ArrayList getItemsList() {
+    public ArrayList<Item> getItemsList() {
         return DAO.readTable("Item");
     }
 
-    public ArrayList getDocTypesList() {
+    public ArrayList<DocumentType> getDocTypesList() {
         return DAO.readTable("DocumentType");
     }
 
@@ -21,11 +25,11 @@ public class DocumentPropertiesModel {
         DAO.update(document);
     }
 
-    public ArrayList getWorkersList() {
+    public ArrayList<Worker> getWorkersList() {
         return DAO.readTable("Worker");
     }
 
-    public ArrayList getContractorsList() {
+    public ArrayList<Contractor> getContractorsList() {
         return DAO.readTable("Contractor");
     }
 
@@ -33,7 +37,7 @@ public class DocumentPropertiesModel {
         DAO.add(document);
     }
 
-    public ArrayList getMarginTypesList() {
+    public ArrayList<MarginType> getMarginTypesList() {
         return DAO.readTable("MarginType");
     }
 
@@ -47,5 +51,9 @@ public class DocumentPropertiesModel {
 
     public Integer countDocumentsByDay(LocalDate day) {
         return DAO.countDocumentsByDay(day);
+    }
+
+    public String getNextDocName(LocalDate date) {
+        return 1 + countDocumentsByDay(date) + date.format(DateTimeFormatter.ofPattern("/dd-MM-yyyy"));
     }
 }
