@@ -207,5 +207,57 @@ public class DAO {
         }
         return 0.0;
     }
+
+    public static Double getWarehouseGrossValue(Integer warehouseId) {
+        if (warehouseId != null) {
+
+            try (Session session = HibernateSessionFactory.openSession()) {
+                /*String qs = "select sum(di.quantity * di.price +2) " +
+                        "FROM Assortment as a " +
+                        "JOIN DocumentItem as di on di.item.id = a.documentItemId group by a.warehouseId";
+                */
+                String qs = "select sum(di.quantity * di.price) " +
+                        "FROM Assortment as a " +
+                        "JOIN DocumentItem as di on di.id = a.documentItemId " +
+                        "where a.warehouseId = " + warehouseId;
+
+                Query query = session.createQuery(qs);
+                Object o = query.uniqueResult();
+                System.out.println("o = " + o);
+                if (o != null) {
+                    return ((Double) o).doubleValue();
+                } else {
+                    return 0.0;
+                }
+            } catch (HibernateException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0.0;
+    }
+
+    public static Double getWarehouseNetValue(Integer warehouseId) {
+        if (warehouseId != null) {
+
+            try (Session session = HibernateSessionFactory.openSession()) {
+                String qs = "select sum(di.quantity * di.price * ((100.0 - di.tax) / 100.0)) " +
+                        "FROM Assortment as a " +
+                        "JOIN DocumentItem as di on di.id = a.documentItemId " +
+                        "where a.warehouseId = " + warehouseId;
+
+                Query query = session.createQuery(qs);
+                Object o = query.uniqueResult();
+                System.out.println("o = " + o);
+                if (o != null) {
+                    return ((Double) o).doubleValue();
+                } else {
+                    return 0.0;
+                }
+            } catch (HibernateException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0.0;
+    }
     //assortment DAO</>
 }

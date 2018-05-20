@@ -123,7 +123,7 @@ public class DocumentsController {
             refreshTable();
         } catch (PersistenceException e) {
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można usunąć dokumentu.",
-                    "todo: constr");//todo
+                    "Z tym dokumentem jest powiązany asortyment.");
         } catch (Exception e) {
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można usunąć dokumentu.",
                     "Nieznany błąd.");
