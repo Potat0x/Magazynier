@@ -3,6 +3,7 @@ package magazynier;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ProgressBarTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import magazynier.item.Item;
@@ -23,6 +24,7 @@ public class AssortmentController {
     public TableColumn<Item, String> eanCol;
     public TableColumn<Item, String> itemModelNumberCol;
     public TableColumn<Item, Double> quantityCol;
+    public TableColumn<Item, Double> desiredQuantityCol;
     public TableColumn<Item, String> priceCol;
     public TableColumn<Item, String> taxCol;
     public TableColumn<Item, String> warehousesCol;
@@ -63,6 +65,9 @@ public class AssortmentController {
             editButton.setDisable(rowNotSelected);
             deleteButton.setDisable(rowNotSelected);
         });
+
+        desiredQuantityCol.setCellFactory(ProgressBarTableCell.forTableColumn());
+        desiredQuantityCol.setCellValueFactory(i -> new ReadOnlyObjectWrapper<>(model.getAvailableQuantity(i.getValue())/i.getValue().getDesiredQuantity()));
 
         refreshTable();
     }
