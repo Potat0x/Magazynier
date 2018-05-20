@@ -1,8 +1,6 @@
 package magazynier.contractor;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -10,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
-import javafx.util.Callback;
 import magazynier.ContractorType;
 import magazynier.RowNotFoundException;
 import magazynier.utils.AlertLauncher;
@@ -27,7 +24,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Optional;
 
-@SuppressWarnings("unchecked")
 public class ContractorsController {
 
     public TextField firstName;
@@ -37,15 +33,15 @@ public class ContractorsController {
     public TextField email;
     public TextField phone;
     public TextField nip;
-    public ComboBox type;
+    public ComboBox<ContractorType> type;
     public TextField pesel;
     public TextField city;
     public Button addButton;
-    public TableColumn typeCol;
-    public TableColumn nameCol;
-    public TableColumn firstNameCol;
-    public TableColumn lastNameCol;
-    public TableView contractorsTable;
+    public TableView<Contractor> contractorsTable;
+    public TableColumn<Contractor, ContractorType> typeCol;
+    public TableColumn<Contractor, String> nameCol;
+    public TableColumn<Contractor, String> firstNameCol;
+    public TableColumn<Contractor, String> lastNameCol;
     public GridPane form;
     public Button editButton;
     public Button cancelButton;
@@ -76,7 +72,7 @@ public class ContractorsController {
     }
 
     private void refreshTable() {
-        ArrayList contractors = model.getContractorsList();
+        ArrayList<Contractor> contractors = model.getContractorsList();
         contractorsTable.getItems().clear();
         contractorsTable.getItems().addAll(contractors);
     }
@@ -90,32 +86,27 @@ public class ContractorsController {
         nip.setDisable(true);
         pesel.setDisable(false);
 
-        type.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                boolean isCompany = false;
-                if (newValue != null) {
-                    isCompany = newValue.toString().equals(COMPANY);
-                }
-                contractorName.setDisable(!isCompany);
-                nip.setDisable(!isCompany);
-                pesel.setDisable(isCompany);
-                //setEditMode(false);
+        type.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            boolean isCompany = false;
+            if (newValue != null) {
+                isCompany = newValue.toString().equals(COMPANY);
             }
+            contractorName.setDisable(!isCompany);
+            nip.setDisable(!isCompany);
+            pesel.setDisable(isCompany);
+            //setEditMode(false);
         });
 
-        firstNameCol.setCellValueFactory(new PropertyValueFactory<Contractor, String>("firstName"));
-        lastNameCol.setCellValueFactory(new PropertyValueFactory<Contractor, String>("lastName"));
+        firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        lastNameCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 
-        typeCol.setCellValueFactory(new PropertyValueFactory<Contractor, ContractorType>("contractorType"));
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("contractorType"));
 
-        nameCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Contractor, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Contractor, String> p) {
-                if (p.getValue().getEntityType() != null && p.getValue().getEntityType().equals(NATURAL_PERSON))
-                    return new ReadOnlyObjectWrapper(Optional.ofNullable(p.getValue().getFirstName()).orElse("") + " " + Optional.ofNullable(p.getValue().getLastName()).orElse(""));
-                else {
-                    return new ReadOnlyObjectWrapper(p.getValue().getContractorName());
-                }
+        nameCol.setCellValueFactory(p -> {
+            if (p.getValue().getEntityType() != null && p.getValue().getEntityType().equals(NATURAL_PERSON))
+                return new ReadOnlyObjectWrapper<>(Optional.ofNullable(p.getValue().getFirstName()).orElse("") + " " + Optional.ofNullable(p.getValue().getLastName()).orElse(""));
+            else {
+                return new ReadOnlyObjectWrapper<>(p.getValue().getContractorName());
             }
         });
 
@@ -153,7 +144,7 @@ public class ContractorsController {
     @FXML
     public void updateForm() {
 
-        Contractor sc = (Contractor) contractorsTable.getSelectionModel().getSelectedItem();
+        Contractor sc = contractorsTable.getSelectionModel().getSelectedItem();
 
         if (sc != null) {
             type.getSelectionModel().select(sc.getContractorType());//todo: sc.contractorname?
@@ -174,7 +165,7 @@ public class ContractorsController {
 
     public void updateSelectedContractor() {
 
-        Contractor selectedContractor = (Contractor) contractorsTable.getSelectionModel().getSelectedItem();
+        Contractor selectedContractor = contractorsTable.getSelectionModel().getSelectedItem();
         if (selectedContractor != null) {
 
             updateContractorFromForm(selectedContractor);
@@ -199,7 +190,7 @@ public class ContractorsController {
 
     public void deleteContractor() {
 
-        Contractor selectedContractor = (Contractor) contractorsTable.getSelectionModel().getSelectedItem();
+        Contractor selectedContractor = contractorsTable.getSelectionModel().getSelectedItem();
         if (selectedContractor != null) {
             try {
                 model.deleteContractor(selectedContractor);
@@ -214,7 +205,7 @@ public class ContractorsController {
 
                 if (e instanceof PersistenceException) {
                     failInfo = "Kontrahent występuje na dokumentach.";
-                    c = (Contractor) contractorsTable.getSelectionModel().getSelectedItem();
+                    c = contractorsTable.getSelectionModel().getSelectedItem();
                 } else if (e instanceof RowNotFoundException) {
                     failInfo = "Nie znaleziono kontrahenta. Mógł zostać wcześniej usunięty z bazy.";
                     FormCleaner.clearForm(form);
@@ -332,7 +323,7 @@ public class ContractorsController {
         contractor.setNip(nip.getText().replaceAll("[- ]", ""));
         contractor.setStreet(street.getText());
         contractor.setCity(city.getText());
-        contractor.setContractorType((ContractorType) type.getSelectionModel().getSelectedItem());
+        contractor.setContractorType(type.getSelectionModel().getSelectedItem());
     }
 
     private boolean validFormMaxLength() {

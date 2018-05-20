@@ -1,5 +1,6 @@
 package magazynier.contractor;
 
+import magazynier.ContractorType;
 import magazynier.DAO;
 import magazynier.RowNotFoundException;
 
@@ -7,11 +8,11 @@ import java.util.ArrayList;
 
 public class ContractorsModel {
 
-    ArrayList getContractorsList() {
+    ArrayList<Contractor> getContractorsList() {
         return DAO.readTable("Contractor");
     }
 
-    public ArrayList getContractorTypesList() {
+    public ArrayList<ContractorType> getContractorTypesList() {
         return DAO.readTable("ContractorType");
     }
 
