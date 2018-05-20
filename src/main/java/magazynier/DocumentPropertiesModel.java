@@ -82,4 +82,13 @@ public class DocumentPropertiesModel {
     public void deleteItemFromAssortment(DocumentItem item) {
         DAO.delete(item.getId());
     }
+
+    public Double getAvailableQuantityInWarehouse(DocumentItem docItem, Warehouse warehouse) {
+        if (docItem == null)
+            return -1.99;
+        if (warehouse == null)
+            return -2.99;
+        else
+            return DAO.getAvailableQuantityInWarehouse(docItem.getItem().getId(), warehouse.getId());
+    }
 }

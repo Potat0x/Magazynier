@@ -3,7 +3,6 @@ package magazynier.item;
 import magazynier.DAO;
 import magazynier.MeasurementUnit;
 import magazynier.RowNotFoundException;
-import magazynier.item.Item;
 
 import java.util.ArrayList;
 import java.util.function.UnaryOperator;
@@ -37,5 +36,15 @@ public class ItemModel {
 
     public void deleteItem(Item item) throws RowNotFoundException {
         DAO.delete(item);
+    }
+
+    public Double getAvailableQuantity(Item item) {
+
+        if (item == null)
+            return -1.99;
+        else {
+            System.out.println("ITEM: " + item.getId() + ", " + item.getName());
+            return DAO.getAvailableQuantity(item.getId());
+        }
     }
 }

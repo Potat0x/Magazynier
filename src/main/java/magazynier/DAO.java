@@ -1,6 +1,7 @@
 package magazynier;
 
 import magazynier.utils.Indexed;
+import magazynier.warehouse.Warehouse;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -152,6 +153,59 @@ public class DAO {
                 throw new RowNotFoundException(object.getClass() + " object:" + object + " does not exist in database.");
             }
         }
+    }
+
+    public static Double getAvailableQuantityInWarehouse(Integer itemId, Integer warehouseId) {
+
+        if (itemId != null && warehouseId != null) {
+            try (Session session = HibernateSessionFactory.openSession()) {
+                String qs = "select sum(di.quantity * di.transactionSign) " +
+                        "FROM DocumentItem as di " +
+                        "JOIN Assortment as a on di.id = a.documentItemId " +
+                        "JOIN Item as i on i.id = di.item.id " +
+                        "where a.warehouseId = " + warehouseId + " " +
+                        "and i.id = " + itemId + " " +
+//                    "where a.warehouseId = 3 and i.id = 4 " +
+//                    "where a.warehouseId = :id and i.id = :id " +
+                        "GROUP BY i.id, a.warehouseId";
+//                    "having di.item.id = 4";
+
+                Query query = session.createQuery(qs);
+//            query.setProperties(warehouse);
+//            query.setProperties(docItem.getItem());
+                Object o = query.uniqueResult();
+                if (o != null) {
+                    return ((Double) o).doubleValue();
+                } else {
+                    return -3.79;
+                }
+            } catch (HibernateException e) {
+                e.printStackTrace();
+            }
+        }
+        return -4.99;
+    }
+
+    public static Double getAvailableQuantity(Integer itemId) {
+        if (itemId != null) {
+            try (Session session = HibernateSessionFactory.openSession()) {
+                String qs = "select sum(di.quantity * di.transactionSign) " +
+                        "FROM DocumentItem as di " +
+                        "where di.item.id = " + itemId;
+
+                Query query = session.createQuery(qs);
+                Object o = query.uniqueResult();
+                System.out.println("o = " + o);
+                if (o != null) {
+                    return ((Double) o).doubleValue();
+                } else {
+                    return 0.0;
+                }
+            } catch (HibernateException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0.0;
     }
     //assortment DAO</>
 }

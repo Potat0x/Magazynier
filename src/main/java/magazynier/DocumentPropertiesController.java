@@ -54,10 +54,11 @@ public class DocumentPropertiesController {
 
     public TableColumn<DocumentItem, String> nameCol;
     public TableColumn<DocumentItem, String> eanCol;
-    public TableColumn quantityCol;//
+    public TableColumn quantityCol;
+    public TableColumn<DocumentItem, Double> quantityAvailableCol;
     public TableColumn<DocumentItem, String> measurmntUnitCol;
     public TableColumn<DocumentItem, Double> taxCol;
-    public TableColumn priceGrossCol;//
+    public TableColumn priceGrossCol;
     public TableColumn<DocumentItem, Double> priceNetCol;
     public TableColumn<DocumentItem, Double> valueGrossCol;
     public TableColumn<DocumentItem, Double> valueNetCol;
@@ -197,21 +198,18 @@ public class DocumentPropertiesController {
                 }
         );
 
-        warehouseCol.setCellValueFactory(c -> {
-            Warehouse warehouse = model.getWarehousesList().stream().filter(w -> w.getId().equals(model.findWarehouse(c.getValue()))).findAny().orElse(null);
-            if (warehouse != null)
-                c.getValue().setWarehouse(warehouse);
-            return new ReadOnlyObjectWrapper<>(c.getValue().getWarehouse());
-        });//todo: change it...
-
+        warehouseCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().getWarehouse()));
         warehouseCol.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(model.getWarehousesList())));
         warehouseCol.setOnEditCommit(t -> {
                     DocumentItem di = t.getTableView().getItems().get(t.getTablePosition().getRow());
                     di.setWarehouse(t.getNewValue());
                     //refreshDocValLabels();
-                    System.out.println("WAREHOUS -> " + di.getWarehouse());
+                    documentItemsTable.refresh();
                 }
         );
+
+        quantityAvailableCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
+                format(model.getAvailableQuantityInWarehouse(c.getValue(), c.getValue().getWarehouse())))));
 
         quantityCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c -> new ReadOnlyObjectWrapper<>(String.valueOf(c.getValue().getQuantity())));
         quantityCol.setCellFactory(forTableColumn());
@@ -299,6 +297,11 @@ public class DocumentPropertiesController {
 
     private void refreshTable() {
         documentItemsTable.getItems().clear();
+        document.getItems().forEach(di -> {
+            Warehouse warehouse = model.getWarehousesList().stream().filter(w -> w.getId().equals(model.findWarehouse(di))).findAny().orElse(null);
+            if (warehouse != null)
+                di.setWarehouse(warehouse);
+        });
         documentItemsTable.getItems().addAll(document.getItems());
     }
 
@@ -329,6 +332,7 @@ public class DocumentPropertiesController {
                         model.updateDocument(document, deletedItems);
                         deletedItems.clear();
                         actionResult = CONFIRM;
+                        documentItemsTable.refresh();
                     } else if (mode == ADD) {
                         model.addDocument(document);
                         mode = ActionMode.EDIT;
@@ -352,7 +356,15 @@ public class DocumentPropertiesController {
                     closeWindowWithFail();
                 }
             } else {
-                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wybierz magazyny, w których będzie składowany asortyment.");
+
+                DocumentType dt = docType.getSelectionModel().getSelectedItem();
+                int tag = docType.getSelectionModel().getSelectedItem().getTag();
+
+                if (tag > 0) {
+                    AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wybierz magazyny, do których zostanie przyjęty asortyment.");
+                } else if (tag < 0) {
+                    AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wybierz magazyny, z których zostanie wydany asortyment.");
+                }
             }
 
         } else {

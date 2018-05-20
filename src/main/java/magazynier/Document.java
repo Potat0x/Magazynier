@@ -52,6 +52,7 @@ public class Document implements Indexed {
 
     public void setDocumentType(DocumentType documentType) {
         this.documentType = documentType;
+        items.forEach(i -> i.setTransactionSign(documentType.getTag()));
     }
 
     public Contractor getContractor() {

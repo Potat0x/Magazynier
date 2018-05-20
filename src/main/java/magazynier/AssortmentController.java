@@ -12,6 +12,7 @@ import magazynier.item.Item;
 import magazynier.item.ItemController;
 import magazynier.item.ItemModel;
 import magazynier.utils.AlertLauncher;
+import magazynier.utils.MoneyValueFormat;
 
 import javax.persistence.PersistenceException;
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class AssortmentController {
     public TableColumn<Item, String> nameCol;
     public TableColumn<Item, String> eanCol;
     public TableColumn<Item, String> itemModelNumberCol;
-    public TableColumn<Item, String> quantityCol;
+    public TableColumn<Item, Double> quantityCol;
     public TableColumn<Item, String> priceCol;
     public TableColumn<Item, String> taxCol;
     public TableColumn<Item, String> warehousesCol;
@@ -45,6 +46,10 @@ public class AssortmentController {
         itemModelNumberCol.setCellValueFactory(new PropertyValueFactory<>("itemModelNumber"));
         priceCol.setCellValueFactory(new PropertyValueFactory<>("currentPrice"));
         taxCol.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getVatRate().getName()));
+
+        MoneyValueFormat moneyFormat = new MoneyValueFormat();
+        quantityCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
+                format(model.getAvailableQuantity(c.getValue())))));//todo: 3x sout * item_count
 
         itemsTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             boolean rowNotSelected = newValue == null;

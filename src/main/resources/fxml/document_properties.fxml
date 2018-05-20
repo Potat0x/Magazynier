@@ -73,7 +73,7 @@
                 </HBox>
                 <SplitPane fx:id="splitPane" dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" VBox.vgrow="ALWAYS">
                     <items>
-                        <TableView fx:id="documentItemsTable" editable="true" onMouseClicked="#showItem" prefHeight="166.0" prefWidth="491.0">
+                        <TableView fx:id="documentItemsTable" editable="true" prefHeight="166.0" prefWidth="491.0">
                             <placeholder>
                                 <Label text="Dodaj pozycje do dokumentu." />
                             </placeholder>
@@ -83,6 +83,7 @@
                                 <TableColumn fx:id="nameCol" maxWidth="10000.0" prefWidth="1000.0" text="Nazwa" />
                                 <TableColumn fx:id="eanCol" prefWidth="75.0" text="EAN" />
                                 <TableColumn fx:id="quantityCol" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="Ilość" />
+                        <TableColumn fx:id="quantityAvailableCol" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="Bieżący stan" />
                                 <TableColumn fx:id="measurmntUnitCol" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="Jedn." />
                                 <TableColumn fx:id="taxCol" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="VAT" />
                                 <TableColumn fx:id="priceGrossCol" minWidth="40.0" prefWidth="95.0" text="Cena brutto" />
