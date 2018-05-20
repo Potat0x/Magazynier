@@ -2,10 +2,7 @@ package magazynier;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import magazynier.item.Item;
@@ -29,9 +26,13 @@ public class AssortmentController {
     public TableColumn<Item, String> priceCol;
     public TableColumn<Item, String> taxCol;
     public TableColumn<Item, String> warehousesCol;
+    public TableColumn<Item, Double> grossValCol;
+    public TableColumn<Item, Double> netValCol;
     public TableView<Item> itemsTable;
     public Button editButton;
     public Button deleteButton;
+    public Label netValLabel;
+    public Label grossValLabel;
     private ItemModel model;
 
     public AssortmentController() {
@@ -50,6 +51,12 @@ public class AssortmentController {
         MoneyValueFormat moneyFormat = new MoneyValueFormat();
         quantityCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
                 format(model.getAvailableQuantity(c.getValue())))));//todo: 3x sout * item_count
+
+        grossValCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
+                format(model.getItemTotalGrossValue(c.getValue())))));
+
+        netValCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
+                format(model.getItemTotalNetValue(c.getValue())))));
 
         itemsTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             boolean rowNotSelected = newValue == null;

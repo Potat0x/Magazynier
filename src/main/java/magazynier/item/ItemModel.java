@@ -3,6 +3,7 @@ package magazynier.item;
 import magazynier.DAO;
 import magazynier.MeasurementUnit;
 import magazynier.RowNotFoundException;
+import magazynier.utils.NullableCalc;
 
 import java.util.ArrayList;
 import java.util.function.UnaryOperator;
@@ -46,5 +47,13 @@ public class ItemModel {
             System.out.println("ITEM: " + item.getId() + ", " + item.getName());
             return DAO.getAvailableQuantity(item.getId());
         }
+    }
+
+    public Double getItemTotalGrossValue(Item item) {
+        return NullableCalc.multiplyNullable(DAO.getAvailableQuantity(item.getId()), item.getCurrentPrice());
+    }
+
+    public Double getItemTotalNetValue(Item item) {
+        return NullableCalc.netValue(getItemTotalGrossValue(item), item.getVatRate().getTax());
     }
 }
