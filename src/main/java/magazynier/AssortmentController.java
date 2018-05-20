@@ -44,6 +44,8 @@ public class AssortmentController {
     @FXML
     public void initialize() {
 
+        itemsTable.itemsProperty().addListener((observable, oldValue, newValue) -> refreshValueLabels());
+
         eanCol.setCellValueFactory(new PropertyValueFactory<>("ean"));
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         itemModelNumberCol.setCellValueFactory(new PropertyValueFactory<>("itemModelNumber"));
@@ -67,9 +69,10 @@ public class AssortmentController {
         });
 
         desiredQuantityCol.setCellFactory(ProgressBarTableCell.forTableColumn());
-        desiredQuantityCol.setCellValueFactory(i -> new ReadOnlyObjectWrapper<>(model.getAvailableQuantity(i.getValue())/i.getValue().getDesiredQuantity()));
+        desiredQuantityCol.setCellValueFactory(i -> new ReadOnlyObjectWrapper<>(model.getAvailableQuantity(i.getValue()) / i.getValue().getDesiredQuantity()));
 
         refreshTable();
+        refreshValueLabels();
     }
 
     private void refreshTable() {
@@ -83,6 +86,7 @@ public class AssortmentController {
         if (actionResult == ActionResult.CONFIRM) {
             itemsTable.getItems().add(item);
             itemsTable.refresh();
+            refreshValueLabels();
         }
     }
 
@@ -92,6 +96,7 @@ public class AssortmentController {
 
         if (actionResult == ActionResult.CONFIRM) {
             itemsTable.refresh();
+            refreshValueLabels();
         } else if (actionResult == ActionResult.FAIL) {
             refreshTable();
         }
@@ -105,6 +110,7 @@ public class AssortmentController {
                 model.deleteItem(selectedItem);
                 itemsTable.getItems().remove(selectedItem);
                 itemsTable.getSelectionModel().select(null);
+                refreshValueLabels();
             } catch (RowNotFoundException e) {
                 AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można usunąć przedmiotu.",
                         "Nie znaleziono przedmiotu. Mógł zostać wcześniej usunięty przez innego użytkownika.");
@@ -133,8 +139,15 @@ public class AssortmentController {
         return ic.getActionResult();
     }
 
+    private void refreshValueLabels() {
+        MoneyValueFormat moneyFormat = new MoneyValueFormat();
+        grossValLabel.setText(moneyFormat.format(model.getItemsList().stream().mapToDouble(i -> model.getItemTotalGrossValue(i)).sum()) + " zł");
+        netValLabel.setText(moneyFormat.format(model.getItemsList().stream().mapToDouble(i -> model.getItemTotalNetValue(i)).sum()) + " zł");
+    }
+
     @FXML
     public void refreshItemsList() {
         refreshTable();
+        refreshValueLabels();
     }
 }
