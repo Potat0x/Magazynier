@@ -6,6 +6,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
@@ -19,6 +21,9 @@ import magazynier.utils.validators.NipValidator;
 import magazynier.utils.validators.PeselValidator;
 
 import javax.persistence.PersistenceException;
+import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -46,6 +51,7 @@ public class ContractorsController {
     public Button cancelButton;
     public Button saveButton;
     public Button deleteButton;
+    public Button emailButton;
 
     private ContractorsModel model;
 
@@ -119,6 +125,7 @@ public class ContractorsController {
             form.setDisable(rowNotSelected);
             editButton.setDisable(rowNotSelected);
             deleteButton.setDisable(rowNotSelected);
+            emailButton.setDisable(rowNotSelected);
 //            saveButton.setDisable(rowNotSelected);
 //            cancelButton.setDisable(rowNotSelected);
         });
@@ -228,7 +235,16 @@ public class ContractorsController {
         FormCleaner.clearStyles(form);
     }
 
+    @FXML
     public void openEmailClient() {
+
+        if (email.getText() != null && email.getText().contains("@")) {
+            try {
+                Desktop.getDesktop().mail(URI.create("mailto:" + email.getText()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void showDocs() {
@@ -352,6 +368,7 @@ public class ContractorsController {
         if (contractorsTable.getSelectionModel().getSelectedItem() != null) {
             editButton.setDisable(editMode);
             deleteButton.setDisable(editMode);
+            emailButton.setDisable(editMode);
         }
 
         contractorsTable.setDisable(editMode);
