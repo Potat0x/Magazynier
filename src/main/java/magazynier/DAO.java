@@ -11,6 +11,7 @@ import org.hibernate.query.Query;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Set;
 
 public class DAO {
 
@@ -102,4 +103,55 @@ public class DAO {
         }
         return -1;
     }
+
+    //assortment DAO<>
+    public static void delete(Integer id) {
+
+        try (Session session = HibernateSessionFactory.openSession()) {
+            Transaction tr = session.beginTransaction();
+            Query query = session.createQuery("delete from Assortment d where d.documentItemId = " + id);//todo: prepared
+            query.executeUpdate();
+            tr.commit();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Object findWarehouseIdByDocItemId(Integer documentItemId) {
+        try (Session session = HibernateSessionFactory.openSession()) {
+            Query query = session.createQuery("select warehouseId from Assortment d where d.documentItemId = " + documentItemId);//todo: prepared
+            return query.uniqueResult();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void saveOrUpdate(Object object) {
+
+        try (Session session = HibernateSessionFactory.openSession()) {
+            Transaction tr = session.beginTransaction();
+            session.saveOrUpdate(object);
+            tr.commit();
+        }
+    }
+
+    public static void updateDocument(Indexed object, Set<DocumentItem> deletedItems) throws RowNotFoundException {
+
+        try (Session session = HibernateSessionFactory.openSession()) {
+            Transaction tr = session.beginTransaction();
+            if (checkIfExists(session, object)) {
+                //deletedItems.forEach(di -> delete(di.getId()));
+                deletedItems.forEach(di -> {
+                    Query query = session.createQuery("delete from Assortment d where d.documentItemId = " + di.getId());//todo: prepared
+                    query.executeUpdate();
+                });
+                session.update(object);
+                tr.commit();
+            } else {
+                throw new RowNotFoundException(object.getClass() + " object:" + object + " does not exist in database.");
+            }
+        }
+    }
+    //assortment DAO</>
 }

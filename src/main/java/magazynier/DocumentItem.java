@@ -2,6 +2,7 @@ package magazynier;
 
 import magazynier.item.Item;
 import magazynier.item.VatRate;
+import magazynier.warehouse.Warehouse;
 
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ public class DocumentItem {
     private String batchNumber;
     private Integer id;
     private Item item;
+    private Warehouse warehouse;
     private Document document;
 
     public DocumentItem() {
@@ -119,6 +121,14 @@ public class DocumentItem {
 
     public void setDocument(Document document) {
         this.document = document;
+    }
+    
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
     }
 
     @Override

@@ -92,6 +92,7 @@
                                 <TableColumn fx:id="valueNetCol" minWidth="40.0" prefWidth="95.0" text="Wartość netto" />
                                 <TableColumn fx:id="marginType" prefWidth="75.0" text="Rodzaj marży" />
                                 <TableColumn fx:id="margin" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="Marża" />
+                        <TableColumn fx:id="warehouseCol" prefWidth="75.0" text="Magazyn" />
                             </columns>
                             <columnResizePolicy>
                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

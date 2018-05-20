@@ -22,6 +22,7 @@ import magazynier.item.Item;
 import magazynier.item.ItemController;
 import magazynier.utils.*;
 import magazynier.utils.validators.LengthValidator;
+import magazynier.warehouse.Warehouse;
 import magazynier.worker.Worker;
 import org.hibernate.PropertyValueException;
 
@@ -29,7 +30,6 @@ import javax.persistence.OptimisticLockException;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static javafx.scene.control.cell.TextFieldTableCell.forTableColumn;
@@ -63,6 +63,7 @@ public class DocumentPropertiesController {
     public TableColumn<DocumentItem, Double> valueNetCol;
     public TableColumn margin;
     public TableColumn<DocumentItem, MarginType> marginType;
+    public TableColumn<DocumentItem, Warehouse> warehouseCol;
 
     public Label netDocVal;
     public Label grossDocVal;
@@ -90,6 +91,8 @@ public class DocumentPropertiesController {
     private PropertyTableFilter<Item> allItemsFilter;
     private MoneyValueFormat moneyFormat;
 
+    private Set<DocumentItem> deletedItems;
+
     public DocumentPropertiesController(Document document, ActionMode mode) {
         System.out.println("DocumentPropertiesController");
         this.document = document;
@@ -97,6 +100,7 @@ public class DocumentPropertiesController {
         model = new DocumentPropertiesModel();
         actionResult = ActionResult.CANCEL;
         moneyFormat = new MoneyValueFormat();
+        deletedItems = new HashSet<>();
     }
 
     @FXML
@@ -141,7 +145,7 @@ public class DocumentPropertiesController {
 
         name.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_DOC_NAME_LEN)));
         name.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.isEmpty()) {
+            if (newValue == null || newValue.isEmpty()) {
                 setGeneratedDocumentName();
                 workerCmbox.requestFocus();
             }
@@ -162,6 +166,7 @@ public class DocumentPropertiesController {
                 del.setOnAction(event -> {
 
                     if (row.getItem() != null) {
+                        deletedItems.add(row.getItem());
                         documentItemsTable.getItems().remove(row.getItem());
                     }
                 });
@@ -192,7 +197,23 @@ public class DocumentPropertiesController {
                 }
         );
 
-        quantityCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c -> new ReadOnlyObjectWrapper(String.valueOf(c.getValue().getQuantity())));
+        warehouseCol.setCellValueFactory(c -> {
+            Warehouse warehouse = model.getWarehousesList().stream().filter(w -> w.getId().equals(model.findWarehouse(c.getValue()))).findAny().orElse(null);
+            if (warehouse != null)
+                c.getValue().setWarehouse(warehouse);
+            return new ReadOnlyObjectWrapper<>(c.getValue().getWarehouse());
+        });//todo: change it...
+
+        warehouseCol.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(model.getWarehousesList())));
+        warehouseCol.setOnEditCommit(t -> {
+                    DocumentItem di = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    di.setWarehouse(t.getNewValue());
+                    //refreshDocValLabels();
+                    System.out.println("WAREHOUS -> " + di.getWarehouse());
+                }
+        );
+
+        quantityCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c -> new ReadOnlyObjectWrapper<>(String.valueOf(c.getValue().getQuantity())));
         quantityCol.setCellFactory(forTableColumn());
         quantityCol.setOnEditCommit((EventHandler<CellEditEvent<DocumentItem, String>>) event -> {
             DocumentItem di = event.getTableView().getItems().get(event.getTablePosition().getRow());
@@ -301,32 +322,39 @@ public class DocumentPropertiesController {
         if (isFormValid()) {
             updateDocumentFromForm();
 
-            try {
-                if (mode == ActionMode.EDIT || mode == ActionMode.PREVIEW) {
-                    model.updateDocument(document);
-                    actionResult = CONFIRM;
-                } else if (mode == ADD) {
-                    model.addDocument(document);
-                    mode = ActionMode.EDIT;
-                    actionResult = CONFIRM;
-                    setHeaderText();
-                    AlertLauncher.showAndWait(Alert.AlertType.INFORMATION, "Nowy dokument", null, "Dokument został dodany.");
-                }
+            if (document.getItems().stream().allMatch(i -> i.getWarehouse() != null)) {
+                try {
+                    if (mode == ActionMode.EDIT || mode == ActionMode.PREVIEW) {
 
-            } catch (RowNotFoundException e) {
-                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Nie znalaziono dokumentu. Mógł zostać usunięty z bazy.");
-                closeWindowWithFail();
-            } catch (OptimisticLockException e) {
-                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Dokument został w międzyczasie zaktualizowany przez innego użytkownika.");
-                closeWindowWithFail();
-            } catch (PropertyValueException e) {
-                System.out.println("PVE");
-            } catch (Exception e) {
-                System.out.println();
-                e.printStackTrace();
-                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Nieznany błąd.");
-                closeWindowWithFail();
+                        model.updateDocument(document, deletedItems);
+                        deletedItems.clear();
+                        actionResult = CONFIRM;
+                    } else if (mode == ADD) {
+                        model.addDocument(document);
+                        mode = ActionMode.EDIT;
+                        actionResult = CONFIRM;
+                        setHeaderText();
+                        AlertLauncher.showAndWait(Alert.AlertType.INFORMATION, "Nowy dokument", null, "Dokument został dodany.");
+                    }
+
+                } catch (RowNotFoundException e) {
+                    AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Nie znalaziono dokumentu. Mógł zostać usunięty z bazy.");
+                    closeWindowWithFail();
+                } catch (OptimisticLockException e) {
+                    AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Dokument został w międzyczasie zaktualizowany przez innego użytkownika.");
+                    closeWindowWithFail();
+                } catch (PropertyValueException e) {
+                    System.out.println("PVE");
+                } catch (Exception e) {
+                    System.out.println();
+                    e.printStackTrace();
+                    AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można zaktualizować dokumentu.", "Nieznany błąd.");
+                    closeWindowWithFail();
+                }
+            } else {
+                AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wybierz magazyny, w których będzie składowany asortyment.");
             }
+
         } else {
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wypełnij prawidłowo wszystkie pola formularza.\nJeżeli numer dokumentu będzie pusty, zostanie wygenerowany automatycznie.");
         }
