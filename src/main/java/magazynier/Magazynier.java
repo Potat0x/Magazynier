@@ -19,6 +19,8 @@ public class Magazynier extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
         //MainController mc = fxmlLoader.getController();
+//        primaryStage.setMaximized(true);
+//        primaryStage.setFullScreen(true);
     }
 
     @Override

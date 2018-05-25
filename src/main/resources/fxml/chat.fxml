@@ -37,7 +37,7 @@
                                     </ImageView>
                                  </graphic>
                               </Button>
-                              <Button mnemonicParsing="false" prefHeight="10.0" prefWidth="32.0">
+                              <Button mnemonicParsing="false" onAction="#switchFullscreen" prefHeight="10.0" prefWidth="32.0">
                                  <graphic>
                                     <ImageView>
                                        <image>
@@ -46,7 +46,7 @@
                                     </ImageView>
                                  </graphic>
                               </Button>
-                              <Button mnemonicParsing="false" prefHeight="10.0" prefWidth="32.0">
+                              <Button mnemonicParsing="false" onAction="#closeChat" prefHeight="10.0" prefWidth="32.0">
                                  <graphic>
                                     <ImageView>
                                        <image>

@@ -4,17 +4,20 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
+import javafx.stage.Stage;
 import magazynier.Message;
 import magazynier.worker.Worker;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class ChatController {
-    public TextArea chatArea;
-    public TextArea messageArea;
+
     public Label workerNameLabel;
+    public TextArea messageArea;
+    public TextArea chatArea;
 
     private Worker recipient;
     private Worker sender;
@@ -29,7 +32,8 @@ public class ChatController {
     }
 
     private void insertMessage(Message msg) {
-        chatArea.appendText(msg.getDate() + " " + msg.getSender() + "> " + msg.getMessage() + "\n");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
+        chatArea.appendText(dateFormat.format(msg.getDate()) + " " + msg.getSender() + "> " + msg.getMessage() + "\n");
     }
 
     public void initialize() {
@@ -64,5 +68,19 @@ public class ChatController {
         //noinspection ComparatorMethodParameterNotUsed
         messages.sort((m1, m2) -> (m1.getDate().before(m2.getDate())) ? -1 : 1);
         messages.forEach(this::insertMessage);
+    }
+
+    @FXML
+    public void switchFullscreen() {
+        getStage().setFullScreen(!getStage().isFullScreen());
+    }
+
+    @FXML
+    public void closeChat() {
+        getStage().close();
+    }
+
+    private Stage getStage() {
+        return ((Stage) chatArea.getScene().getWindow());
     }
 }
