@@ -6,7 +6,10 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -16,18 +19,52 @@
          <children>
             <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <AnchorPane prefHeight="33.0" prefWidth="498.0">
+                  <HBox prefHeight="12.0" prefWidth="492.0">
                      <children>
-                        <Label layoutX="25.0" layoutY="4.0" maxHeight="1.7976931348623157E308" prefHeight="25.0" prefWidth="220.0" text="Jan Kowalski" AnchorPane.leftAnchor="0.0">
+                        <Label maxHeight="1.7976931348623157E308" prefHeight="24.0" prefWidth="236.0" text="Jan Kowalski" HBox.hgrow="ALWAYS">
                            <font>
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        <Button layoutX="454.0" layoutY="5.0" mnemonicParsing="false" prefHeight="10.0" prefWidth="32.0" AnchorPane.rightAnchor="6.0" />
-                        <Button layoutX="382.0" layoutY="5.0" mnemonicParsing="false" prefHeight="10.0" prefWidth="32.0" />
-                        <Button layoutX="418.0" layoutY="5.0" mnemonicParsing="false" prefHeight="10.0" prefWidth="32.0" />
+                        <HBox alignment="CENTER_RIGHT" prefHeight="16.0" prefWidth="255.0" spacing="2.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#refresh" prefHeight="10.0" prefWidth="32.0">
+                                 <graphic>
+                                    <ImageView>
+                                       <image>
+                                          <Image url="@../img/chat/view-refresh.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Button mnemonicParsing="false" prefHeight="10.0" prefWidth="32.0">
+                                 <graphic>
+                                    <ImageView>
+                                       <image>
+                                          <Image url="@../img/chat/view-fullscreen.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Button mnemonicParsing="false" prefHeight="10.0" prefWidth="32.0">
+                                 <graphic>
+                                    <ImageView>
+                                       <image>
+                                          <Image url="@../img/chat/system-log-out.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </HBox>
                      </children>
-                  </AnchorPane>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="2.0" left="1.0" right="1.0" top="1.0" />
+                     </padding>
+                  </HBox>
                   <TextArea fx:id="chatArea" prefHeight="196.0" prefWidth="598.0" wrapText="true" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
@@ -42,6 +79,6 @@
          </children></AnchorPane>
   </items>
    <padding>
-      <Insets bottom="4.0" left="4.0" right="4.0" />
+      <Insets bottom="4.0" left="4.0" right="4.0" top="2.0" />
    </padding>
 </SplitPane>

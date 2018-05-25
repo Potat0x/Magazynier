@@ -37,12 +37,7 @@ public class ChatController {
             }
         });
 
-        ArrayList<Message> ml = model.getMessagesList();
-        for (Message m : ml) {
-            System.out.println("a> " + m.getMessage());
-            insertMessage(m);
-        }
-
+        refresh();
     }
 
     @FXML
@@ -59,4 +54,12 @@ public class ChatController {
         }
     }
 
+    @FXML
+    public void refresh() {
+        chatArea.clear();
+        ArrayList<Message> messages = model.getMessagesList();
+        //noinspection ComparatorMethodParameterNotUsed
+        messages.sort((m1, m2) -> (m1.getDate().before(m2.getDate())) ? -1 : 1);
+        messages.forEach(this::insertMessage);
+    }
 }

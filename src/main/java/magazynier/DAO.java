@@ -262,8 +262,14 @@ public class DAO {
     //assortment DAO</>
 
     public static ArrayList<Message> getMessagesBetween(Worker person1, Worker person2) {
-        String qs = "" +
-                "FROM Message";
+
+        int p1 = person1.getId();
+        int p2 = person2.getId();
+
+        String qs = "FROM Message where " +
+                "(sender.id = " + p1 + " and recipient.id = " + p2 + ")" +
+                " or " +
+                "(sender.id = " + p2 + " and recipient.id = " + p1 + ")";
         try (Session session = HibernateSessionFactory.openSession()) {
             Query query = session.createQuery(qs);
             Object o = query.list();
