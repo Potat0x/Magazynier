@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -34,7 +35,10 @@
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
          <children>
             <TextArea fx:id="messageArea" layoutX="125.0" layoutY="-2.0" prefHeight="196.0" prefWidth="598.0" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            <Button layoutX="508.0" layoutY="31.0" mnemonicParsing="false" onAction="#sendMessage" opacity="0.75" prefHeight="25.0" prefWidth="72.0" text="Wyślij" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="2.0" />
+            <Button layoutX="508.0" layoutY="31.0" mnemonicParsing="false" onAction="#sendMessage" opacity="0.7" prefHeight="25.0" prefWidth="72.0" text="Wyślij" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="2.0">
+               <tooltip>
+                  <Tooltip text="CTRL + ENTER" />
+               </tooltip></Button>
          </children></AnchorPane>
   </items>
    <padding>

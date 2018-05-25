@@ -282,10 +282,9 @@ public class WorkersController {
     @FXML
     public void startChat() {
 
-        Worker selectedWorker = (Worker) workersTable.getSelectionModel().getSelectedItem();
-        if(selectedWorker != null)
-        {
-            ChatController chatController = new ChatController();
+        Worker selectedWorker = workersTable.getSelectionModel().getSelectedItem();
+        if (selectedWorker != null) {
+            ChatController chatController = new ChatController(selectedWorker, selectedWorker);
             try {
                 Stage chatStage = createWindowFromFxml("/fxml/chat.fxml", chatController, "Komunikator");
                 chatStage.show();

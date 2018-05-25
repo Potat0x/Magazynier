@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="magazynier">
+
+    <class name="magazynier.Message" table="messages">
+        <id name="id" column="msg_id" type="int">
+            <generator class="increment"/>
+        </id>
+
+        <property name="date" column="m_date" type="timestamp"/>
+        <property name="message" column="message" type="string"/>
+
+        <many-to-one name="sender" class="magazynier.worker.Worker" column="sender_id" not-null="true"/>
+        <many-to-one name="recipient" class="magazynier.worker.Worker" column="recipient_id" not-null="true"/>
+    </class>
+
+</hibernate-mapping>

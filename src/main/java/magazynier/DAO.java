@@ -1,7 +1,7 @@
 package magazynier;
 
 import magazynier.utils.Indexed;
-import magazynier.warehouse.Warehouse;
+import magazynier.worker.Worker;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -260,4 +260,18 @@ public class DAO {
         return 0.0;
     }
     //assortment DAO</>
+
+    public static ArrayList<Message> getMessagesBetween(Worker person1, Worker person2) {
+        String qs = "" +
+                "FROM Message";
+        try (Session session = HibernateSessionFactory.openSession()) {
+            Query query = session.createQuery(qs);
+            Object o = query.list();
+            System.out.println("o = " + o);
+            return (ArrayList<Message>) o;
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
 }

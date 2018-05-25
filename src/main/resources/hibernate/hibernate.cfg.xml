@@ -43,6 +43,7 @@
         <mapping resource="/hibernate/DocumentType.hbm.xml"/>
         <mapping resource="/hibernate/MarginType.hbm.xml"/>
         <mapping resource="/hibernate/Assortment.hbm.xml"/>
+        <mapping resource="/hibernate/Message.hbm.xml"/>
 
     </session-factory>
 
