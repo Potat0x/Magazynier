@@ -4,7 +4,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import magazynier.RowNotFoundException;
+import magazynier.contractor.ChatController;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.FormCleaner;
 import magazynier.utils.TextFieldCorrectnessIndicator;
@@ -12,11 +14,14 @@ import magazynier.utils.validators.LengthValidator;
 import magazynier.utils.validators.PeselValidator;
 
 import javax.persistence.PersistenceException;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import static magazynier.utils.WindowCreator.createWindowFromFxml;
 
 public class WorkersController {
 
-    public TableView workersTable;
+    public TableView<Worker> workersTable;
     public TableColumn firstNameCol;
     public TableColumn lastNameCol;
     public TableColumn warehouseCol;
@@ -30,6 +35,7 @@ public class WorkersController {
     public GridPane form;
     public Button cancelButton;
     public Button addButton;
+    public Button chatButton;
     public Button deleteButton;
     public Button saveButton;
     public Label formTitle;
@@ -72,15 +78,17 @@ public class WorkersController {
 
         workersTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             deleteButton.setDisable(newValue == null);
+            chatButton.setDisable(newValue == null);
             form.setDisable(newValue == null);
         });
         deleteButton.setDisable(true);
+        chatButton.setDisable(true);
         form.setDisable(true);
         formTitle.setText("Informacje o pracowniku:");
     }
 
     private void refreshTable() {
-        ArrayList workers = model.getWorkersList();
+        ArrayList<Worker> workers = model.getWorkersList();
         workersTable.getItems().clear();
         workersTable.getItems().addAll(workers);
     }
@@ -269,5 +277,21 @@ public class WorkersController {
         worker.setPesel(pesel.getText());
         worker.setStreet(street.getText());
         worker.setCity(city.getText());
+    }
+
+    @FXML
+    public void startChat() {
+
+        Worker selectedWorker = (Worker) workersTable.getSelectionModel().getSelectedItem();
+        if(selectedWorker != null)
+        {
+            ChatController chatController = new ChatController();
+            try {
+                Stage chatStage = createWindowFromFxml("/fxml/chat.fxml", chatController, "Komunikator");
+                chatStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

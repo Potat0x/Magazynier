@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class WorkersModel {
 
-    ArrayList getWorkersList() {
+    ArrayList <Worker>getWorkersList() {
         return DAO.readTable("Worker");
     }
 
