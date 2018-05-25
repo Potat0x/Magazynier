@@ -21,7 +21,7 @@
                <children>
                   <HBox prefHeight="12.0" prefWidth="492.0">
                      <children>
-                        <Label maxHeight="1.7976931348623157E308" prefHeight="24.0" prefWidth="236.0" text="Jan Kowalski" HBox.hgrow="ALWAYS">
+                        <Label fx:id="workerNameLabel" maxHeight="1.7976931348623157E308" prefHeight="24.0" prefWidth="236.0" text="Jan Kowalski" HBox.hgrow="ALWAYS">
                            <font>
                               <Font size="15.0" />
                            </font>

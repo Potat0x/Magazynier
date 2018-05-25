@@ -1,6 +1,7 @@
 package magazynier.contractor;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import magazynier.Message;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 public class ChatController {
     public TextArea chatArea;
     public TextArea messageArea;
+    public Label workerNameLabel;
 
     private Worker recipient;
     private Worker sender;
@@ -37,6 +39,7 @@ public class ChatController {
             }
         });
 
+        workerNameLabel.setText(recipient.getFullName());
         refresh();
     }
 
