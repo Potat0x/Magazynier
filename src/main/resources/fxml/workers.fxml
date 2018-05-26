@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -14,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="magazynier.worker.WorkersController">
+<HBox prefHeight="513.0" prefWidth="710.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="magazynier.worker.WorkersController">
     <children>
         <TableView fx:id="workersTable" onKeyPressed="#updateForm" onMouseClicked="#updateForm" tableMenuButtonVisible="true" HBox.hgrow="ALWAYS">
             <columns>
@@ -129,6 +130,12 @@
                         </Button>
                     </children>
                 </HBox>
+            <VBox alignment="CENTER" prefHeight="60.0" prefWidth="326.0">
+               <children>
+                  <Label prefHeight="17.0" prefWidth="207.0" text="//aktualnie zalogowany użytkownik" />
+                  <ComboBox fx:id="appUserTmpCmbox" prefHeight="25.0" prefWidth="209.0" />
+               </children>
+            </VBox>
             </children>
         </VBox>
     </children>

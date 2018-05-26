@@ -22,9 +22,11 @@ import static magazynier.utils.WindowCreator.createWindowFromFxml;
 public class WorkersController {
 
     public TableView<Worker> workersTable;
-    public TableColumn firstNameCol;
-    public TableColumn lastNameCol;
-    public TableColumn warehouseCol;
+    public TableColumn<Worker, String> firstNameCol;
+    public TableColumn<Worker, String> lastNameCol;
+    public TableColumn<Worker, Integer> warehouseCol;
+
+    public GridPane form;
     public TextField firstName;
     public TextField lastName;
     public TextField phone;
@@ -32,13 +34,14 @@ public class WorkersController {
     public TextField pesel;
     public TextField street;
     public TextField city;
-    public GridPane form;
+
     public Button cancelButton;
     public Button addButton;
     public Button chatButton;
     public Button deleteButton;
     public Button saveButton;
     public Label formTitle;
+    public ComboBox<Worker> appUserTmpCmbox;
 
     private PeselValidator peselValidator;
     private WorkersModel model;
@@ -55,9 +58,9 @@ public class WorkersController {
     @FXML
     @SuppressWarnings("unchecked")
     public void initialize() {
-        firstNameCol.setCellValueFactory(new PropertyValueFactory<Worker, String>("firstName"));
-        lastNameCol.setCellValueFactory(new PropertyValueFactory<Worker, String>("lastName"));
-        warehouseCol.setCellValueFactory(new PropertyValueFactory<Worker, Integer>("warehouseId"));
+        firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        lastNameCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        warehouseCol.setCellValueFactory(new PropertyValueFactory<>("warehouseId"));
 
         refreshTable();
 
@@ -85,6 +88,18 @@ public class WorkersController {
         chatButton.setDisable(true);
         form.setDisable(true);
         formTitle.setText("Informacje o pracowniku:");
+
+        refreshTmpCmbox();
+    }
+
+    private void refreshTmpCmbox() {
+        ArrayList<Worker> workers = model.getWorkersList();
+
+        if (!model.getWorkersList().isEmpty()) {
+            appUserTmpCmbox.getItems().clear();
+            appUserTmpCmbox.getItems().addAll(workers);
+            appUserTmpCmbox.setValue(workers.get(0));
+        }
     }
 
     private void refreshTable() {
@@ -96,7 +111,7 @@ public class WorkersController {
     @FXML
     public void updateForm() {
 
-        Worker selectedWorker = (Worker) workersTable.getSelectionModel().getSelectedItem();
+        Worker selectedWorker = workersTable.getSelectionModel().getSelectedItem();
 
         if (selectedWorker != null) {
             firstName.setText(selectedWorker.getFirstName());
@@ -116,7 +131,7 @@ public class WorkersController {
 
     @FXML
     public void updateSelectedWorker() {
-        Worker selectedWorker = (Worker) workersTable.getSelectionModel().getSelectedItem();
+        Worker selectedWorker = workersTable.getSelectionModel().getSelectedItem();
 
         if (selectedWorker != null) {
             updateWorkerFromForm(selectedWorker);
@@ -166,6 +181,7 @@ public class WorkersController {
             saveButton.setDisable(true);
             //deleteButton.setDisable(false);
             workersTable.refresh();
+            refreshTmpCmbox();
             formTitle.setText("Informacje o pracowniku:");
         } else {
             if (!formLengthValid) {
@@ -214,7 +230,7 @@ public class WorkersController {
     @FXML
     public void deleteWorker() {
 
-        Worker selectedWorker = (Worker) workersTable.getSelectionModel().getSelectedItem();
+        Worker selectedWorker = workersTable.getSelectionModel().getSelectedItem();
         if (selectedWorker != null) {
             try {
                 model.deleteWorker(selectedWorker);
@@ -222,6 +238,7 @@ public class WorkersController {
                 FormCleaner.clearForm(form);
                 FormCleaner.clearStyles(form);
                 workersTable.getSelectionModel().select(null);
+                refreshTmpCmbox();
             } catch (Exception e) {
 
                 String failInfo;
@@ -229,7 +246,7 @@ public class WorkersController {
 
                 if (e instanceof PersistenceException) {
                     failInfo = "Pracownik występuje na dokumentach.";
-                    w = (Worker) workersTable.getSelectionModel().getSelectedItem();
+                    w = workersTable.getSelectionModel().getSelectedItem();
                 } else if (e instanceof RowNotFoundException) {
                     failInfo = "Nie znaleziono pracownika. Mógł zostać wcześniej usunięty z bazy.";
                     FormCleaner.clearForm(form);
@@ -283,8 +300,9 @@ public class WorkersController {
     public void startChat() {
 
         Worker selectedWorker = workersTable.getSelectionModel().getSelectedItem();
-        if (selectedWorker != null) {
-            ChatController chatController = new ChatController(selectedWorker, selectedWorker);
+        Worker currentWorker = appUserTmpCmbox.getSelectionModel().getSelectedItem();
+        if (selectedWorker != null && currentWorker != null) {
+            ChatController chatController = new ChatController(selectedWorker, currentWorker);
             try {
                 Stage chatStage = createWindowFromFxml("/fxml/chat.fxml", chatController, "Komunikator");
                 chatStage.show();
