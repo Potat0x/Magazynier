@@ -44,6 +44,7 @@
         <mapping resource="/hibernate/MarginType.hbm.xml"/>
         <mapping resource="/hibernate/Assortment.hbm.xml"/>
         <mapping resource="/hibernate/Message.hbm.xml"/>
+        <mapping resource="/hibernate/MessageNotification.hbm.xml"/>
 
     </session-factory>
 

@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="magazynier">
+
+    <class name="magazynier.MessageNotification" table="messages_notifications">
+
+        <composite-id>
+            <key-many-to-one name="sender" class="magazynier.worker.Worker" column="sender_id"/>
+            <key-many-to-one name="recipient" class="magazynier.worker.Worker" column="recipient_id"/>
+        </composite-id>
+
+        <property name="ack" column="ack" type="char"/>
+
+    </class>
+
+</hibernate-mapping>

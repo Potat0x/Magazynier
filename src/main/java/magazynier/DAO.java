@@ -280,4 +280,18 @@ public class DAO {
         }
         return new ArrayList<>();
     }
+
+    public static ArrayList<MessageNotification> getNotificationsList(Worker thisWorker) {
+
+        String qs = "from MessageNotification where recipient.id = " + thisWorker.getId() + "";
+        try (Session session = HibernateSessionFactory.openSession()) {
+            Query query = session.createQuery(qs);
+            Object o = query.list();
+            System.out.println("o = " + o);
+            return (ArrayList<MessageNotification>) o;
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
 }

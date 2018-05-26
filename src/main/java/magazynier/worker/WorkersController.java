@@ -5,6 +5,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import magazynier.MessageNotification;
 import magazynier.RowNotFoundException;
 import magazynier.contractor.ChatController;
 import magazynier.utils.AlertLauncher;
@@ -42,6 +44,7 @@ public class WorkersController {
     public Button saveButton;
     public Label formTitle;
     public ComboBox<Worker> appUserTmpCmbox;
+    public ListView<MessageNotification> msgNotificationsList;
 
     private PeselValidator peselValidator;
     private WorkersModel model;
@@ -89,17 +92,25 @@ public class WorkersController {
         form.setDisable(true);
         formTitle.setText("Informacje o pracowniku:");
 
+        //chat
+        appUserTmpCmbox.valueProperty().addListener(a -> refreshNotifications());
+
+        msgNotificationsList.setCellFactory(new Callback<ListView<MessageNotification>, ListCell<MessageNotification>>() {
+            @Override
+            public ListCell<MessageNotification> call(ListView<MessageNotification> param) {
+                return new ListCell<MessageNotification>() {
+                    @Override
+                    protected void updateItem(MessageNotification msgNtf, boolean bln) {
+                        super.updateItem(msgNtf, bln);
+                        if (msgNtf != null) {
+                            setText(msgNtf.getSender().getFullName());
+                        }
+                    }
+                };
+            }
+        });
+
         refreshTmpCmbox();
-    }
-
-    private void refreshTmpCmbox() {
-        ArrayList<Worker> workers = model.getWorkersList();
-
-        if (!model.getWorkersList().isEmpty()) {
-            appUserTmpCmbox.getItems().clear();
-            appUserTmpCmbox.getItems().addAll(workers);
-            appUserTmpCmbox.setValue(workers.get(0));
-        }
     }
 
     private void refreshTable() {
@@ -273,7 +284,7 @@ public class WorkersController {
     }
 
     private boolean validFormMaxLength() {
-
+        //noinspection RedundantIfStatement
         if ((firstName.getText() == null || firstName.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
                 (lastName.getText() == null || lastName.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
                 (city.getText() == null || city.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
@@ -296,6 +307,17 @@ public class WorkersController {
         worker.setCity(city.getText());
     }
 
+    //chat = = = = =
+    private void refreshTmpCmbox() {
+        ArrayList<Worker> workers = model.getWorkersList();
+
+        if (!model.getWorkersList().isEmpty()) {
+            appUserTmpCmbox.getItems().clear();
+            appUserTmpCmbox.getItems().addAll(workers);
+            appUserTmpCmbox.setValue(workers.get(0));
+        }
+    }
+
     @FXML
     public void startChat() {
 
@@ -310,5 +332,11 @@ public class WorkersController {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void refreshNotifications() {
+        Worker currentWorker = appUserTmpCmbox.getSelectionModel().getSelectedItem();
+        msgNotificationsList.getItems().clear();
+        msgNotificationsList.getItems().addAll(model.getNotificationsList(currentWorker));
     }
 }
