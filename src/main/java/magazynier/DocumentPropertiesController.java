@@ -83,7 +83,7 @@ public class DocumentPropertiesController {
     public TextField modelFilterField;
     public TextField descriptionFilterField;
 
-    private final int MAX_DOC_NAME_LEN = 30;
+    private final int MAX_DOC_NAME_LEN = 32;
 
     private Document document;
     private ActionMode mode;

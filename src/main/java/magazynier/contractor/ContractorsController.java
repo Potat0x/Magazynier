@@ -57,8 +57,8 @@ public class ContractorsController {
     private PeselValidator peselValidator;
     private NipValidator nipValidator;
 
-    private final int MAX_COMPANY_NAME_LENGTH = 50;
-    private final int MAX_TEXT_FIELD_LENGTH = 25;
+    private final int MAX_COMPANY_NAME_LENGTH = 100;
+    private final int MAX_TEXT_FIELD_LENGTH = 32;
 
     private final String COMPANY = "Firma";
     private final String NATURAL_PERSON = "Osoba fizyczna";

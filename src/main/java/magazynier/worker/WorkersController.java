@@ -47,7 +47,7 @@ public class WorkersController {
     private WorkersModel model;
     private boolean userAdding;
 
-    private final int MAX_TEXT_FIELD_LENGTH = 25;
+    private final int MAX_TEXT_FIELD_LENGTH = 32;
 
     public WorkersController() {
         model = new WorkersModel();
