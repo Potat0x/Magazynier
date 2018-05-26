@@ -2,8 +2,11 @@ package magazynier.contractor;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import magazynier.Message;
 import magazynier.worker.Worker;
@@ -16,24 +19,21 @@ import java.util.ArrayList;
 public class ChatController {
 
     public Label workerNameLabel;
+    public ScrollPane scrollPane;
     public TextArea messageArea;
-    public TextArea chatArea;
+    public TextFlow chatArea;
 
     private Worker recipient;
-    private Worker sender;
+    private Worker thisWorker;
 
     private ChatModel model;
+    private String previousMsgDay;
 
-    public ChatController(Worker recipient, Worker sender) {
+    public ChatController(Worker recipient, Worker thisWorker) {
         this.recipient = recipient;
-        this.sender = sender;
+        this.thisWorker = thisWorker;
 
-        model = new ChatModel(recipient, sender);
-    }
-
-    private void insertMessage(Message msg) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
-        chatArea.appendText(dateFormat.format(msg.getDate()) + " " + msg.getSender() + "> " + msg.getMessage() + "\n");
+        model = new ChatModel(recipient, thisWorker);
     }
 
     public void initialize() {
@@ -43,18 +43,58 @@ public class ChatController {
             }
         });
 
+        chatArea.heightProperty().addListener(el -> scrollPane.setVvalue(1.0));
         workerNameLabel.setText(recipient.getFullName());
+        workerNameLabel.setStyle("-fx-text-fill: rgb(24, 0, 163);");
         refresh();
+    }
+
+    private void insertMessage(Message msg) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        String messageDate = timeFormat.format(msg.getDate());
+
+        SimpleDateFormat dayFormat = new SimpleDateFormat("dd.MM.yyyy");
+        String currentMsgDay = dayFormat.format(msg.getDate());
+
+        if (previousMsgDay == null || !previousMsgDay.equals(currentMsgDay)) {
+            Text dateTxt = new Text(currentMsgDay + "\n");
+            dateTxt.setStyle("-fx-fill: rgba(137, 66, 0, 0.9);");
+            chatArea.getChildren().add(dateTxt);
+        }
+        previousMsgDay = currentMsgDay;
+
+        Text timeTxt = new Text(messageDate + " ");
+        timeTxt.setStyle("-fx-fill: rgba(137, 66, 0, 0.5);");
+
+        Text authorTxt = new Text(msg.getSender().toString() + ": ");
+        if (msg.getSender().equals(thisWorker)) {
+            authorTxt.setStyle("-fx-fill: rgb(10, 86, 0);");
+        } else {
+            authorTxt.setStyle("-fx-fill: rgb(24, 0, 163);");
+        }
+
+        Text msgTxt = new Text(msg.getMessage());
+        msgTxt.setStyle("-fx-fill: rgb(45, 6, 0);");
+
+        chatArea.getChildren().add(timeTxt);
+        chatArea.getChildren().add(authorTxt);
+        chatArea.getChildren().add(msgTxt);
+        chatArea.getChildren().add(new Text("\n"));
+        chatArea.getChildren().forEach(node -> {
+            if (node instanceof Text) {
+                node.setStyle(node.getStyle() + " -fx-font-size: 13px; -fx-font-weight:normal;");
+            }
+        });
     }
 
     @FXML
     public void sendMessage() {
-        String messageText = messageArea.getText();
+        String messageText = messageArea.getText().trim();
 
         if (!messageText.isEmpty()) {
             System.out.println("send: " + messageText);
 
-            Message newMessage = new Message(Timestamp.valueOf(LocalDateTime.now()), messageText, sender, recipient);
+            Message newMessage = new Message(Timestamp.valueOf(LocalDateTime.now()), messageText, thisWorker, recipient);
             model.sendMessage(newMessage);
             messageArea.clear();
             insertMessage(newMessage);
@@ -63,7 +103,7 @@ public class ChatController {
 
     @FXML
     public void refresh() {
-        chatArea.clear();
+        chatArea.getChildren().clear();
         ArrayList<Message> messages = model.getMessagesList();
         //noinspection ComparatorMethodParameterNotUsed
         messages.sort((m1, m2) -> (m1.getDate().before(m2.getDate())) ? -1 : 1);
