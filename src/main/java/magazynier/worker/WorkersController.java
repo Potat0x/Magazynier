@@ -1,5 +1,6 @@
 package magazynier.worker;
 
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -98,15 +99,26 @@ public class WorkersController {
         msgNotificationsList.setCellFactory(new Callback<ListView<MessageNotification>, ListCell<MessageNotification>>() {
             @Override
             public ListCell<MessageNotification> call(ListView<MessageNotification> param) {
-                return new ListCell<MessageNotification>() {
+
+                ContextMenu cm = new ContextMenu();
+                MenuItem hideNotification = new MenuItem("Ok, ukryj");
+                MenuItem showConversation = new MenuItem("Otwórz rozmowę");
+
+                cm.getItems().addAll(hideNotification, showConversation);
+                ListCell<MessageNotification> lc = new ListCell<MessageNotification>() {
                     @Override
                     protected void updateItem(MessageNotification msgNtf, boolean bln) {
                         super.updateItem(msgNtf, bln);
                         if (msgNtf != null) {
                             setText(msgNtf.getSender().getFullName());
                         }
+                        showConversation.setOnAction(e -> showChatWindow(msgNtf.getSender(), msgNtf.getRecipient()));
                     }
                 };
+
+
+                lc.setContextMenu(cm);
+                return lc;
             }
         });
 
@@ -316,13 +328,11 @@ public class WorkersController {
             appUserTmpCmbox.getItems().addAll(workers);
             appUserTmpCmbox.setValue(workers.get(0));
         }
+
+        refreshNotifications();
     }
 
-    @FXML
-    public void startChat() {
-
-        Worker selectedWorker = workersTable.getSelectionModel().getSelectedItem();
-        Worker currentWorker = appUserTmpCmbox.getSelectionModel().getSelectedItem();
+    private void showChatWindow(Worker selectedWorker, Worker currentWorker) {
         if (selectedWorker != null && currentWorker != null) {
             ChatController chatController = new ChatController(selectedWorker, currentWorker);
             try {
@@ -332,6 +342,15 @@ public class WorkersController {
                 e.printStackTrace();
             }
         }
+    }
+
+    @FXML
+    public void startChat() {
+
+        Worker selectedWorker = workersTable.getSelectionModel().getSelectedItem();
+        Worker currentWorker = appUserTmpCmbox.getSelectionModel().getSelectedItem();
+
+        showChatWindow(selectedWorker, currentWorker);
     }
 
     public void refreshNotifications() {

@@ -283,7 +283,7 @@ public class DAO {
 
     public static ArrayList<MessageNotification> getNotificationsList(Worker thisWorker) {
 
-        String qs = "from MessageNotification where recipient.id = " + thisWorker.getId() + "";
+        String qs = "from MessageNotification where recipient.id = " + thisWorker.getId() + " and ack = 'N'";
         try (Session session = HibernateSessionFactory.openSession()) {
             Query query = session.createQuery(qs);
             Object o = query.list();

@@ -10,6 +10,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import magazynier.Message;
 import magazynier.worker.Worker;
+import org.hibernate.Hibernate;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -67,10 +68,19 @@ public class ChatController {
         timeTxt.setStyle("-fx-fill: rgba(137, 66, 0, 0.5);");
 
         Text authorTxt = new Text(msg.getSender().toString() + ": ");
-        if (msg.getSender().equals(thisWorker)) {
+        //if (msg.getSender().getId().equals(thisWorker.getId())) {
+        Worker sender = msg.getSender();
+        Hibernate.initialize(sender);
+        System.out.println(sender.getPesel());
+        System.out.println(thisWorker.getPesel());
+        Hibernate.initialize(thisWorker);
+//        if (msg.getSender().getId().equals(thisWorker.getId())) {//todo: ??
+        if (Hibernate.unproxy(sender).equals(Hibernate.unproxy(thisWorker))) {
             authorTxt.setStyle("-fx-fill: rgb(10, 86, 0);");
         } else {
             authorTxt.setStyle("-fx-fill: rgb(24, 0, 163);");
+            System.out.println(sender + " !=\n" + thisWorker);
+            System.out.println(sender.getClass().getSimpleName() + "/" + thisWorker.getClass().getSimpleName());
         }
 
         Text msgTxt = new Text(msg.getMessage());
@@ -107,6 +117,7 @@ public class ChatController {
         ArrayList<Message> messages = model.getMessagesList();
         //noinspection ComparatorMethodParameterNotUsed
         messages.sort((m1, m2) -> (m1.getDate().before(m2.getDate())) ? -1 : 1);
+        previousMsgDay = null;
         messages.forEach(this::insertMessage);
     }
 
