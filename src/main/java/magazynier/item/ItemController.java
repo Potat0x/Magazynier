@@ -69,6 +69,7 @@ public class ItemController {
             vatRate.getSelectionModel().select(item.getVatRate());
         } else {
             vatRate.getSelectionModel().select(ItemModel.getVatList().get(0));
+            measurementUnit.getSelectionModel().select(ItemModel.getMeasurementUnitsList().get(0));
         }
 
         ean.textProperty().addListener(new TextFieldCorrectnessIndicator(new EanValidator()));
