@@ -1,5 +1,6 @@
 package magazynier.contractor;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -16,6 +17,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ChatController {
 
@@ -29,6 +32,7 @@ public class ChatController {
 
     private ChatModel model;
     private String previousMsgDay;
+    private Timer timer;
 
     public ChatController(Worker recipient, Worker thisWorker) {
         this.recipient = recipient;
@@ -48,6 +52,18 @@ public class ChatController {
         workerNameLabel.setText(recipient.getFullName());
         workerNameLabel.setStyle("-fx-text-fill: rgb(24, 0, 163);");
         refresh();
+
+        Thread thr = new Thread(this::refresh);
+        thr.setDaemon(true);
+
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(thr);
+            }
+        }, 0, 1000);
+        //System.out.println("messageArea: " + messageArea.getParent().getScene().getWindow());
     }
 
     private void insertMessage(Message msg) {
@@ -71,16 +87,12 @@ public class ChatController {
         //if (msg.getSender().getId().equals(thisWorker.getId())) {
         Worker sender = msg.getSender();
         Hibernate.initialize(sender);
-        System.out.println(sender.getPesel());
-        System.out.println(thisWorker.getPesel());
         Hibernate.initialize(thisWorker);
 //        if (msg.getSender().getId().equals(thisWorker.getId())) {//todo: ??
         if (Hibernate.unproxy(sender).equals(Hibernate.unproxy(thisWorker))) {
             authorTxt.setStyle("-fx-fill: rgb(10, 86, 0);");
         } else {
             authorTxt.setStyle("-fx-fill: rgb(24, 0, 163);");
-            System.out.println(sender + " !=\n" + thisWorker);
-            System.out.println(sender.getClass().getSimpleName() + "/" + thisWorker.getClass().getSimpleName());
         }
 
         Text msgTxt = new Text(msg.getMessage());
@@ -129,10 +141,17 @@ public class ChatController {
 
     @FXML
     public void closeChat() {
+        canselRefreshing();
         getStage().close();
     }
 
     private Stage getStage() {
         return ((Stage) chatArea.getScene().getWindow());
+    }
+
+    @FXML
+    public void canselRefreshing() {
+        timer.cancel();
+        timer.purge();
     }
 }

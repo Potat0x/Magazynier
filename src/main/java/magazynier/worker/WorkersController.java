@@ -343,6 +343,7 @@ public class WorkersController {
             ChatController chatController = new ChatController(selectedWorker, currentWorker);
             try {
                 Stage chatStage = createWindowFromFxml("/fxml/chat.fxml", chatController, "Komunikator");
+                chatStage.setOnCloseRequest(e -> chatController.closeChat());
                 chatStage.show();
             } catch (IOException e) {
                 e.printStackTrace();
