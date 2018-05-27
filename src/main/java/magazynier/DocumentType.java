@@ -32,7 +32,7 @@ public class DocumentType {
 
     @Override
     public String toString() {
-        return getName() + getTag();
+        return getName();
     }
 
     @Override

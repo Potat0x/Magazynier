@@ -122,9 +122,9 @@
                                         <TableColumn fx:id="allItemsNameCol" text="Nazwa" />
                                         <TableColumn fx:id="allItemsEanCol" text="EAN" />
                                         <TableColumn fx:id="allItemsModelNumberCol" text="Kod producenta" />
-                                        <TableColumn fx:id="allItemsDescrCol" text="Opis" />
                                         <TableColumn fx:id="allItemsPriceCol" text="Cena(?)" />
                                         <TableColumn fx:id="allItemsAvailableQuantityCol" text="Dostępna ilosć" />
+                                        <TableColumn fx:id="allItemsDescrCol" text="Opis" visible="false" />
                                     </columns>
                                     <columnResizePolicy>
                                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
