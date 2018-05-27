@@ -175,7 +175,7 @@ public class DAO {
 //            query.setProperties(docItem.getItem());
                 Object o = query.uniqueResult();
                 if (o != null) {
-                    return ((Double) o).doubleValue();
+                    return (Double) o;
                 } else {
                     return -3.79;
                 }
@@ -197,7 +197,7 @@ public class DAO {
                 Object o = query.uniqueResult();
                 System.out.println("o = " + o);
                 if (o != null) {
-                    return ((Double) o).doubleValue();
+                    return (Double) o;
                 } else {
                     return 0.0;
                 }
@@ -225,7 +225,7 @@ public class DAO {
                 Object o = query.uniqueResult();
                 System.out.println("o = " + o);
                 if (o != null) {
-                    return ((Double) o).doubleValue();
+                    return (Double) o;
                 } else {
                     return 0.0;
                 }
@@ -249,7 +249,7 @@ public class DAO {
                 Object o = query.uniqueResult();
                 System.out.println("o = " + o);
                 if (o != null) {
-                    return ((Double) o).doubleValue();
+                    return (Double) o;
                 } else {
                     return 0.0;
                 }
@@ -293,5 +293,14 @@ public class DAO {
             e.printStackTrace();
         }
         return new ArrayList<>();
+    }
+
+    public static void updateNotification(MessageNotification msgNotification) {
+
+        try (Session session = HibernateSessionFactory.openSession()) {
+            Transaction tr = session.beginTransaction();
+            session.update(msgNotification);
+            tr.commit();
+        }
     }
 }

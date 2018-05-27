@@ -1,6 +1,5 @@
 package magazynier.worker;
 
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -108,14 +107,21 @@ public class WorkersController {
                 ListCell<MessageNotification> lc = new ListCell<MessageNotification>() {
                     @Override
                     protected void updateItem(MessageNotification msgNtf, boolean bln) {
-                        super.updateItem(msgNtf, bln);
+
                         if (msgNtf != null) {
+                            super.updateItem(msgNtf, bln);
                             setText(msgNtf.getSender().getFullName());
+                            showConversation.setOnAction(e -> {
+                                consumeNotification(msgNtf);
+                                showChatWindow(msgNtf.getSender(), msgNtf.getRecipient());
+                            });
+                            hideNotification.setOnAction(e -> consumeNotification(msgNtf));
+                        } else {
+                            setGraphic(null);
+                            setText(null);
                         }
-                        showConversation.setOnAction(e -> showChatWindow(msgNtf.getSender(), msgNtf.getRecipient()));
                     }
                 };
-
 
                 lc.setContextMenu(cm);
                 return lc;
@@ -357,5 +363,11 @@ public class WorkersController {
         Worker currentWorker = appUserTmpCmbox.getSelectionModel().getSelectedItem();
         msgNotificationsList.getItems().clear();
         msgNotificationsList.getItems().addAll(model.getNotificationsList(currentWorker));
+    }
+
+    private void consumeNotification(MessageNotification msgNtf) {
+        model.consumeNotification(msgNtf);
+        msgNotificationsList.getItems().remove(msgNtf);
+        msgNotificationsList.refresh();
     }
 }

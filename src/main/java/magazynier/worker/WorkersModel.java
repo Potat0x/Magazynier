@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class WorkersModel {
 
-    ArrayList <Worker>getWorkersList() {
+    ArrayList<Worker> getWorkersList() {
         return DAO.readTable("Worker");
     }
 
@@ -37,5 +37,9 @@ public class WorkersModel {
         return workers.stream().filter(worker -> msgNotification.getSender().getId().equals(worker.getId())).findFirst();
     }
 
+    public void consumeNotification(MessageNotification msgNtf) {
+        msgNtf.setAck('Y');
+        DAO.updateNotification(msgNtf);
+    }
 }
 

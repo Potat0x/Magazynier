@@ -107,6 +107,7 @@ public class ChatController {
             Message newMessage = new Message(Timestamp.valueOf(LocalDateTime.now()), messageText, thisWorker, recipient);
             model.sendMessage(newMessage);
             messageArea.clear();
+            messageArea.requestFocus();
             insertMessage(newMessage);
         }
     }
