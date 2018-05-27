@@ -77,10 +77,19 @@ public class ContractorsController {
         contractorsTable.getItems().addAll(contractors);
     }
 
+    private void initializeContractorTypeCmbox() {
+        if (type.getItems().size() > 0) {
+            if (type.getSelectionModel().getSelectedItem() == null) {
+                type.getSelectionModel().select(type.getItems().get(0));
+            }
+        }
+    }
+
     @FXML
     public void initialize() {
 
         type.getItems().addAll(model.getContractorTypesList());
+        initializeContractorTypeCmbox();
 
         contractorName.setDisable(true);
         nip.setDisable(true);
@@ -294,6 +303,7 @@ public class ContractorsController {
         //contractorsTable.getSelectionModel().select(contractorsTable.getSelectionModel().getSelectedItem());
         FormCleaner.clearForm(form);
         FormCleaner.clearStyles(form);
+        initializeContractorTypeCmbox();
         //type.getSelectionModel().select(COMPANY);
     }
 
