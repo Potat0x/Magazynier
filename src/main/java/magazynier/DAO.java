@@ -303,4 +303,18 @@ public class DAO {
             tr.commit();
         }
     }
+
+    public static MessageNotification getNotificationBetween(Worker recipient, Worker sender) {
+
+        String qs = "from MessageNotification where recipient.id = " + recipient.getId() + " and sender.id = " + sender.getId() + " and ack = 'N'";
+        try (Session session = HibernateSessionFactory.openSession()) {
+            Query query = session.createQuery(qs);
+            MessageNotification o = (MessageNotification) query.uniqueResult();
+            System.out.println("o = " + o);
+            return o;
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

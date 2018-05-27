@@ -10,6 +10,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import magazynier.Message;
+import magazynier.MessageNotification;
 import magazynier.worker.Worker;
 import org.hibernate.Hibernate;
 
@@ -33,12 +34,15 @@ public class ChatController {
     private ChatModel model;
     private String previousMsgDay;
     private Timer timer;
+    private Thread refreshThread;
 
     public ChatController(Worker recipient, Worker thisWorker) {
         this.recipient = recipient;
         this.thisWorker = thisWorker;
 
         model = new ChatModel(recipient, thisWorker);
+        refreshThread = new Thread(this::refresh);
+        refreshThread.setDaemon(true);
     }
 
     public void initialize() {
@@ -53,16 +57,22 @@ public class ChatController {
         workerNameLabel.setStyle("-fx-text-fill: rgb(24, 0, 163);");
         refresh();
 
-        Thread thr = new Thread(this::refresh);
-        thr.setDaemon(true);
-
+        int REFRESHING_PERIOD = 1000;
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(thr);
+
+                MessageNotification msgNotification = model.isConversationOutdated(thisWorker, recipient);
+
+                if (msgNotification != null) {
+                    if (msgNotification.getAck() == 'N') {
+                        Platform.runLater(refreshThread);
+                    }
+                    model.consumeNotification(msgNotification);
+                }
             }
-        }, 0, 1000);
+        }, 0, REFRESHING_PERIOD);
         //System.out.println("messageArea: " + messageArea.getParent().getScene().getWindow());
     }
 

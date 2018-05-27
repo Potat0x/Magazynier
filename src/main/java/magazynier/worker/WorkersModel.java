@@ -37,7 +37,7 @@ public class WorkersModel {
         return workers.stream().filter(worker -> msgNotification.getSender().getId().equals(worker.getId())).findFirst();
     }
 
-    public void consumeNotification(MessageNotification msgNtf) {
+    public void consumeNotification(MessageNotification msgNtf) {//todo: duplicated in ChatModel
         msgNtf.setAck('Y');
         DAO.updateNotification(msgNtf);
     }
