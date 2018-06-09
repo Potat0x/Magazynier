@@ -151,7 +151,7 @@ public class ChatController {
 
     @FXML
     public void closeChat() {
-        canselRefreshing();
+        cancelRefreshing();
         getStage().close();
     }
 
@@ -160,7 +160,7 @@ public class ChatController {
     }
 
     @FXML
-    public void canselRefreshing() {
+    public void cancelRefreshing() {
         timer.cancel();
         timer.purge();
     }

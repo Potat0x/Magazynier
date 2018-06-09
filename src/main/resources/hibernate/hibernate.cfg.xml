@@ -11,6 +11,7 @@
         <property name="hibernate.temp.use_jdbc_metadata_defaults">false</property>
 
         <property name="connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+        <!--<property name="connection.url">jdbc:oracle:thin:@192.168.1.11:1521:xe</property>-->
         <property name="connection.url">jdbc:oracle:thin:@localhost:1521:xe</property>
         <property name="connection.username">magazynier2</property>
         <property name="connection.password">mpwd</property>

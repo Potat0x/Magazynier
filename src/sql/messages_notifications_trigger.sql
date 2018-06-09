@@ -14,18 +14,10 @@ CREATE OR REPLACE TRIGGER msg_notif_trigger
     FROM messages_notifications
     WHERE sender_id = :new.sender_id AND recipient_id = :new.recipient_id /*AND :new.sender_id != :new.recipient_id*/;
 
-    dbms_output.put_line('sender_id: ' || to_char(:new.sender_id));
-    dbms_output.put_line('recipient_id: ' || to_char(:new.recipient_id));
-    dbms_output.put_line('msg: ' || :new.message);
-    dbms_output.put_line('msg: ' || to_char(NOTIFICATION_EXISTS));
-
     IF notification_exists = 0
     THEN
-      dbms_output.put_line('INSERT');
       INSERT INTO messages_notifications (sender_id, recipient_id, ack) VALUES (:new.sender_id, :new.recipient_id, 'N');
     ELSE
-      dbms_output.put_line('UPDATE?');
-
       SELECT ack
       INTO notification_ack_status
       FROM messages_notifications

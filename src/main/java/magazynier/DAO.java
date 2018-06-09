@@ -110,7 +110,7 @@ public class DAO {
 
         try (Session session = HibernateSessionFactory.openSession()) {
             Transaction tr = session.beginTransaction();
-            Query query = session.createQuery("delete from Assortment d where d.documentItemId = " + id);//todo: prepared
+            Query query = session.createQuery("delete from Assortment d where d.documentItemId = " + id);
             query.executeUpdate();
             tr.commit();
         } catch (HibernateException e) {
@@ -120,7 +120,7 @@ public class DAO {
 
     public static Object findWarehouseIdByDocItemId(Integer documentItemId) {
         try (Session session = HibernateSessionFactory.openSession()) {
-            Query query = session.createQuery("select warehouseId from Assortment d where d.documentItemId = " + documentItemId);//todo: prepared
+            Query query = session.createQuery("select warehouseId from Assortment d where d.documentItemId = " + documentItemId);
             return query.uniqueResult();
         } catch (HibernateException e) {
             e.printStackTrace();
@@ -144,7 +144,7 @@ public class DAO {
             if (checkIfExists(session, object)) {
                 //deletedItems.forEach(di -> delete(di.getId()));
                 deletedItems.forEach(di -> {
-                    Query query = session.createQuery("delete from Assortment d where d.documentItemId = " + di.getId());//todo: prepared
+                    Query query = session.createQuery("delete from Assortment d where d.documentItemId = " + di.getId());
                     query.executeUpdate();
                 });
                 session.update(object);
