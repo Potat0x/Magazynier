@@ -341,4 +341,19 @@ public class DAO {
         }
         return null;
     }
+
+    public static Double calculateTotalTransactionsValue(Integer contractorid) {
+        try (Session session = HibernateSessionFactory.openSession()) {
+
+            StoredProcedureQuery query = session.createStoredProcedureQuery("calculate_total_transacts_val");
+            query.registerStoredProcedureParameter(1, Integer.class, ParameterMode.IN);
+            query.registerStoredProcedureParameter(2, Double.class, ParameterMode.OUT);
+            query.setParameter(1, contractorid);
+            query.execute();
+            return (Double) query.getOutputParameterValue(2);
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

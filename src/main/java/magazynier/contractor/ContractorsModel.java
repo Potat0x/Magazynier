@@ -28,4 +28,7 @@ public class ContractorsModel {
         DAO.delete(contractor);
     }
 
+    public Double getTotalTransactionsValue(Contractor contractor) {
+        return DAO.calculateTotalTransactionsValue(contractor.getId());
+    }
 }

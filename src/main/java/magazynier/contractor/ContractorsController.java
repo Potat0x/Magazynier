@@ -1,6 +1,7 @@
 package magazynier.contractor;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -8,10 +9,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.util.Callback;
 import magazynier.ContractorType;
 import magazynier.RowNotFoundException;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.FormCleaner;
+import magazynier.utils.MoneyValueFormat;
 import magazynier.utils.TextFieldCorrectnessIndicator;
 import magazynier.utils.validators.LengthValidator;
 import magazynier.utils.validators.NipValidator;
@@ -42,6 +45,7 @@ public class ContractorsController {
     public TableColumn<Contractor, String> nameCol;
     public TableColumn<Contractor, String> firstNameCol;
     public TableColumn<Contractor, String> lastNameCol;
+    public TableColumn<Contractor, Double> totalTransactionsValueCol;
     public GridPane form;
     public Button editButton;
     public Button cancelButton;
@@ -110,6 +114,9 @@ public class ContractorsController {
         lastNameCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 
         typeCol.setCellValueFactory(new PropertyValueFactory<>("contractorType"));
+
+        MoneyValueFormat moneyFormat = new MoneyValueFormat();
+        totalTransactionsValueCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.format(model.getTotalTransactionsValue(c.getValue())))));
 
         nameCol.setCellValueFactory(p -> {
             if (p.getValue().getEntityType() != null && p.getValue().getEntityType().equals(NATURAL_PERSON))
