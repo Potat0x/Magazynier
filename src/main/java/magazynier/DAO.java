@@ -9,9 +9,13 @@ import org.hibernate.Transaction;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.query.Query;
 
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureQuery;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class DAO {
@@ -312,6 +316,26 @@ public class DAO {
             MessageNotification o = (MessageNotification) query.uniqueResult();
             System.out.println("o = " + o);
             return o;
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Double calculateIncome(Integer itemid, IncomeType incomeType) {
+
+        Map<IncomeType, String> proceduresByIncomeType = new HashMap<>();
+        proceduresByIncomeType.put(IncomeType.REVENUE, "calculate_revenue");
+        proceduresByIncomeType.put(IncomeType.PROFIT, "calculate_profit");
+
+        try (Session session = HibernateSessionFactory.openSession()) {
+
+            StoredProcedureQuery query = session.createStoredProcedureQuery(proceduresByIncomeType.get(incomeType));
+            query.registerStoredProcedureParameter(1, Integer.class, ParameterMode.IN);
+            query.registerStoredProcedureParameter(2, Double.class, ParameterMode.OUT);
+            query.setParameter(1, itemid);
+            query.execute();
+            return (Double) query.getOutputParameterValue(2);
         } catch (HibernateException e) {
             e.printStackTrace();
         }

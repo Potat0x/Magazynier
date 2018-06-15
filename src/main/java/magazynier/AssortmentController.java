@@ -35,6 +35,8 @@ public class AssortmentController {
     public Button deleteButton;
     public Label netValLabel;
     public Label grossValLabel;
+    public TableColumn<Item, Double> revenueGrossCol;
+    public TableColumn<Item, Double> profitGrossCol;
     private ItemModel model;
 
     public AssortmentController() {
@@ -70,6 +72,12 @@ public class AssortmentController {
 
         desiredQuantityCol.setCellFactory(ProgressBarTableCell.forTableColumn());
         desiredQuantityCol.setCellValueFactory(i -> new ReadOnlyObjectWrapper<>(model.getAvailableQuantity(i.getValue()) / i.getValue().getDesiredQuantity()));
+
+        revenueGrossCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
+                format(model.getItemRevenue(c.getValue())))));
+
+        profitGrossCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
+                format(model.getItemProfit(c.getValue())))));
 
         refreshTable();
         refreshValueLabels();

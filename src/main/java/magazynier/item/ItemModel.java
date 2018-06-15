@@ -1,6 +1,7 @@
 package magazynier.item;
 
 import magazynier.DAO;
+import magazynier.IncomeType;
 import magazynier.MeasurementUnit;
 import magazynier.RowNotFoundException;
 import magazynier.utils.NullableCalc;
@@ -55,5 +56,13 @@ public class ItemModel {
 
     public Double getItemTotalNetValue(Item item) {
         return NullableCalc.netValue(getItemTotalGrossValue(item), item.getVatRate().getTax());
+    }
+
+    public Double getItemRevenue(Item value) {
+        return DAO.calculateIncome(value.getId(), IncomeType.REVENUE);
+    }
+
+    public Double getItemProfit(Item value) {
+        return DAO.calculateIncome(value.getId(), IncomeType.PROFIT);
     }
 }
