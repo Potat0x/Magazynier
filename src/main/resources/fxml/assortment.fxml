@@ -72,8 +72,6 @@
                 <TableView fx:id="itemsTable" prefHeight="601.0" prefWidth="124.0" tableMenuButtonVisible="true" HBox.hgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="nameCol" prefWidth="75.0" text="Nazwa" />
-                        <TableColumn prefWidth="75.0" text="Partia(ukryte)" visible="false" />
-                        <TableColumn prefWidth="66.0" text="ID(ukryte)" visible="false" />
                         <TableColumn fx:id="eanCol" prefWidth="76.0" text="EAN" />
                         <TableColumn fx:id="itemModelNumberCol" prefWidth="97.0" text="Kod producenta" />
                         <TableColumn fx:id="quantityCol" prefWidth="52.0" text="Stan" />
@@ -82,10 +80,6 @@
                         <TableColumn fx:id="grossValCol" prefWidth="75.0" text="Wartość brutto" />
                         <TableColumn fx:id="taxCol" prefWidth="75.0" text="Podatek" />
                         <TableColumn fx:id="netValCol" prefWidth="75.0" text="Wartość netto" />
-                        <TableColumn prefWidth="77.0" text="Dostawca(ukr)" visible="false" />
-                        <TableColumn prefWidth="67.9752197265625" text="Typ marży(ukr)" visible="false" />
-                        <TableColumn prefWidth="80.727294921875" text="Marża(ukr)" visible="false" />
-                        <TableColumn fx:id="warehousesCol" prefWidth="75.0" text="Magazyny" visible="false" />
                   <TableColumn fx:id="revenueGrossCol" prefWidth="75.0" text="Przychód" />
                   <TableColumn fx:id="profitGrossCol" prefWidth="75.0" text="Zysk" />
                     </columns>

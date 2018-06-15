@@ -28,13 +28,12 @@
             <children>
                       <TableView fx:id="docTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
                           <columns>
-                              <TableColumn prefWidth="44.3994140625" text="ID" visible="false" />
                               <TableColumn fx:id="dateCol" minWidth="0.0" prefWidth="87.6796875" text="Data" />
                               <TableColumn fx:id="nameCol" prefWidth="93.5" text="Dokument" />
                               <TableColumn fx:id="contractorCol" prefWidth="73.2647705078125" text="Kontrahent" />
                               <TableColumn fx:id="netValCol" prefWidth="75.0" text="Wartość netto" />
                               <TableColumn fx:id="grossValCol" prefWidth="75.0" text="Wartość brutto" />
-                              <TableColumn fx:id="profitCol" prefWidth="75.0" text="Zysk" />
+                              <TableColumn fx:id="profitCol" prefWidth="75.0" text="Zysk" visible="false" />
                               <TableColumn fx:id="worker" prefWidth="90.231689453125" text="Wystawił" />
                           </columns>
                           <columnResizePolicy>
@@ -106,16 +105,18 @@
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <HBox alignment="CENTER" prefHeight="30.0" prefWidth="214.0" spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                <HBox alignment="CENTER_LEFT" spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                     <children>
-                                        <CheckBox contentDisplay="CENTER" disable="true" mnemonicParsing="false" prefHeight="17.0" prefWidth="122.0" text="Oczekujące" HBox.hgrow="ALWAYS" />
-                                        <CheckBox contentDisplay="CENTER" disable="true" mnemonicParsing="false" prefHeight="17.0" prefWidth="154.0" text="Wydane" HBox.hgrow="ALWAYS" />
+                                        <TextField prefHeight="25.0" prefWidth="54.0" />
+                                        <Label text="-" />
+                                        <TextField prefHeight="25.0" prefWidth="54.0" />
+                                        <RadioButton mnemonicParsing="false" text="Brutto" />
+                                        <RadioButton mnemonicParsing="false" text="Netto" />
                                     </children>
                                 </HBox>
-                                <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                 <HBox alignment="CENTER_LEFT" spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                     <children>
                                         <TextField prefHeight="25.0" prefWidth="54.0" />
@@ -125,19 +126,9 @@
                                         <RadioButton mnemonicParsing="false" text="Netto" />
                                     </children>
                                 </HBox>
-                                <HBox alignment="CENTER_LEFT" spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                                    <children>
-                                        <TextField prefHeight="25.0" prefWidth="54.0" />
-                                        <Label text="-" />
-                                        <TextField prefHeight="25.0" prefWidth="54.0" />
-                                        <RadioButton mnemonicParsing="false" text="Brutto" />
-                                        <RadioButton mnemonicParsing="false" text="Netto" />
-                                    </children>
-                                </HBox>
-                                <CheckBox mnemonicParsing="false" text="Kontrahent" GridPane.rowIndex="2" />
-                                <CheckBox mnemonicParsing="false" text="Wartość" GridPane.rowIndex="3" />
-                                <CheckBox mnemonicParsing="false" text="Zysk" GridPane.rowIndex="4" />
-                                <CheckBox disable="true" mnemonicParsing="false" text="Status" GridPane.rowIndex="1" />
+                                <CheckBox mnemonicParsing="false" text="Kontrahent" GridPane.rowIndex="1" />
+                                <CheckBox mnemonicParsing="false" text="Wartość" GridPane.rowIndex="2" />
+                                <CheckBox mnemonicParsing="false" text="Zysk" GridPane.rowIndex="3" />
                                 <AnchorPane>
                                     <children>
                                         <CheckBox mnemonicParsing="false" prefHeight="35.0" prefWidth="180.0" text="Zaznacz wszystkie">
@@ -147,8 +138,8 @@
                                         </CheckBox>
                                     </children>
                                 </AnchorPane>
-                                <CheckBox mnemonicParsing="false" text="Zakres dat" GridPane.rowIndex="5" />
-                                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                <CheckBox mnemonicParsing="false" text="Zakres dat" GridPane.rowIndex="4" />
+                                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                     <children>
                                         <DatePicker prefHeight="25.0" />
                                         <Label text="-" />

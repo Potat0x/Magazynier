@@ -88,7 +88,6 @@
                                 <TableColumn fx:id="taxCol" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" text="VAT" />
                                 <TableColumn fx:id="priceGrossCol" minWidth="40.0" prefWidth="95.0" text="Cena brutto" />
                                 <TableColumn fx:id="priceNetCol" minWidth="40.0" prefWidth="95.0" text="Cena netto" />
-                                <TableColumn prefWidth="70.0" text="Stan/Magazyn" visible="false" />
                                 <TableColumn fx:id="valueGrossCol" minWidth="40.0" prefWidth="95.0" text="Wartość brutto" />
                                 <TableColumn fx:id="valueNetCol" minWidth="40.0" prefWidth="95.0" text="Wartość netto" />
                                 <TableColumn fx:id="marginType" prefWidth="75.0" text="Rodzaj marży" />

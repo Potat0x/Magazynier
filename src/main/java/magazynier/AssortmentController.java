@@ -27,7 +27,6 @@ public class AssortmentController {
     public TableColumn<Item, Double> desiredQuantityCol;
     public TableColumn<Item, String> priceCol;
     public TableColumn<Item, String> taxCol;
-    public TableColumn<Item, String> warehousesCol;
     public TableColumn<Item, Double> grossValCol;
     public TableColumn<Item, Double> netValCol;
     public TableView<Item> itemsTable;
