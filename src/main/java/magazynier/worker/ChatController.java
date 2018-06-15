@@ -1,4 +1,4 @@
-package magazynier.contractor;
+package magazynier.worker;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -11,7 +11,6 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import magazynier.Message;
 import magazynier.MessageNotification;
-import magazynier.worker.Worker;
 import org.hibernate.Hibernate;
 
 import java.sql.Timestamp;

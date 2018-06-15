@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import magazynier.MessageNotification;
 import magazynier.RowNotFoundException;
-import magazynier.contractor.ChatController;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.FormCleaner;
 import magazynier.utils.TextFieldCorrectnessIndicator;

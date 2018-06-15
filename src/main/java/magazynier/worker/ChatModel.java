@@ -1,9 +1,8 @@
-package magazynier.contractor;
+package magazynier.worker;
 
 import magazynier.DAO;
 import magazynier.Message;
 import magazynier.MessageNotification;
-import magazynier.worker.Worker;
 
 import java.util.ArrayList;
 
