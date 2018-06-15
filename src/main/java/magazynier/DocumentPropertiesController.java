@@ -137,6 +137,7 @@ public class DocumentPropertiesController {
         });
 
         docType.getItems().addAll(model.getDocTypesList());
+        docType.setDisable(mode != ActionMode.ADD);
 
         date.valueProperty().addListener((observable, oldValue, newValue) -> setGeneratedDocumentName());
 
@@ -287,7 +288,7 @@ public class DocumentPropertiesController {
         } else if (mode == EDIT) {
             docPropertiesHeader.setText("Edycja dokumentu");
         } else {
-            docPropertiesHeader.setText("Szczegóły dokumentu dokumentu");
+            docPropertiesHeader.setText("Szczegóły dokumentu");
         }
     }
 
@@ -298,9 +299,7 @@ public class DocumentPropertiesController {
     private void refreshTable() {
         documentItemsTable.getItems().clear();
         document.getItems().forEach(di -> {
-            Warehouse warehouse = model.getWarehousesList().stream().filter(w -> w.getId().equals(model.findWarehouse(di))).findAny().orElse(null);
-            if (warehouse != null)
-                di.setWarehouse(warehouse);
+            model.getWarehousesList().stream().filter(w -> w.getId().equals(model.findWarehouse(di))).findAny().ifPresent(di::setWarehouse);
         });
         documentItemsTable.getItems().addAll(document.getItems());
     }
@@ -356,8 +355,6 @@ public class DocumentPropertiesController {
                     closeWindowWithFail();
                 }
             } else {
-
-                DocumentType dt = docType.getSelectionModel().getSelectedItem();
                 int tag = docType.getSelectionModel().getSelectedItem().getTag();
 
                 if (tag > 0) {
