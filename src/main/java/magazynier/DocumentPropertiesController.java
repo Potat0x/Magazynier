@@ -142,6 +142,12 @@ public class DocumentPropertiesController {
         docType.getItems().addAll(model.getDocTypesList());
         docType.setDisable(mode != ActionMode.ADD);
 
+        if (mode == ActionMode.PREVIEW) {
+            date.setDisable(true);
+            date.setStyle("-fx-opacity: 1");
+            date.getEditor().setStyle("-fx-opacity: 1");
+        }
+
         date.valueProperty().addListener((observable, oldValue, newValue) -> setGeneratedDocumentName());
 
         date.setValue(LocalDate.now());
