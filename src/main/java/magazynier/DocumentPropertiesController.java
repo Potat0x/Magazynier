@@ -76,7 +76,7 @@ public class DocumentPropertiesController {
     public TableColumn<Item, String> allItemsModelNumberCol;
     public TableColumn<Item, String> allItemsDescrCol;
     public TableColumn<Item, Double> allItemsPriceCol;
-    public TableColumn<Item, String> allItemsAvailableQuantityCol;
+    public TableColumn<Item, Double> allItemsAvailableQuantityCol;
 
     public TextField nameFilterField;
     public TextField eanFilterField;
@@ -129,6 +129,9 @@ public class DocumentPropertiesController {
         allItemsEanCol.setCellValueFactory(new PropertyValueFactory<>("ean"));
         allItemsPriceCol.setCellValueFactory(new PropertyValueFactory<>("currentPrice"));
         allItemsModelNumberCol.setCellValueFactory(new PropertyValueFactory<>("itemModelNumber"));
+
+        allItemsAvailableQuantityCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
+                format(model.getAvailableQuantity(c.getValue())))));
 
         allItemsDescrCol.setCellValueFactory(param ->
         {
@@ -332,6 +335,7 @@ public class DocumentPropertiesController {
                         deletedItems.clear();
                         actionResult = CONFIRM;
                         documentItemsTable.refresh();
+                        allItemsTable.refresh();
                     } else if (mode == ADD) {
                         model.addDocument(document);
                         mode = ActionMode.EDIT;

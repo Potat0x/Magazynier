@@ -91,4 +91,8 @@ public class DocumentPropertiesModel {
         else
             return DAO.getAvailableQuantityInWarehouse(docItem.getItem().getId(), warehouse.getId());
     }
+
+    public Double getAvailableQuantity(Item item) {
+        return DAO.getAvailableQuantity(item.getId());
+    }
 }
