@@ -347,6 +347,7 @@ public class DocumentPropertiesController {
                         mode = ActionMode.EDIT;
                         actionResult = CONFIRM;
                         setHeaderText();
+                        refreshDocValLabels();
                         AlertLauncher.showAndWait(Alert.AlertType.INFORMATION, "Nowy dokument", null, "Dokument został dodany.");
                     }
 
