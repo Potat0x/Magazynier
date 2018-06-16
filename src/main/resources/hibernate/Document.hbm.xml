@@ -8,7 +8,9 @@
     <class name="magazynier.Document" table="documents">
 
         <id name="id" column="document_id" type="int">
-            <generator class="increment"/>
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">
+                <param name="sequence_name">DOCUMENTS_DOCUMENT_ID_SEQ</param>
+            </generator>
         </id>
 
         <property name="date" column="issue_date" type="date"/>

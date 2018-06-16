@@ -8,7 +8,9 @@
     <class name="magazynier.item.VatRate" table="vat_rates">
 
         <id name="id" column="vat_rate_id" type="int">
-            <generator class="increment"/>
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">
+                <param name="sequence_name">VAT_RATES_VAT_RATE_ID_SEQ</param>
+            </generator>
         </id>
 
         <property name="tax" column="tax" type="double"/>

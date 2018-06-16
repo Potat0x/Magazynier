@@ -24,7 +24,8 @@ public class ItemModel {
     }
 
     public ArrayList<Item> getItemsList() {
-        return ItemsList;
+        return DAO.readTable("Item");
+//        return ItemsList;
     }
 
     public void updateItem(Item item) throws RowNotFoundException {

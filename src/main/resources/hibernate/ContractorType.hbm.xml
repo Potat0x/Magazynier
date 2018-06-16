@@ -7,7 +7,9 @@
 
     <class name="magazynier.ContractorType" table="contractor_types">
         <id name="id" column="type_id" type="int">
-            <generator class="increment"/>
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">
+                <param name="sequence_name">CONTRACTOR_TYPES_TYPE_ID_SEQ</param>
+            </generator>
         </id>
 
         <property name="name" column="name"/>

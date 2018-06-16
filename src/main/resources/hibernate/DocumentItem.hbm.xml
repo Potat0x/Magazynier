@@ -8,7 +8,9 @@
     <class name="magazynier.DocumentItem" table="documents_items">
 
         <id name="id" column="document_item_id" type="int">
-            <generator class="increment"/>
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">
+                <param name="sequence_name">DOCUMENTS_ITEMS_DOCUMENT_ITEM_</param>
+            </generator>
         </id>
 
         <property name="transactionSign" column="transaction_sign" type="int"/>
