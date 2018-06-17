@@ -1,6 +1,17 @@
 package magazynier.utils.validators;
 
+/**
+ * Walidator NIP
+ *
+ * @author ziemniak
+ */
 public class NipValidator implements Validator {
+    /**
+     * Sprawdza poprawnosc numeru NIP
+     *
+     * @param nip numer NIP
+     * @return true, jezeli NIP prawidlowy, w przecywnym wypadku false
+     */
     @Override
     public boolean check(String nip) {
 

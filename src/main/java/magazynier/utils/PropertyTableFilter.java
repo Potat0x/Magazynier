@@ -11,6 +11,12 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 import java.util.function.Function;
 
+/**
+ * Filtr pozwalajacy na filtrowanie tabeli w czasie rzeczywistym przez powiazanie pol tekstowych z polami elementow bedacych zawartoscia tabeli
+ *
+ * @param <T> typ zawartosci tabeli, ktora bedzie filtrowana
+ * @author ziemniak
+ */
 public class PropertyTableFilter<T> {
 
     private ArrayList<Pair<TextField, Function<T, String>>> filters;
@@ -19,6 +25,10 @@ public class PropertyTableFilter<T> {
     private FilteredList<T> filteredItems;
     private ChangeListener listener;
 
+    /**
+     * @param items elementy, ktore maja sie znalezc w tabeli
+     * @param table tabela, ktora bedzie filtrowana
+     */
     public PropertyTableFilter(ArrayList<T> items, TableView<T> table) {
         this.table = table;
         filters = new ArrayList<>();
@@ -27,6 +37,12 @@ public class PropertyTableFilter<T> {
                 p.getValue().apply(item).toLowerCase().replaceAll("\n", " ").contains(p.getKey().getText().toLowerCase().trim())));
     }
 
+    /**
+     * Ustawia zawartosc tabli.
+     * Zawartosc filtrowanej tabeli musi zostac ustawiona przez ta metode lub konstruktor. Nie moze byc ustawiana zewnetrznie.
+     *
+     * @param items zawartosc tabeli
+     */
     public void setItems(ArrayList<T> items) {
         filteredItems = new FilteredList<>(FXCollections.observableArrayList(items), x -> true);
 
@@ -35,6 +51,12 @@ public class PropertyTableFilter<T> {
         table.setItems(sortedItems);
     }
 
+    /**
+     * Ustawia powiazanie miedzy polem tekstowym a polem klasy przechowywanych obiektow
+     *
+     * @param propertyField  pole tekstowe
+     * @param propertyGetter getter dla pola klasy
+     */
     public void tie(TextField propertyField, Function<T, String> propertyGetter) {
         filters.add(new Pair<>(propertyField, propertyGetter));
         propertyField.textProperty().addListener(listener);

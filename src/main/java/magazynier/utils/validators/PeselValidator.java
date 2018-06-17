@@ -1,6 +1,12 @@
 package magazynier.utils.validators;
 
 public class PeselValidator implements Validator {
+    /**
+     * Sprawdza poprawnosc numeru PESEL
+     *
+     * @param pesel numer PESEL
+     * @return true, jezeli PESEL prawidlowy, w przecywnym wypadku false
+     */
     @Override
     public boolean check(String pesel) {
 

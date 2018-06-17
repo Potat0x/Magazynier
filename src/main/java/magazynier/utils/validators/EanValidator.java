@@ -1,6 +1,17 @@
 package magazynier.utils.validators;
 
+/**
+ * Walidator EAN
+ *
+ * @author ziemniak
+ */
 public class EanValidator implements Validator {
+    /**
+     * Sprawdza poprawnosc numeru EAN
+     *
+     * @param pesel numer EAN
+     * @return true, jezeli EAN prawidlowy, w przecywnym wypadku false
+     */
     @Override
     public boolean check(String pesel) {
 
