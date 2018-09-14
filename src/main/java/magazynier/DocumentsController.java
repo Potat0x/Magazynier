@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.MoneyValueFormat;
@@ -129,6 +130,13 @@ public class DocumentsController {
                     "Nieznany błąd.");
             e.printStackTrace();
             refreshTable();
+        }
+    }
+
+    @FXML
+    public void showDocument(MouseEvent mouseEvent) {
+        if (mouseEvent.getClickCount() == 2 && docTable.getSelectionModel().getSelectedItem() != null) {
+            showDocumentWindow(PREVIEW);
         }
     }
 }

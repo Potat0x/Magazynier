@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ProgressBarTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import magazynier.item.Item;
 import magazynier.item.ItemController;
@@ -157,5 +158,12 @@ public class AssortmentController {
     public void refreshItemsList() {
         refreshTable();
         refreshValueLabels();
+    }
+
+    @FXML
+    public void showItem(MouseEvent mouseEvent) {
+        if (mouseEvent.getClickCount() == 2 && itemsTable.getSelectionModel().getSelectedItem() != null) {
+            editItem();
+        }
     }
 }

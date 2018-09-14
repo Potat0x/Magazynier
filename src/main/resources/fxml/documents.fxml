@@ -26,7 +26,7 @@
     <children>
         <VBox prefHeight="463.0" prefWidth="486.0" HBox.hgrow="ALWAYS">
             <children>
-                      <TableView fx:id="docTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+                      <TableView fx:id="docTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#showDocument" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
                           <columns>
                               <TableColumn fx:id="dateCol" minWidth="0.0" prefWidth="87.6796875" text="Data" />
                               <TableColumn fx:id="nameCol" prefWidth="93.5" text="Dokument" />

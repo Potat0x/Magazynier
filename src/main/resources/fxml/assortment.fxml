@@ -69,7 +69,7 @@
         </HBox>
         <HBox prefHeight="601.0" prefWidth="760.0">
             <children>
-                <TableView fx:id="itemsTable" prefHeight="601.0" prefWidth="124.0" tableMenuButtonVisible="true" HBox.hgrow="ALWAYS">
+                <TableView fx:id="itemsTable" onMouseClicked="#showItem" prefHeight="601.0" prefWidth="124.0" tableMenuButtonVisible="true" HBox.hgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="nameCol" prefWidth="75.0" text="Nazwa" />
                         <TableColumn fx:id="eanCol" prefWidth="76.0" text="EAN" />
