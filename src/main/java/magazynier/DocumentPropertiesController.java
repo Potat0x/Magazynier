@@ -121,16 +121,16 @@ public class DocumentPropertiesController {
         nameCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().getItem().getName()));
         eanCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().getItem().getEan()));
 
-        priceNetCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.format(NullableCalc.netValue(c.getValue().getPrice(), c.getValue().getTax())))));
-        valueGrossCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.format(NullableCalc.multiplyNullable(c.getValue().getPrice(), c.getValue().getQuantity())))));
-        valueNetCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.format(NullableCalc.netValue(NullableCalc.multiplyNullable(c.getValue().getPrice(), c.getValue().getQuantity()), c.getValue().getTax())))));
+        priceNetCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(StringToDoubleConverter.convert(moneyFormat.format(NullableCalc.netValue(c.getValue().getPrice(), c.getValue().getTax())))));
+        valueGrossCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(StringToDoubleConverter.convert(moneyFormat.format(NullableCalc.multiplyNullable(c.getValue().getPrice(), c.getValue().getQuantity())))));
+        valueNetCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(StringToDoubleConverter.convert(moneyFormat.format(NullableCalc.netValue(NullableCalc.multiplyNullable(c.getValue().getPrice(), c.getValue().getQuantity()), c.getValue().getTax())))));
 
         allItemsNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         allItemsEanCol.setCellValueFactory(new PropertyValueFactory<>("ean"));
         allItemsPriceCol.setCellValueFactory(new PropertyValueFactory<>("currentPrice"));
         allItemsModelNumberCol.setCellValueFactory(new PropertyValueFactory<>("itemModelNumber"));
 
-        allItemsAvailableQuantityCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
+        allItemsAvailableQuantityCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(StringToDoubleConverter.convert(moneyFormat.
                 format(model.getAvailableQuantity(c.getValue())))));
 
         allItemsDescrCol.setCellValueFactory(param ->
@@ -193,7 +193,7 @@ public class DocumentPropertiesController {
         priceGrossCol.setCellFactory(TextFieldTableCell.forTableColumn());
         priceGrossCol.setOnEditCommit((EventHandler<CellEditEvent<DocumentItem, String>>) t -> {
                     DocumentItem di = t.getTableView().getItems().get(t.getTablePosition().getRow());
-                    di.setPrice(Double.parseDouble(t.getNewValue()));
+                    di.setPrice(StringToDoubleConverter.convert(t.getNewValue()));
                     refreshDocValLabels();
                     documentItemsTable.refresh();
                 }
@@ -218,14 +218,14 @@ public class DocumentPropertiesController {
                 }
         );
 
-        quantityAvailableCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
+        quantityAvailableCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(StringToDoubleConverter.convert(moneyFormat.
                 format(model.getAvailableQuantityInWarehouse(c.getValue(), c.getValue().getWarehouse())))));
 
         quantityCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<DocumentItem, String>, ObservableValue<String>>) c -> new ReadOnlyObjectWrapper<>(String.valueOf(c.getValue().getQuantity())));
         quantityCol.setCellFactory(forTableColumn());
         quantityCol.setOnEditCommit((EventHandler<CellEditEvent<DocumentItem, String>>) event -> {
             DocumentItem di = event.getTableView().getItems().get(event.getTablePosition().getRow());
-            di.setQuantity(Double.parseDouble(event.getNewValue()));
+            di.setQuantity(StringToDoubleConverter.convert(event.getNewValue()));
             refreshDocValLabels();
             documentItemsTable.refresh();
         });
@@ -235,7 +235,7 @@ public class DocumentPropertiesController {
         margin.setCellFactory(forTableColumn());
         margin.setOnEditCommit((EventHandler<CellEditEvent<DocumentItem, String>>) event -> {
             DocumentItem di = event.getTableView().getItems().get(event.getTablePosition().getRow());
-            di.setMargin(Double.valueOf(event.getNewValue()));
+            di.setMargin(StringToDoubleConverter.convert(event.getNewValue()));
             DocumentPropertiesController.this.refreshDocValLabels();
             documentItemsTable.refresh();
         });

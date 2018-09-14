@@ -11,6 +11,7 @@ import magazynier.item.ItemController;
 import magazynier.item.ItemModel;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.MoneyValueFormat;
+import magazynier.utils.StringToDoubleConverter;
 
 import javax.persistence.PersistenceException;
 import java.io.IOException;
@@ -54,13 +55,13 @@ public class AssortmentController {
         taxCol.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getVatRate().getName()));
 
         MoneyValueFormat moneyFormat = new MoneyValueFormat();
-        quantityCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
+        quantityCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(StringToDoubleConverter.convert(moneyFormat.
                 format(model.getAvailableQuantity(c.getValue())))));//todo: 3x sout * item_count
 
-        grossValCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
+        grossValCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(StringToDoubleConverter.convert(moneyFormat.
                 format(model.getItemTotalGrossValue(c.getValue())))));
 
-        netValCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
+        netValCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(StringToDoubleConverter.convert(moneyFormat.
                 format(model.getItemTotalNetValue(c.getValue())))));
 
         itemsTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -72,10 +73,10 @@ public class AssortmentController {
         desiredQuantityCol.setCellFactory(ProgressBarTableCell.forTableColumn());
         desiredQuantityCol.setCellValueFactory(i -> new ReadOnlyObjectWrapper<>(model.getAvailableQuantity(i.getValue()) / i.getValue().getDesiredQuantity()));
 
-        revenueGrossCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
+        revenueGrossCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(StringToDoubleConverter.convert(moneyFormat.
                 format(model.getItemRevenue(c.getValue())))));
 
-        profitGrossCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
+        profitGrossCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(StringToDoubleConverter.convert(moneyFormat.
                 format(model.getItemProfit(c.getValue())))));
 
         refreshTable();

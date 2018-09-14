@@ -8,6 +8,7 @@ import magazynier.ActionResult;
 import magazynier.MeasurementUnit;
 import magazynier.RowNotFoundException;
 import magazynier.utils.AlertLauncher;
+import magazynier.utils.StringToDoubleConverter;
 import magazynier.utils.TextFieldCorrectnessIndicator;
 import magazynier.utils.validators.EanValidator;
 import magazynier.utils.validators.LengthValidator;
@@ -126,16 +127,6 @@ public class ItemController {
         stage.close();
     }
 
-    private double stringToDouble(String str) {
-        double val;
-        try {
-            val = Double.parseDouble(str);
-        } catch (Exception e) {
-            val = 0;
-        }
-        return val;
-    }
-
     private void updateItemFromForm(Item item) {
         item.setEan(ean.getText());
         item.setItemModelNumber(itemModelNumber.getText());
@@ -143,8 +134,8 @@ public class ItemController {
         item.setMeasurementUnit(measurementUnit.getSelectionModel().getSelectedItem());
         item.setDescription(description.getText());
         item.setVatRate(vatRate.getSelectionModel().getSelectedItem());
-        item.setCurrentPrice(stringToDouble(price.getText()));
-        item.setDesiredQuantity(stringToDouble(desiredQuantity.getText()));
+        item.setCurrentPrice(StringToDoubleConverter.convert(price.getText()));
+        item.setDesiredQuantity(StringToDoubleConverter.convert(desiredQuantity.getText()));
     }
 
     private void updateFormFromItem(Item item) {

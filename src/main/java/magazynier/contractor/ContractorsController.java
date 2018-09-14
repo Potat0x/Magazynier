@@ -12,10 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import magazynier.ContractorType;
 import magazynier.RowNotFoundException;
-import magazynier.utils.AlertLauncher;
-import magazynier.utils.FormCleaner;
-import magazynier.utils.MoneyValueFormat;
-import magazynier.utils.TextFieldCorrectnessIndicator;
+import magazynier.utils.*;
 import magazynier.utils.validators.LengthValidator;
 import magazynier.utils.validators.NipValidator;
 import magazynier.utils.validators.PeselValidator;
@@ -116,7 +113,7 @@ public class ContractorsController {
         typeCol.setCellValueFactory(new PropertyValueFactory<>("contractorType"));
 
         MoneyValueFormat moneyFormat = new MoneyValueFormat();
-        totalTransactionsValueCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.format(model.getTotalTransactionsValue(c.getValue())))));
+        totalTransactionsValueCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(StringToDoubleConverter.convert(moneyFormat.format(model.getTotalTransactionsValue(c.getValue())))));
 
         nameCol.setCellValueFactory(p -> {
             if (p.getValue().getEntityType() != null && p.getValue().getEntityType().equals(NATURAL_PERSON))

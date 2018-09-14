@@ -8,6 +8,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import magazynier.RowNotFoundException;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.MoneyValueFormat;
+import magazynier.utils.StringToDoubleConverter;
 import magazynier.utils.TextFieldCorrectnessIndicator;
 import magazynier.utils.validators.LengthValidator;
 
@@ -76,10 +77,10 @@ public class WarehousesController {
 
 
         MoneyValueFormat moneyFormat = new MoneyValueFormat();
-        valueGrossCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
+        valueGrossCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(StringToDoubleConverter.convert(moneyFormat.
                 format(model.getWarehouseGrossValue(c.getValue())))));
 
-        valueNetCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(Double.parseDouble(moneyFormat.
+        valueNetCol.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(StringToDoubleConverter.convert(moneyFormat.
                 format(model.getWarehouseNetValue(c.getValue())))));
 
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
