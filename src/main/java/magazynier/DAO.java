@@ -141,20 +141,25 @@ public class DAO {
         }
     }
 
-    public static void updateDocument(Indexed object, Set<DocumentItem> deletedItems) throws RowNotFoundException {
+    public static void updateDocument(Document document, Set<DocumentItem> deletedItems) throws RowNotFoundException {
 
         try (Session session = HibernateSessionFactory.openSession()) {
             Transaction tr = session.beginTransaction();
-            if (checkIfExists(session, object)) {
+            if (checkIfExists(session, document)) {
                 //deletedItems.forEach(di -> delete(di.getId()));
                 deletedItems.forEach(di -> {
-                    Query query = session.createQuery("delete from Assortment d where d.documentItemId = " + di.getId());
+                    Query query = session.createQuery("delete from Assortment a where a.documentItemId = " + di.getId());
                     query.executeUpdate();
                 });
-                session.update(object);
+
+                document.getItems().forEach(di -> {
+                    Query query = session.createQuery("update Assortment a set a.warehouseId = " + di.getWarehouse().getId() + " where a.documentItemId = " + di.getId());
+                    query.executeUpdate();
+                });
+                session.update(document);
                 tr.commit();
             } else {
-                throw new RowNotFoundException(object.getClass() + " object:" + object + " does not exist in database.");
+                throw new RowNotFoundException(document.getClass() + " object:" + document + " does not exist in database.");
             }
         }
     }
