@@ -61,10 +61,16 @@ public class DocumentsController {
         });
 
         documentsFilter = new PropertyTableFilter<>(model.getDocumentsList(), docTable);
-        documentsFilter.tie(contractorNameField, Document::getContractorFullName);
-        documentsFilter.tieWithRange(startDatePicker, endDatePicker, Document::getDate);
+        documentsFilter.tie(contractorNameField, Document::getContractorFullName, filteringByContractorChbox);
+        documentsFilter.tieWithRange(startDatePicker, endDatePicker, Document::getDate, filteringByDateChbox);
         documentsFilter.tieWithCheckBox(assortmentInChbox, doc -> assortmentInChbox.isSelected() && doc.getDocumentType().getTag().equals(1));
         documentsFilter.tieWithCheckBox(assortmentOutChbox, doc -> assortmentOutChbox.isSelected() && doc.getDocumentType().getTag().equals(-1));
+
+        filteringByContractorChbox.selectedProperty().addListener((observable, oldValue, newValue) -> contractorNameField.setOpacity(newValue ? 1 : 0.5));
+        filteringByDateChbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            startDatePicker.setOpacity(newValue ? 1 : 0.5);
+            endDatePicker.setOpacity(newValue ? 1 : 0.5);
+        });
     }
 
     private void refreshTable() {
