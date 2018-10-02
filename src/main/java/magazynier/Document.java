@@ -79,6 +79,10 @@ public class Document implements Indexed {
         return items.stream().mapToDouble(i -> NullableCalc.multiplyNullable(i.getQuantity(), i.getPrice())).sum();
     }
 
+    public String getContractorFullName() {
+        return contractor.getFullName();
+    }
+
     @Override
     public Integer getId() {
         return id;

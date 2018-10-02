@@ -2,19 +2,16 @@ package magazynier;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.MoneyValueFormat;
+import magazynier.utils.PropertyTableFilter;
 
 import javax.persistence.PersistenceException;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static magazynier.ActionMode.EDIT;
 import static magazynier.ActionMode.PREVIEW;
@@ -32,8 +29,16 @@ public class DocumentsController {
     public TableColumn<Document, String> netValCol;
     public TableColumn<Document, String> grossValCol;
     public TableColumn<Document, String> profitCol;
+    public TextField contractorNameField;
+    public CheckBox filteringByContractorChbox;
+    public CheckBox filteringByDateChbox;
+    public DatePicker startDatePicker;
+    public DatePicker endDatePicker;
+    public CheckBox assortmentOutChbox;
+    public CheckBox assortmentInChbox;
 
     private DocumentModel model;
+    private PropertyTableFilter<Document> documentsFilter;
 
     public DocumentsController() {
         model = new DocumentModel();
@@ -48,19 +53,22 @@ public class DocumentsController {
         contractorCol.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getContractor().getFullName()));
         netValCol.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(format.format(p.getValue().netVal())));
         grossValCol.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(format.format(p.getValue().grossVal())));
-        refreshTable();
 
         docTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             showDocumentButton.setDisable(newValue == null);
             editDocumentButton.setDisable(newValue == null);
             deleteDocumentButton.setDisable(newValue == null);
         });
+
+        documentsFilter = new PropertyTableFilter<>(model.getDocumentsList(), docTable);
+        documentsFilter.tie(contractorNameField, Document::getContractorFullName);
+        documentsFilter.tieWithRange(startDatePicker, endDatePicker, Document::getDate);
+        documentsFilter.tieWithCheckBox(assortmentInChbox, doc -> assortmentInChbox.isSelected() && doc.getDocumentType().getTag().equals(1));
+        documentsFilter.tieWithCheckBox(assortmentOutChbox, doc -> assortmentOutChbox.isSelected() && doc.getDocumentType().getTag().equals(-1));
     }
 
     private void refreshTable() {
-        ArrayList<Document> wl = model.getDocumentsList();
-        docTable.getItems().clear();
-        docTable.getItems().addAll(wl);
+        documentsFilter.setItems(model.getDocumentsList());
     }
 
     private ActionResult showDocumentWindow(Document document, ActionMode mode) {
@@ -90,13 +98,11 @@ public class DocumentsController {
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie znaleziono dokumentu.", "Nie znalaziono dokumentu. Mógł zostać usunięty z bazy.");
             refreshTable();
         } catch (Exception e) {
-            System.out.println();
             e.printStackTrace();
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", "Nie można znaleźć dokumentu.", "Nieznany błąd.");
             refreshTable();
         }
     }
-
 
     @FXML
     public void editDocumentProperties() {
@@ -138,5 +144,20 @@ public class DocumentsController {
         if (mouseEvent.getClickCount() == 2 && docTable.getSelectionModel().getSelectedItem() != null) {
             showDocumentWindow(PREVIEW);
         }
+    }
+
+    @FXML
+    public void clearContractorNameField() {
+        contractorNameField.clear();
+    }
+
+    @FXML
+    public void clearStartDatePicker() {
+        startDatePicker.setValue(null);
+    }
+
+    @FXML
+    public void clearEndDatePicker() {
+        endDatePicker.setValue(null);
     }
 }

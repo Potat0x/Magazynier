@@ -307,9 +307,8 @@ public class DocumentPropertiesController {
 
     private void refreshTable() {
         documentItemsTable.getItems().clear();
-        document.getItems().forEach(di -> {
-            model.getWarehousesList().stream().filter(w -> w.getId().equals(model.findWarehouse(di))).findAny().ifPresent(di::setWarehouse);
-        });
+        document.getItems().forEach(di ->
+                model.getWarehousesList().stream().filter(w -> w.getId().equals(model.findWarehouse(di))).findAny().ifPresent(di::setWarehouse));//todo: add method for it
         documentItemsTable.getItems().addAll(document.getItems());
     }
 
