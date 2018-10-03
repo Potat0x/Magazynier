@@ -10,6 +10,7 @@ import magazynier.MessageNotification;
 import magazynier.RowNotFoundException;
 import magazynier.utils.AlertLauncher;
 import magazynier.utils.FormCleaner;
+import magazynier.utils.MaxTextFieldLengthFormValidator;
 import magazynier.utils.TextFieldCorrectnessIndicator;
 import magazynier.utils.validators.LengthValidator;
 import magazynier.utils.validators.PeselValidator;
@@ -187,7 +188,7 @@ public class WorkersController {
     @SuppressWarnings("unchecked")
     public void saveUser() {
 
-        boolean formLengthValid = validFormMaxLength();
+        boolean formLengthValid = MaxTextFieldLengthFormValidator.test(form, MAX_TEXT_FIELD_LENGTH);
         boolean peselValid = peselValidator.check(pesel.getText());
 
         if (formLengthValid && peselValid) {
@@ -298,20 +299,6 @@ public class WorkersController {
             saveButton.setDisable(false);
             cancelButton.setDisable(false);
         }
-    }
-
-    private boolean validFormMaxLength() {
-        //noinspection RedundantIfStatement
-        if ((firstName.getText() == null || firstName.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
-                (lastName.getText() == null || lastName.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
-                (city.getText() == null || city.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
-                (street.getText() == null || street.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
-                (email.getText() == null || email.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
-                (phone.getText() == null || phone.getText().length() <= MAX_TEXT_FIELD_LENGTH)
-                ) {
-            return true;
-        }
-        return false;
     }
 
     private void updateWorkerFromForm(Worker worker) {

@@ -22,6 +22,8 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class ContractorsController {
@@ -136,9 +138,9 @@ public class ContractorsController {
 
         pesel.textProperty().addListener(new TextFieldCorrectnessIndicator(new PeselValidator()));
         nip.textProperty().addListener(new TextFieldCorrectnessIndicator(new NipValidator()));
+        contractorName.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_COMPANY_NAME_LENGTH)));
 
         TextField[] fieldsToValidate = {
-                contractorName,
                 firstName,
                 lastName,
                 phone,
@@ -150,6 +152,7 @@ public class ContractorsController {
         for (TextField textField : fieldsToValidate) {
             textField.textProperty().addListener(new TextFieldCorrectnessIndicator(new LengthValidator(MAX_TEXT_FIELD_LENGTH)));
         }
+
         refreshTable();
         form.setDisable(true);
     }
@@ -158,7 +161,6 @@ public class ContractorsController {
     public void updateForm() {
 
         Contractor sc = contractorsTable.getSelectionModel().getSelectedItem();
-
         if (sc != null) {
             type.getSelectionModel().select(sc.getContractorType());//todo: sc.contractorname?
             firstName.setText(sc.getFirstName());
@@ -341,18 +343,9 @@ public class ContractorsController {
     }
 
     private boolean validFormMaxLength() {
-
-        if ((firstName.getText() == null || firstName.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
-                (lastName.getText() == null || lastName.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
-                (contractorName.getText() == null || contractorName.getText().length() <= MAX_COMPANY_NAME_LENGTH) &&
-                (city.getText() == null || city.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
-                (street.getText() == null || street.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
-                (email.getText() == null || email.getText().length() <= MAX_TEXT_FIELD_LENGTH) &&
-                (phone.getText() == null || phone.getText().length() <= MAX_TEXT_FIELD_LENGTH)
-                ) {
-            return true;
-        }
-        return false;
+        Map<TextField, Integer> customLimits = new HashMap<>();
+        customLimits.put(contractorName, MAX_COMPANY_NAME_LENGTH);
+        return MaxTextFieldLengthFormValidator.test(form, MAX_TEXT_FIELD_LENGTH, customLimits);
     }
 
     private void setFormActive(boolean active) {
@@ -378,5 +371,4 @@ public class ContractorsController {
 
         contractorsTable.setDisable(editMode);
     }
-
 }
