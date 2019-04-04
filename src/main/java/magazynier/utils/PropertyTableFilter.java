@@ -90,7 +90,8 @@ public class PropertyTableFilter<T> {
     }
 
     private boolean isFilterActive(Control filteredControl) {
-        return filterActivators.containsKey(filteredControl) && filterActivators.get(filteredControl).isSelected();
+        return !filterActivators.containsKey(filteredControl) ||
+                (filterActivators.containsKey(filteredControl) && filterActivators.get(filteredControl).isSelected());
     }
 
     public void setItems(ArrayList<T> items) {
