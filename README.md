@@ -1,12 +1,14 @@
 # Magazynier
 Desktop app for warehouse worker.
 
-![alt text](https://screenshotscdn.firefoxusercontent.com/images/adc25a5a-030b-42dc-a8e2-5083e9280835.png)
+![new document screenshot](https://i.imgur.com/MORmqDP.png)
+---
+![chat screenshot](https://i.imgur.com/o8p7GNS.png)
+---
+![assortment screenshot](https://i.imgur.com/5ddn97S.png)
 
 TODO:
 
-* finish/fix all key features
+* finish all key features
 * add login/logout
-* make big cleanup: packages, DAOs
-* optimize database reading
-* move from .hbm.xml to annotations
+* big cleanup...
