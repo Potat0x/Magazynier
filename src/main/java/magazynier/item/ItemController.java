@@ -1,5 +1,6 @@
 package magazynier.item;
 
+import antlr.StringUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -82,9 +83,11 @@ public class ItemController {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
 
         boolean formLengthValid = validFormMaxLength();
-        boolean nipValid = eanValidator.check(ean.getText());
+        boolean eanValid = eanValidator.check(ean.getText());
+        boolean numericFieldsValid = checkIfNumericFieldsValid();
+        System.out.println("NUM VALID ="+numericFieldsValid);
 
-        if (formLengthValid && nipValid) {
+        if (formLengthValid && eanValid && numericFieldsValid) {
             updateItemFromForm(item);
             actionResult = ActionResult.CONFIRM;
             if (mode == ActionMode.ADD) {
@@ -109,9 +112,11 @@ public class ItemController {
             }
 
             stage.close();
-        } else if (formLengthValid) {
+        } else if (!eanValid) {
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzony numer EAN jest niepoprawny.");
-        } else {
+        } else if (!numericFieldsValid){
+            AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzone liczby są nieprawidłowe.");
+        }else if(!formLengthValid){
             AlertLauncher.showAndWait(Alert.AlertType.ERROR, "Błąd", null, "Wprowadzony tekst jest za długi.\n" +
                     "Limity długości:\n\tnazwa przedmiotu: " + MAX_ITEM_MODEL_NUMBER_LENGTH + " znaków." +
                     "\n\tmodel: " + MAX_ITEM_MODEL_NUMBER_LENGTH + " znaków." +
@@ -125,6 +130,16 @@ public class ItemController {
         actionResult = ActionResult.CANCEL;
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
+    }
+
+    private boolean checkIfNumericFieldsValid() {
+        try {
+            StringToDoubleConverter.convert(price.getText());
+            StringToDoubleConverter.convert(desiredQuantity.getText());
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     private void updateItemFromForm(Item item) {
