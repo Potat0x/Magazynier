@@ -44,7 +44,7 @@ public class ItemModel {
     public Double getAvailableQuantity(Item item) {
 
         if (item == null)
-            return -1.99;
+            return 0.0;
         else {
             System.out.println("ITEM: " + item.getId() + ", " + item.getName());
             return DAO.getAvailableQuantity(item.getId());

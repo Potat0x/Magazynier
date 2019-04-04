@@ -85,9 +85,9 @@ public class DocumentPropertiesModel {
 
     public Double getAvailableQuantityInWarehouse(DocumentItem docItem, Warehouse warehouse) {
         if (docItem == null)
-            return -1.99;
+            return 0.0;
         if (warehouse == null)
-            return -2.99;
+            return 0.0;
         else
             return DAO.getAvailableQuantityInWarehouse(docItem.getItem().getId(), warehouse.getId());
     }

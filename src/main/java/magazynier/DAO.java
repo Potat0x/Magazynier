@@ -186,13 +186,13 @@ public class DAO {
                 if (o != null) {
                     return (Double) o;
                 } else {
-                    return -3.79;
+                    return 0.0;
                 }
             } catch (HibernateException e) {
                 e.printStackTrace();
             }
         }
-        return -4.99;
+        return 0.0;
     }
 
     public static Double getAvailableQuantity(Integer itemId) {
